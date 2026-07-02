@@ -5,15 +5,19 @@
     will-change: opacity;
 }
 
+.sile-p1 {
+    opacity: 1 !important;
+}
+
+.sile-p1.sile-image {
+    opacity: 1;
+}
+
 /* Skeleton Container */
 .sile-container {
     position: relative;
     overflow: hidden;
-    display: block; /* Default to block to fill width, will be adjusted by JS if needed */
     line-height: 0;
-    vertical-align: middle;
-    width: 100%;
-    max-width: 100%;
 }
 
 .sile-skeleton {

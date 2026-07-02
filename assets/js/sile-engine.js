@@ -121,13 +121,20 @@ class ImageSchedulerEngine {
     prepareImage(img) {
         img.classList.add('sile-processed');
 
-        // Wrap in container for skeleton if enabled
-        if (this.settings.skeleton === 'yes') {
+        // Skip skeleton for P1 to avoid layout issues in sliders
+        const isP1 = img.dataset.silePriority === 'P1';
+
+        // If image is already in cache, load immediately and skip skeleton
+        if (img.complete && img.naturalWidth > 0) {
+            this.revealImage(img);
+            return;
+        }
+
+        if (this.settings.skeleton === 'yes' && !isP1) {
             this.createSkeleton(img);
         }
 
-        // Check if it's high priority (LCP candidate from server or logo)
-        if (img.dataset.silePriority === 'P1') {
+        if (isP1) {
             this.loadImage(img);
         } else {
             this.observer.observe(img);
@@ -138,21 +145,29 @@ class ImageSchedulerEngine {
         const wrapper = document.createElement('div');
         wrapper.className = 'sile-container';
 
-        // Copy essential styles from original image
         const style = window.getComputedStyle(img);
-        const display = style.display;
 
-        wrapper.style.display = (display === 'inline' || display === 'none') ? 'inline-block' : display;
-        wrapper.style.float = style.float;
-        wrapper.style.margin = style.margin;
-        wrapper.style.position = style.position === 'static' ? 'relative' : style.position;
-        wrapper.style.width = img.getAttribute('width') ? img.getAttribute('width') + 'px' : style.width;
+        // Inherit layout properties
+        const inheritProps = ['display', 'float', 'margin', 'padding', 'position', 'left', 'top', 'right', 'bottom', 'flex', 'grid-area', 'align-self', 'justify-self', 'vertical-align'];
+        inheritProps.forEach(prop => {
+            wrapper.style[prop] = style[prop];
+        });
 
-        // Match aspect ratio for skeleton area
+        // Ensure reasonable display
+        if (style.display === 'inline' || style.display === 'none') {
+            wrapper.style.display = 'inline-block';
+        }
+
+        // Apply width/height if explicit
+        if (img.getAttribute('width')) wrapper.style.width = img.getAttribute('width') + 'px';
+        else if (style.width !== '0px') wrapper.style.width = style.width;
+
+        if (img.getAttribute('height')) wrapper.style.height = img.getAttribute('height') + 'px';
+        else if (style.height !== '0px') wrapper.style.height = style.height;
+
+        // Force aspect ratio
         if (style.aspectRatio && style.aspectRatio !== 'auto') {
             wrapper.style.aspectRatio = style.aspectRatio;
-        } else if (img.getAttribute('width') && img.getAttribute('height')) {
-            wrapper.style.aspectRatio = `${img.getAttribute('width')} / ${img.getAttribute('height')}`;
         }
 
         const skeleton = document.createElement('div');
@@ -162,9 +177,10 @@ class ImageSchedulerEngine {
         wrapper.appendChild(skeleton);
         wrapper.appendChild(img);
 
-        // Reset image internal styles to fill the wrapper
+        // Let image fill the controlled space
         img.style.width = '100%';
-        img.style.height = 'auto';
+        img.style.height = '100%';
+        img.style.objectFit = style.objectFit || 'cover';
         img.style.margin = '0';
     }
 

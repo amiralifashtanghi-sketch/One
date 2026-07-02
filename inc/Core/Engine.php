@@ -138,9 +138,16 @@ class Engine {
         $src = $src_match[1];
         $priority = $this->determine_priority($full_tag, $attributes, $src);
 
-        // If P1 (High Priority), we don't lazy load, but we still might want to handle it for async decoding
+        // If P1 (High Priority), we don't lazy load, only add hint and class
         if ($priority === 'P1') {
-            return str_replace('<img ', '<img data-sile-priority="P1" fetchpriority="high" loading="eager" ', $full_tag);
+            $tag = str_replace('<img ', '<img data-sile-priority="P1" fetchpriority="high" loading="eager" ', $full_tag);
+            if (strpos($tag, 'class=') !== false) {
+                $tag = str_replace('class="', 'class="sile-p1 ', $tag);
+                $tag = str_replace("class='", "class='sile-p1 ", $tag);
+            } else {
+                $tag = str_replace('<img ', '<img class="sile-p1" ', $tag);
+            }
+            return $tag;
         }
 
         // Replace src and srcset for lazy loading
