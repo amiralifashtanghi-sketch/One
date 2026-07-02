@@ -1,0 +1,97 @@
+/* SILE Base Styles - Production Ready */
+.sile-image {
+    opacity: 0;
+    transition: none;
+    will-change: opacity;
+}
+
+/* Skeleton Container */
+.sile-container {
+    position: relative;
+    overflow: hidden;
+    display: inline-block;
+    line-height: 0;
+    vertical-align: middle;
+}
+
+.sile-skeleton {
+    position: absolute;
+    inset: 0;
+    background-color: #e6e7e8;
+    z-index: 1;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.sile-skeleton::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(255, 255, 255, 0.4) 40%,
+        rgba(255, 255, 255, 0.6) 50%,
+        rgba(255, 255, 255, 0.4) 60%,
+        rgba(255, 255, 255, 0) 100%
+    );
+    animation: sile-shimmer 1.8s infinite ease-in-out;
+    transform: translateX(-100%);
+    will-change: transform;
+}
+
+/* GPU Accelerated Shimmer */
+@keyframes sile-shimmer {
+    0% { transform: translate3d(-100%, 0, 0); }
+    100% { transform: translate3d(100%, 0, 0); }
+}
+
+/* Fade-in Animation */
+.sile-fade-in {
+    animation: sile-fade-in-key var(--sile-fade-duration, 400ms) cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes sile-fade-in-key {
+    from {
+        opacity: 0;
+        transform: scale3d(1.02, 1.02, 1);
+    }
+    to {
+        opacity: 1;
+        transform: scale3d(1, 1, 1);
+    }
+}
+
+/* Background Image Specifics */
+.sile-bg-image {
+    background-color: #e6e7e8;
+    background-position: center;
+    background-size: cover;
+}
+
+/* Hide skeleton when image is loaded */
+.sile-loaded .sile-skeleton {
+    display: none !important;
+}
+
+/* Debug Overlay */
+#sile-debug-overlay {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: rgba(0, 0, 0, 0.85);
+    color: #fff;
+    padding: 15px;
+    border-radius: 8px;
+    font-family: monospace;
+    font-size: 12px;
+    z-index: 999999;
+    pointer-events: none;
+    line-height: 1.6;
+    border: 1px solid #444;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+}
+
+#sile-debug-overlay b {
+    color: #5b7fff;
+}
