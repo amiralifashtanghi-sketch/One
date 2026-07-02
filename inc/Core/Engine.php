@@ -192,8 +192,8 @@ class Engine {
 
         if ($dimensions) {
             $tag = str_replace('<img ', sprintf('<img width="%d" height="%d" ', $dimensions['width'], $dimensions['height']), $tag);
-            // Also inject aspect-ratio for modern CSS
-            $style = sprintf('aspect-ratio: %d / %d;', $dimensions['width'], $dimensions['height']);
+            // Inject aspect-ratio with safety styles to prevent layout breaking
+            $style = sprintf('aspect-ratio: %d / %d; height: auto; max-width: 100%%;', $dimensions['width'], $dimensions['height']);
             if (strpos($tag, 'style=') !== false) {
                 $tag = str_replace('style="', 'style="' . $style . ' ', $tag);
                 $tag = str_replace("style='", "style='" . $style . ' ', $tag);

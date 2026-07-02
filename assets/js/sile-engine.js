@@ -138,12 +138,22 @@ class ImageSchedulerEngine {
         const wrapper = document.createElement('div');
         wrapper.className = 'sile-container';
 
-        // Try to match image display/dimensions
+        // Copy essential styles from original image
         const style = window.getComputedStyle(img);
-        wrapper.style.display = style.display === 'inline' ? 'inline-block' : style.display;
-        wrapper.style.width = style.width;
-        wrapper.style.height = style.height;
-        wrapper.style.aspectRatio = style.aspectRatio;
+        const display = style.display;
+
+        wrapper.style.display = (display === 'inline' || display === 'none') ? 'inline-block' : display;
+        wrapper.style.float = style.float;
+        wrapper.style.margin = style.margin;
+        wrapper.style.position = style.position === 'static' ? 'relative' : style.position;
+        wrapper.style.width = img.getAttribute('width') ? img.getAttribute('width') + 'px' : style.width;
+
+        // Match aspect ratio for skeleton area
+        if (style.aspectRatio && style.aspectRatio !== 'auto') {
+            wrapper.style.aspectRatio = style.aspectRatio;
+        } else if (img.getAttribute('width') && img.getAttribute('height')) {
+            wrapper.style.aspectRatio = `${img.getAttribute('width')} / ${img.getAttribute('height')}`;
+        }
 
         const skeleton = document.createElement('div');
         skeleton.className = 'sile-skeleton';
@@ -151,6 +161,11 @@ class ImageSchedulerEngine {
         img.parentNode.insertBefore(wrapper, img);
         wrapper.appendChild(skeleton);
         wrapper.appendChild(img);
+
+        // Reset image internal styles to fill the wrapper
+        img.style.width = '100%';
+        img.style.height = 'auto';
+        img.style.margin = '0';
     }
 
     loadImage(el) {
