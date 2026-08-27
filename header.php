@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html <?php language_attributes(); ?>>
+<html <?php language_attributes(); ?> dir="rtl">
 <head>
 	<meta charset="<?php bloginfo( 'charset' ); ?>">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,15 +11,15 @@
 <?php
 $header_options = get_option( 'kish_harmony_header_options', array() );
 $brand_name     = ! empty( $header_options['brand_name'] ) ? $header_options['brand_name'] : 'کیش هارمونی';
-$brand_logo     = ! empty( $header_options['logo_url'] ) ? $header_options['logo_url'] : '';
 $header_menu_id = ! empty( $header_options['header_menu_id'] ) ? $header_options['header_menu_id'] : 0;
 $enable_gtranslate = isset( $header_options['enable_gtranslate'] ) ? $header_options['enable_gtranslate'] : '1';
 
-// WooCommerce Account & Cart Link
+// WooCommerce Account & Cart Links
 $account_url = function_exists( 'wc_get_page_permalink' ) ? wc_get_page_permalink( 'myaccount' ) : '#';
 $cart_url    = function_exists( 'wc_get_cart_url' ) ? wc_get_cart_url() : '#';
 ?>
 
+<!-- Glassmorphic Header -->
 <header class="header" id="header">
 	<div class="header__left">
 		<button class="hamburger" id="hamburgerBtn" aria-label="منو">
@@ -30,14 +30,7 @@ $cart_url    = function_exists( 'wc_get_cart_url' ) ? wc_get_cart_url() : '#';
 	</div>
 
 	<div class="header__center">
-		<a href="<?php echo esc_url( home_url( '/' ) ); ?>" class="header-logo">
-			<?php if ( ! empty( $brand_logo ) ) : ?>
-				<img src="<?php echo esc_url( $brand_logo ); ?>" alt="<?php echo esc_attr( $brand_name ); ?>" class="header-logo-img">
-			<?php else : ?>
-				<span class="logo-icon">✦</span>
-			<?php endif; ?>
-			<span class="logo-text"><?php echo esc_html( $brand_name ); ?></span>
-		</a>
+		<!-- Space reserved for scrolled logo center -->
 	</div>
 
 	<div class="header__right">
@@ -56,6 +49,12 @@ $cart_url    = function_exists( 'wc_get_cart_url' ) ? wc_get_cart_url() : '#';
 		</a>
 	</div>
 </header>
+
+<!-- Floating Animated Logo -->
+<a href="<?php echo esc_url( home_url( '/' ) ); ?>" class="floating-logo" id="floatingLogo">
+	<span class="logo-icon">✦</span>
+	<span class="logo-text"><?php echo esc_html( $brand_name ); ?></span>
+</a>
 
 <!-- Mobile Drawer Navigation -->
 <div class="mobile-drawer" id="mobileDrawer">

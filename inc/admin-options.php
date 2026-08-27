@@ -1,6 +1,6 @@
 <?php
 /**
- * General & Performance Settings Page Callback (With Move Up/Down Controls)
+ * General & Performance Settings Page Callback
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -113,20 +113,25 @@ function kish_harmony_add_admin_menu() {
 add_action( 'admin_menu', 'kish_harmony_add_admin_menu' );
 
 function kish_harmony_general_settings_page() {
+	if ( ! current_user_can( 'manage_options' ) ) {
+		wp_die( 'دسترسی غیرمجاز.' );
+	}
+
 	if ( isset( $_POST['kish_harmony_save_general'] ) && check_admin_referer( 'kish_harmony_general_nonce' ) ) {
 		$section_order     = isset( $_POST['section_order'] ) ? array_map( 'sanitize_text_field', $_POST['section_order'] ) : array();
 		$disabled_sections = isset( $_POST['disabled_sections'] ) ? array_map( 'sanitize_text_field', $_POST['disabled_sections'] ) : array();
 		$custom_blocks     = isset( $_POST['custom_blocks'] ) ? $_POST['custom_blocks'] : array();
 
-		// Sanitize custom blocks
+		// Sanitize custom blocks while allowing full HTML/CSS/JS for admin
 		$sanitized_blocks = array();
 		if ( is_array( $custom_blocks ) ) {
 			foreach ( $custom_blocks as $block ) {
-				if ( ! empty( $block['content'] ) ) {
+				$raw_content = wp_unslash( $block['content'] ?? '' );
+				if ( ! empty( trim( $raw_content ) ) ) {
 					$sanitized_blocks[] = array(
 						'position' => sanitize_text_field( $block['position'] ?? '' ),
 						'type'     => sanitize_text_field( $block['type'] ?? 'html' ),
-						'content'  => wp_kses_post( $block['content'] ?? '' ),
+						'content'  => $raw_content,
 					);
 				}
 			}
@@ -143,8 +148,8 @@ function kish_harmony_general_settings_page() {
 	}
 
 	$all_sections = array(
-		'banner'         => 'بنر اصلی بالای صفحه (Hero Banner)',
-		'services'       => 'دکمه‌های خدمات ویژه (۸ تایی)',
+		'hero'           => 'بخش اصلی بالای صفحه (Hero & خدمات)',
+		'banner'         => 'اسلایدر بنرهای تبلیغاتی کیش هارمونی',
 		'search'         => 'کادر جستجوی زنده (AJAX)',
 		'categories'     => 'دسته‌بندی تفریحات کیش',
 		'special_offers' => 'پیشنهادهای ویژه (ووکامرس)',
@@ -240,7 +245,7 @@ function kish_harmony_general_settings_page() {
 							</select>
 						</p>
 						<p>
-							<textarea name="custom_blocks[<?php echo $idx; ?>][content]" rows="4" style="width:100%;"><?php echo esc_textarea( $block['content'] ?? '' ); ?></textarea>
+							<textarea name="custom_blocks[<?php echo $idx; ?>][content]" rows="6" style="width:100%; font-family:monospace;" dir="ltr"><?php echo esc_textarea( $block['content'] ?? '' ); ?></textarea>
 						</p>
 					</div>
 				<?php
@@ -306,7 +311,7 @@ function kish_harmony_general_settings_page() {
 							</select>
 						</p>
 						<p>
-							<textarea name="custom_blocks[${idx}][content]" rows="4" style="width:100%;" placeholder="کد یا شورت‌کد خود را اینجا وارد کنید..."></textarea>
+							<textarea name="custom_blocks[${idx}][content]" rows="6" style="width:100%; font-family:monospace;" dir="ltr" placeholder="کد یا شورت‌کد خود را اینجا وارد کنید..."></textarea>
 						</p>
 					</div>
 				`;

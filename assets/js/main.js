@@ -1,15 +1,109 @@
+// Kish Harmony Header & Floating Logo Animation JS Logic
 document.addEventListener('DOMContentLoaded', function() {
-    // Header Scroll Effect
     const header = document.getElementById('header');
-    function updateHeaderClass() {
+    const banner = document.getElementById('banner');
+    const floatingLogo = document.getElementById('floatingLogo');
+
+    if (!header || !banner || !floatingLogo) return;
+
+    const logoIcon = floatingLogo.querySelector('.logo-icon');
+    const logoText = floatingLogo.querySelector('.logo-text');
+
+    const LARGE_ICON_SIZE = 56;
+    const SMALL_ICON_SIZE = 36;
+    const LARGE_TEXT_SIZE_REM = 2.2;
+    const SMALL_TEXT_SIZE_REM = 1.3;
+
+    let bannerCenterY = 0;
+    let headerCenterY = 0;
+
+    function updatePositions() {
+        const bannerRect = banner.getBoundingClientRect();
+        bannerCenterY = bannerRect.top + bannerRect.height / 2;
+
+        const width = window.innerWidth;
+        let scrolledTop, scrolledHeight;
+        if (width <= 480) {
+            scrolledTop = 6;
+            scrolledHeight = 52;
+        } else if (width <= 768) {
+            scrolledTop = 8;
+            scrolledHeight = 52;
+        } else {
+            scrolledTop = 14;
+            scrolledHeight = 58;
+        }
+        headerCenterY = scrolledTop + scrolledHeight / 2;
+
+        if (window.scrollY <= 10) {
+            floatingLogo.style.top = bannerCenterY + 'px';
+        }
+    }
+
+    function easeInOutCubic(t) {
+        return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+    }
+
+    function getScrollProgress() {
+        const maxScroll = 200;
+        const raw = Math.min(window.scrollY / maxScroll, 1.0);
+        return easeInOutCubic(raw);
+    }
+
+    function updateLogo(progress) {
+        const currentY = bannerCenterY + (headerCenterY - bannerCenterY) * progress;
+        floatingLogo.style.top = currentY + 'px';
+
+        const iconSize = LARGE_ICON_SIZE + (SMALL_ICON_SIZE - LARGE_ICON_SIZE) * progress;
+        const textSizeRem = LARGE_TEXT_SIZE_REM + (SMALL_TEXT_SIZE_REM - LARGE_TEXT_SIZE_REM) * progress;
+
+        if (logoIcon) {
+            logoIcon.style.width = iconSize + 'px';
+            logoIcon.style.height = iconSize + 'px';
+            logoIcon.style.fontSize = (iconSize * 0.55) + 'px';
+            const borderRadius = 18 + (12 - 18) * progress;
+            logoIcon.style.borderRadius = borderRadius + 'px';
+        }
+
+        if (logoText) {
+            logoText.style.fontSize = textSizeRem + 'rem';
+        }
+
+        floatingLogo.style.color = progress > 0.8 ? '#1e1e2f' : 'white';
+    }
+
+    let ticking = false;
+
+    function onScroll() {
         if (window.scrollY > 10) {
             header.classList.add('scrolled');
         } else {
             header.classList.remove('scrolled');
         }
+
+        if (!ticking) {
+            requestAnimationFrame(() => {
+                const progress = getScrollProgress();
+                updateLogo(progress);
+                ticking = false;
+            });
+            ticking = true;
+        }
     }
-    window.addEventListener('scroll', updateHeaderClass, { passive: true });
-    updateHeaderClass();
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', () => {
+        updatePositions();
+        const progress = getScrollProgress();
+        updateLogo(progress);
+    });
+
+    updatePositions();
+    updateLogo(0);
+    window.addEventListener('load', () => {
+        updatePositions();
+        updateLogo(getScrollProgress());
+    });
 
     // Mobile Drawer Navigation
     const hamburgerBtn = document.getElementById('hamburgerBtn');

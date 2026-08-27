@@ -5,8 +5,8 @@
 get_header();
 
 $sections = array(
+	'hero'           => 'templates/section-services.php',
 	'banner'         => 'templates/section-banner.php',
-	'services'       => 'templates/section-services.php',
 	'search'         => 'templates/section-search.php',
 	'categories'     => 'templates/section-categories.php',
 	'special_offers' => 'templates/section-special-offers.php',
