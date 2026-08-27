@@ -1,0 +1,55 @@
+/*
+Theme Name: Kish Harmony
+Theme URI: https://kishharmony.com
+Author: Kish Harmony Team
+Description: قالب اختصاصی و باکیفیت کیش هارمونی با قابلیت‌های پیشرفته رنت خودرو، پیشنهادهای ویژه ووکامرس، هدر شیشه‌ای و پنل مدیریت کامل تنظیمات ظاهری.
+Version: 1.0.0
+Text Domain: kish-harmony
+Domain Path: /languages
+*/
+
+/* Base CSS Reset and Typography */
+:root {
+  --kh-primary-blue: #0B63D8;
+  --kh-turquoise: #18D6D8;
+  --kh-light-blue: #AEEBFF;
+  --kh-orange: #FF8A00;
+  --kh-dark-navy: #0a2540;
+  --kh-text-muted: #5a6f80;
+  --kh-bg-gradient: linear-gradient(160deg, #f0f7fc 0%, #e6f2fa 30%, #f8fcff 70%, #eef6fb 100%);
+  --kh-white: #ffffff;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Vazirmatn', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  direction: rtl;
+  text-align: right;
+  background: var(--kh-bg-gradient);
+  color: var(--kh-dark-navy);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+.container {
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
