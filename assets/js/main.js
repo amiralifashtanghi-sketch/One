@@ -1,5 +1,112 @@
-// Kish Harmony Drawer & Accordion Submenus JS
+// Kish Harmony Combined JS Logic
 document.addEventListener('DOMContentLoaded', function() {
+    // 1. Floating Logo & Glassmorphism Header Animation
+    const header = document.getElementById('header');
+    const banner = document.getElementById('banner');
+    const floatingLogo = document.getElementById('floatingLogo');
+
+    if (header && banner && floatingLogo) {
+        const logoIcon = floatingLogo.querySelector('.logo-icon');
+        const logoText = floatingLogo.querySelector('.logo-text');
+
+        const LARGE_ICON_SIZE = 56;
+        const SMALL_ICON_SIZE = 36;
+        const LARGE_TEXT_SIZE_REM = 2.2;
+        const SMALL_TEXT_SIZE_REM = 1.3;
+
+        let bannerCenterY = 0;
+        let headerCenterY = 0;
+
+        function updatePositions() {
+            const bannerRect = banner.getBoundingClientRect();
+            bannerCenterY = bannerRect.top + bannerRect.height / 2;
+
+            const width = window.innerWidth;
+            let scrolledTop, scrolledHeight;
+            if (width <= 480) {
+                scrolledTop = 6;
+                scrolledHeight = 52;
+            } else if (width <= 768) {
+                scrolledTop = 8;
+                scrolledHeight = 52;
+            } else {
+                scrolledTop = 14;
+                scrolledHeight = 58;
+            }
+            headerCenterY = scrolledTop + scrolledHeight / 2;
+
+            if (window.scrollY <= 10) {
+                floatingLogo.style.top = bannerCenterY + 'px';
+            }
+        }
+
+        function easeInOutCubic(t) {
+            return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+        }
+
+        function getScrollProgress() {
+            const maxScroll = 200;
+            const raw = Math.min(window.scrollY / maxScroll, 1.0);
+            return easeInOutCubic(raw);
+        }
+
+        function updateLogo(progress) {
+            const currentY = bannerCenterY + (headerCenterY - bannerCenterY) * progress;
+            floatingLogo.style.top = currentY + 'px';
+
+            const iconSize = LARGE_ICON_SIZE + (SMALL_ICON_SIZE - LARGE_ICON_SIZE) * progress;
+            const textSizeRem = LARGE_TEXT_SIZE_REM + (SMALL_TEXT_SIZE_REM - LARGE_TEXT_SIZE_REM) * progress;
+
+            if (logoIcon) {
+                logoIcon.style.width = iconSize + 'px';
+                logoIcon.style.height = iconSize + 'px';
+                logoIcon.style.fontSize = (iconSize * 0.55) + 'px';
+                const borderRadius = 18 + (12 - 18) * progress;
+                logoIcon.style.borderRadius = borderRadius + 'px';
+            }
+
+            if (logoText) {
+                logoText.style.fontSize = textSizeRem + 'rem';
+            }
+
+            floatingLogo.style.color = progress > 0.8 ? '#1e1e2f' : 'white';
+        }
+
+        let ticking = false;
+
+        function onScroll() {
+            if (window.scrollY > 10) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+
+            if (!ticking) {
+                requestAnimationFrame(() => {
+                    const progress = getScrollProgress();
+                    updateLogo(progress);
+                    ticking = false;
+                });
+                ticking = true;
+            }
+        }
+
+        window.addEventListener('scroll', onScroll, { passive: true });
+        window.addEventListener('resize', () => {
+            updatePositions();
+            const progress = getScrollProgress();
+            updateLogo(progress);
+        });
+
+        updatePositions();
+        updateLogo(0);
+        window.addEventListener('load', () => {
+            updatePositions();
+            updateLogo(getScrollProgress());
+        });
+    }
+
+    // 2. Mobile Drawer Navigation & Accordion
     const hamburgerBtn = document.getElementById('hamburgerBtn');
     const drawerMenu = document.getElementById('drawerMenu');
     const menuOverlay = document.getElementById('menuOverlay');
@@ -42,7 +149,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Accordion Submenus in Drawer
     if (drawerMenu) {
         const submenus = drawerMenu.querySelectorAll('.menu-item-has-children > a, .page_item_has_children > a');
         submenus.forEach(function(parentLink) {
@@ -51,24 +157,86 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (sub && (sub.tagName === 'UL' || sub.classList.contains('sub-menu'))) {
                     e.preventDefault();
                     sub.classList.toggle('open');
-                    if (sub.style.display === 'block') {
-                        sub.style.display = 'none';
-                    } else {
-                        sub.style.display = 'block';
-                    }
+                    sub.style.display = sub.classList.contains('open') ? 'block' : 'none';
                 }
             });
         });
     }
-});
-// AJAX Live Search JS Logic
-document.addEventListener('DOMContentLoaded', function() {
+
+    // 3. Multi-Banner Slider Logic
+    const sliderContainer = document.getElementById('sliderContainer');
+    const sliderTrack = document.getElementById('bannerSliderTrack');
+    if (sliderContainer && sliderTrack) {
+        const slides = sliderTrack.querySelectorAll('.slide');
+        const dots = sliderContainer.querySelectorAll('.dot');
+        const prevBtn = document.getElementById('sliderPrev');
+        const nextBtn = document.getElementById('sliderNext');
+
+        const totalSlides = slides.length;
+        if (totalSlides > 1) {
+            let currentIndex = 0;
+            let autoSlideInterval = null;
+            const autoScroll = sliderContainer.getAttribute('data-autoscroll') === '1';
+            const speed = parseInt(sliderContainer.getAttribute('data-speed'), 10) || 4000;
+
+            function goToSlide(index) {
+                if (index < 0) index = totalSlides - 1;
+                if (index >= totalSlides) index = 0;
+
+                currentIndex = index;
+                sliderTrack.style.transform = `translateX(-${currentIndex * 100}%)`;
+
+                dots.forEach((dot, idx) => {
+                    dot.classList.toggle('active', idx === currentIndex);
+                });
+            }
+
+            function nextSlide() { goToSlide(currentIndex + 1); }
+            function prevSlide() { goToSlide(currentIndex - 1); }
+
+            function startAutoSlide() {
+                if (autoScroll && !autoSlideInterval) {
+                    autoSlideInterval = setInterval(nextSlide, speed);
+                }
+            }
+
+            function stopAutoSlide() {
+                if (autoSlideInterval) {
+                    clearInterval(autoSlideInterval);
+                    autoSlideInterval = null;
+                }
+            }
+
+            function resetAutoSlide() {
+                stopAutoSlide();
+                startAutoSlide();
+            }
+
+            if (nextBtn) nextBtn.addEventListener('click', () => { nextSlide(); resetAutoSlide(); });
+            if (prevBtn) prevBtn.addEventListener('click', () => { prevSlide(); resetAutoSlide(); });
+
+            dots.forEach((dot, idx) => {
+                dot.addEventListener('click', () => { goToSlide(idx); resetAutoSlide(); });
+            });
+
+            sliderContainer.addEventListener('mouseenter', stopAutoSlide);
+            sliderContainer.addEventListener('mouseleave', startAutoSlide);
+
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'ArrowLeft') { nextSlide(); resetAutoSlide(); }
+                else if (e.key === 'ArrowRight') { prevSlide(); resetAutoSlide(); }
+            });
+
+            startAutoSlide();
+        }
+    }
+
+    // 4. AJAX Live Search Logic
     const searchInput = document.getElementById('ajaxSearchInput');
     const resultsWrapper = document.getElementById('searchResultsWrapper');
 
     if (searchInput && resultsWrapper) {
         let debounceTimer;
-
         searchInput.addEventListener('input', function() {
             const query = this.value.trim();
             clearTimeout(debounceTimer);
@@ -108,9 +276,8 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
-});
-// Gallery Lightbox Modal Logic
-document.addEventListener('DOMContentLoaded', function() {
+
+    // 5. Gallery Lightbox Modal Logic
     const galleryItems = document.querySelectorAll('.gallery-item');
     const lightboxModal = document.getElementById('lightboxModal');
     const lightboxImg = document.getElementById('lightboxImg');
@@ -119,104 +286,57 @@ document.addEventListener('DOMContentLoaded', function() {
     const lightboxPrev = document.getElementById('lightboxPrev');
     const lightboxNext = document.getElementById('lightboxNext');
 
-    if (!galleryItems.length || !lightboxModal) return;
+    if (galleryItems.length && lightboxModal) {
+        let currentIndex = 0;
+        const imagesList = [];
 
-    let currentIndex = 0;
-    const imagesList = [];
+        galleryItems.forEach((item, idx) => {
+            const img = item.querySelector('img');
+            if (img) {
+                imagesList.push({
+                    src: img.src,
+                    caption: img.alt || ''
+                });
 
-    galleryItems.forEach((item, idx) => {
-        const img = item.querySelector('img');
-        if (img) {
-            imagesList.push({
-                src: img.src,
-                caption: img.alt || ''
-            });
+                item.addEventListener('click', function() {
+                    currentIndex = idx;
+                    openLightbox(currentIndex);
+                });
+            }
+        });
 
-            item.addEventListener('click', function() {
-                currentIndex = idx;
+        function openLightbox(index) {
+            if (imagesList[index]) {
+                lightboxImg.src = imagesList[index].src;
+                lightboxCaption.textContent = imagesList[index].caption;
+                lightboxModal.classList.add('active');
+            }
+        }
+
+        function closeLightbox() {
+            lightboxModal.classList.remove('active');
+        }
+
+        if (lightboxClose) lightboxClose.addEventListener('click', closeLightbox);
+        if (lightboxPrev) {
+            lightboxPrev.addEventListener('click', function() {
+                currentIndex = (currentIndex + 1) % imagesList.length;
                 openLightbox(currentIndex);
             });
         }
-    });
 
-    function openLightbox(index) {
-        if (imagesList[index]) {
-            lightboxImg.src = imagesList[index].src;
-            lightboxCaption.textContent = imagesList[index].caption;
-            lightboxModal.classList.add('active');
+        if (lightboxNext) {
+            lightboxNext.addEventListener('click', function() {
+                currentIndex = (currentIndex - 1 + imagesList.length) % imagesList.length;
+                openLightbox(currentIndex);
+            });
         }
-    }
 
-    function closeLightbox() {
-        lightboxModal.classList.remove('active');
-    }
-
-    if (lightboxClose) lightboxClose.addEventListener('click', closeLightbox);
-
-    if (lightboxPrev) {
-        lightboxPrev.addEventListener('click', function() {
-            currentIndex = (currentIndex + 1) % imagesList.length;
-            openLightbox(currentIndex);
+        document.addEventListener('keydown', function(e) {
+            if (!lightboxModal.classList.contains('active')) return;
+            if (e.key === 'Escape') closeLightbox();
+            if (e.key === 'ArrowRight') lightboxPrev.click();
+            if (e.key === 'ArrowLeft') lightboxNext.click();
         });
     }
-
-    if (lightboxNext) {
-        lightboxNext.addEventListener('click', function() {
-            currentIndex = (currentIndex - 1 + imagesList.length) % imagesList.length;
-            openLightbox(currentIndex);
-        });
-    }
-
-    document.addEventListener('keydown', function(e) {
-        if (!lightboxModal.classList.contains('active')) return;
-        if (e.key === 'Escape') closeLightbox();
-        if (e.key === 'ArrowRight') lightboxPrev.click();
-        if (e.key === 'ArrowLeft') lightboxNext.click();
-    });
-});
-// Multi-banner slider JS logic
-document.addEventListener('DOMContentLoaded', function() {
-    const bannerWrapper = document.querySelector('.banner-container-wrapper');
-    if (!bannerWrapper) return;
-
-    const slides = bannerWrapper.querySelectorAll('.slide');
-    const dots = bannerWrapper.querySelectorAll('.dot');
-    const autoScroll = bannerWrapper.getAttribute('data-autoscroll') === '1';
-    const speed = parseInt(bannerWrapper.getAttribute('data-speed'), 10) || 5000;
-
-    if (slides.length <= 1) return;
-
-    let currentIndex = 0;
-    let autoInterval = null;
-
-    function goToSlide(index) {
-        slides.forEach(s => s.classList.remove('active'));
-        dots.forEach(d => d.classList.remove('active'));
-
-        currentIndex = (index + slides.length) % slides.length;
-        slides[currentIndex].classList.add('active');
-        if (dots[currentIndex]) dots[currentIndex].classList.add('active');
-    }
-
-    dots.forEach((dot, idx) => {
-        dot.addEventListener('click', () => {
-            goToSlide(idx);
-            resetAutoScroll();
-        });
-    });
-
-    function startAutoScroll() {
-        if (autoScroll) {
-            autoInterval = setInterval(() => {
-                goToSlide(currentIndex + 1);
-            }, speed);
-        }
-    }
-
-    function resetAutoScroll() {
-        clearInterval(autoInterval);
-        startAutoScroll();
-    }
-
-    startAutoScroll();
 });

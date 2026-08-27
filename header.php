@@ -9,9 +9,9 @@
 <?php wp_body_open(); ?>
 
 <?php
-$header_options = get_option( 'kish_harmony_header_options', array() );
-$brand_name     = ! empty( $header_options['brand_name'] ) ? $header_options['brand_name'] : 'کیش هارمونی';
-$header_menu_id = ! empty( $header_options['header_menu_id'] ) ? $header_options['header_menu_id'] : 0;
+$header_options    = get_option( 'kish_harmony_header_options', array() );
+$brand_name        = ! empty( $header_options['brand_name'] ) ? $header_options['brand_name'] : 'کیش هارمونی';
+$header_menu_id    = ! empty( $header_options['header_menu_id'] ) ? $header_options['header_menu_id'] : 0;
 $enable_gtranslate = isset( $header_options['enable_gtranslate'] ) ? $header_options['enable_gtranslate'] : '1';
 
 // WooCommerce Account & Cart Links
@@ -19,7 +19,7 @@ $account_url = function_exists( 'wc_get_page_permalink' ) ? wc_get_page_permalin
 $cart_url    = function_exists( 'wc_get_cart_url' ) ? wc_get_cart_url() : '#';
 ?>
 
-<!-- Glassmorphic Header -->
+<!-- Glassmorphic Fixed Header -->
 <header class="header" id="header">
 	<div class="header__left">
 		<button class="hamburger" id="hamburgerBtn" aria-label="منو" aria-expanded="false">
@@ -30,7 +30,7 @@ $cart_url    = function_exists( 'wc_get_cart_url' ) ? wc_get_cart_url() : '#';
 	</div>
 
 	<div class="header__center">
-		<!-- Space reserved for scrolled logo center -->
+		<!-- Reserved for floating logo when scrolled -->
 	</div>
 
 	<div class="header__right">
@@ -56,7 +56,7 @@ $cart_url    = function_exists( 'wc_get_cart_url' ) ? wc_get_cart_url() : '#';
 	<span class="logo-text"><?php echo esc_html( $brand_name ); ?></span>
 </a>
 
-<!-- Menu Overlay -->
+<!-- Overlay for Mobile Drawer -->
 <div class="menu-overlay" id="menuOverlay"></div>
 
 <!-- Modern Drawer Navigation -->
@@ -77,17 +77,17 @@ $cart_url    = function_exists( 'wc_get_cart_url' ) ? wc_get_cart_url() : '#';
 		<?php
 		if ( $header_menu_id ) {
 			wp_nav_menu( array(
-				'menu'            => $header_menu_id,
-				'container'       => false,
-				'menu_class'      => 'menu-list',
-				'fallback_cb'     => false,
+				'menu'        => $header_menu_id,
+				'container'   => false,
+				'menu_class'  => 'menu-list',
+				'fallback_cb' => false,
 			) );
 		} else {
 			wp_nav_menu( array(
-				'theme_location'  => 'primary_menu',
-				'container'       => false,
-				'menu_class'      => 'menu-list',
-				'fallback_cb'     => false,
+				'theme_location' => 'primary_menu',
+				'container'      => false,
+				'menu_class'     => 'menu-list',
+				'fallback_cb'    => false,
 			) );
 		}
 		?>

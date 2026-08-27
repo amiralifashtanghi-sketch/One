@@ -1,70 +1,74 @@
 
-/* Entertainment Categories Component Styling */
-.entertainment-categories-wrapper {
-  margin: 50px 0;
-}
-
-.section-title-box {
-  text-align: center;
-  margin-bottom: 2.5rem;
-}
-
-.section-title-box h2 {
-  font-size: 2rem;
-  color: #0a2540;
-  font-weight: 800;
-}
-
-.section-title-box p {
-  color: #5a6f80;
-  margin-top: 0.5rem;
-}
-
+/* Categories Box Grid (card-soft square cards) */
 .grid-soft {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 20px;
 }
 
 .card-soft {
-  background: #ffffff;
-  border-radius: 20px;
-  padding: 1.8rem 1rem;
-  text-align: center;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
-  border: 1px solid #e2e8f0;
-  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+  aspect-ratio: 1 / 1;
+  border-radius: 24px;
+  position: relative;
+  overflow: hidden;
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 1rem;
+  align-items: flex-end;
+  cursor: pointer;
+  box-shadow: 0 12px 28px rgba(0,0,0,0.08);
+  transition: all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1);
+  text-decoration: none;
+  background-size: cover;
+  background-position: center;
+}
+
+.card-soft::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(0deg, rgba(0,0,0,0.6) 10%, rgba(0,0,0,0.1) 60%);
+  transition: background 0.4s ease;
+  z-index: 0;
 }
 
 .card-soft:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 15px 35px rgba(11, 99, 216, 0.12);
-  border-color: var(--kh-turquoise);
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 25px 45px rgba(0,0,0,0.18);
+}
+
+.card-soft:hover::before {
+  background: linear-gradient(0deg, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.25) 70%);
 }
 
 .card-soft i {
-  font-size: 2.2rem;
-  color: var(--kh-primary-blue);
-  transition: color 0.3s ease;
-}
-
-.card-soft:hover i {
-  color: var(--kh-turquoise);
-}
-
-.card-soft-img {
-  width: 50px;
-  height: 50px;
-  object-fit: contain;
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 36px;
+  color: rgba(255,255,255,0.9);
+  z-index: 1;
+  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
 }
 
 .card-label {
+  position: relative;
+  z-index: 1;
+  color: white;
   font-weight: 700;
-  font-size: 1.05rem;
-  color: #1e293b;
+  font-size: 15px;
+  padding: 12px 10px;
+  width: 100%;
+  text-align: center;
+  text-shadow: 0 2px 6px rgba(0,0,0,0.5);
+  background: rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  border-bottom-left-radius: 24px;
+  border-bottom-right-radius: 24px;
+}
+
+@media (max-width: 500px) {
+  .grid-soft {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
