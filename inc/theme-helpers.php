@@ -34,7 +34,7 @@ function kish_harmony_render_custom_blocks_for( $position ) {
 					echo '<div class="error-msg">خطا در اجرای کد PHP: ' . esc_html( $e->getMessage() ) . '</div>';
 				}
 			} else {
-				// Render raw HTML so design/styles work perfectly
+				// Render raw HTML/CSS/JS without escaping or filtering
 				echo $content;
 			}
 			echo '</div>';

@@ -22,7 +22,7 @@ $cart_url    = function_exists( 'wc_get_cart_url' ) ? wc_get_cart_url() : '#';
 <!-- Glassmorphic Header -->
 <header class="header" id="header">
 	<div class="header__left">
-		<button class="hamburger" id="hamburgerBtn" aria-label="منو">
+		<button class="hamburger" id="hamburgerBtn" aria-label="منو" aria-expanded="false">
 			<span></span>
 			<span></span>
 			<span></span>
@@ -56,39 +56,44 @@ $cart_url    = function_exists( 'wc_get_cart_url' ) ? wc_get_cart_url() : '#';
 	<span class="logo-text"><?php echo esc_html( $brand_name ); ?></span>
 </a>
 
-<!-- Mobile Drawer Navigation -->
-<div class="mobile-drawer" id="mobileDrawer">
-	<div class="drawer-overlay" id="drawerOverlay"></div>
-	<div class="drawer-content">
-		<div class="drawer-header">
-			<span class="drawer-title"><?php echo esc_html( $brand_name ); ?></span>
-			<button class="drawer-close" id="drawerClose">&times;</button>
-		</div>
+<!-- Menu Overlay -->
+<div class="menu-overlay" id="menuOverlay"></div>
 
-		<?php if ( $enable_gtranslate && shortcode_exists( 'gtranslate' ) ) : ?>
-			<div class="drawer-gtranslate-modern">
-				<span class="gtranslate-label"><i class="fa-solid fa-language"></i> انتخاب زبان:</span>
-				<?php echo do_shortcode( '[gtranslate]' ); ?>
-			</div>
-		<?php endif; ?>
-
-		<nav class="drawer-nav">
-			<?php
-			if ( $header_menu_id ) {
-				wp_nav_menu( array(
-					'menu' => $header_menu_id,
-					'container' => false,
-					'menu_class' => 'drawer-menu-list',
-				) );
-			} else {
-				wp_nav_menu( array(
-					'theme_location' => 'primary_menu',
-					'container' => false,
-					'menu_class' => 'drawer-menu-list',
-					'fallback_cb' => false,
-				) );
-			}
-			?>
-		</nav>
+<!-- Modern Drawer Navigation -->
+<nav class="drawer" id="drawerMenu" aria-label="منوی اصلی">
+	<div class="drawer-header">
+		<div class="title"><span class="brand-icon">✦</span> منوی <?php echo esc_html( $brand_name ); ?></div>
+		<button class="drawer-close" id="drawerClose" aria-label="بستن منو">✕</button>
 	</div>
-</div>
+
+	<?php if ( $enable_gtranslate && shortcode_exists( 'gtranslate' ) ) : ?>
+		<div class="drawer-gtranslate-modern">
+			<span class="gtranslate-label"><i class="fa-solid fa-language"></i> انتخاب زبان:</span>
+			<?php echo do_shortcode( '[gtranslate]' ); ?>
+		</div>
+	<?php endif; ?>
+
+	<div class="drawer-nav">
+		<?php
+		if ( $header_menu_id ) {
+			wp_nav_menu( array(
+				'menu'            => $header_menu_id,
+				'container'       => false,
+				'menu_class'      => 'menu-list',
+				'fallback_cb'     => false,
+			) );
+		} else {
+			wp_nav_menu( array(
+				'theme_location'  => 'primary_menu',
+				'container'       => false,
+				'menu_class'      => 'menu-list',
+				'fallback_cb'     => false,
+			) );
+		}
+		?>
+	</div>
+
+	<div class="drawer-footer-note">
+		<small><?php echo esc_html( $brand_name ); ?> - همراه سفرهای شما در کیش</small>
+	</div>
+</nav>

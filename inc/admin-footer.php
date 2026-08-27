@@ -8,6 +8,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 function kish_harmony_footer_settings_page() {
+	if ( ! current_user_can( 'manage_options' ) ) {
+		wp_die( 'دسترسی غیرمجاز.' );
+	}
+
 	if ( isset( $_POST['kish_harmony_save_footer'] ) && check_admin_referer( 'kish_harmony_footer_nonce' ) ) {
 		$footer_text  = sanitize_text_field( $_POST['footer_text'] ?? '' );
 		$vip_text     = sanitize_text_field( $_POST['vip_text'] ?? '' );
@@ -24,11 +28,12 @@ function kish_harmony_footer_settings_page() {
 		$sanitized_badges = array();
 		if ( is_array( $trust_badges ) ) {
 			foreach ( $trust_badges as $b ) {
-				if ( ! empty( $b['code'] ) || ! empty( $b['img_url'] ) ) {
+				$raw_code = wp_unslash( $b['code'] ?? '' );
+				if ( ! empty( $b['img_url'] ) || ! empty( $raw_code ) ) {
 					$sanitized_badges[] = array(
 						'img_url' => esc_url_raw( $b['img_url'] ?? '' ),
 						'link'    => esc_url_raw( $b['link'] ?? '' ),
-						'code'    => wp_kses_post( $b['code'] ?? '' ),
+						'code'    => $raw_code, // Allow script / iframe for Enamad trust seals
 					);
 				}
 			}
