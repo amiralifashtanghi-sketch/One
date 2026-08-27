@@ -32,6 +32,19 @@
   --kh-light-blue: #AEEBFF;
   --kh-orange: #FF8A00;
   --kh-dark-navy: #0a2540;
+
+  /* Car Rental Specific Design Variables */
+  --blue-deep: #0B63D8;
+  --teal: #18D6D8;
+  --blue-light: #AEEBFF;
+  --orange: #FF8A00;
+  --white: #ffffff;
+  --bg: #f5fafd;
+  --text-dark: #0a2540;
+  --text-mid: #5a6f80;
+  --shadow-car-sm: 0 2px 8px rgba(11, 99, 216, 0.06);
+  --shadow-car-md: 0 6px 22px rgba(11, 99, 216, 0.10);
+  --shadow-car-lg: 0 14px 38px rgba(11, 99, 216, 0.16);
 }
 
 body {
@@ -1165,4 +1178,341 @@ img { max-width: 100%; height: auto; display: block; }
 
 .reserve-btn:active {
   transform: scale(0.97);
+}
+
+/* ==========================================================================
+   Car Rental Section & Cards Styling (Kish Harmony 4-Plan Layout)
+   ========================================================================== */
+
+.brand-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+.brand-header .logo-text-brand {
+  font-size: 36px;
+  font-weight: 900;
+  color: var(--blue-deep);
+  display: inline-block;
+  position: relative;
+  font-family: 'Vazirmatn', sans-serif;
+}
+.brand-header .logo-text-brand span { color: var(--teal); }
+.brand-header .logo-text-brand::after {
+  content: '';
+  position: absolute;
+  bottom: 2px;
+  left: 0;
+  right: 0;
+  height: 10px;
+  background: var(--blue-light);
+  opacity: 0.4;
+  border-radius: 10px;
+  z-index: -1;
+}
+.brand-header .tagline {
+  font-size: 14px;
+  color: var(--text-mid);
+  margin-top: 6px;
+}
+.brand-header .tagline i {
+  color: var(--orange);
+}
+
+.car-section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+.car-section-head h3 {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--blue-deep);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Vazirmatn', sans-serif;
+}
+.car-section-head h3 i { color: var(--orange); }
+
+.scroll-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  flex-direction: row;
+  gap: 8px;
+}
+.scroll-btn {
+  background: var(--white);
+  border: 2px solid var(--blue-deep);
+  color: var(--blue-deep);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  font-size: 16px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(11,99,216,0.12);
+  transition: all var(--transition);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 5;
+  flex-shrink: 0;
+}
+.scroll-btn:hover {
+  background: var(--blue-deep);
+  color: #fff;
+  transform: scale(1.07);
+}
+.scroll-hint {
+  font-size: 12px;
+  color: var(--text-mid);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  opacity: 0.8;
+  white-space: nowrap;
+}
+
+.scroll-container {
+  display: flex;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
+  gap: 0;
+  padding: 10px 0 15px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--blue-deep) #e0e8f0;
+  margin-bottom: 20px;
+  cursor: grab;
+  user-select: none;
+}
+.scroll-container:active {
+  cursor: grabbing;
+}
+.scroll-container::-webkit-scrollbar {
+  height: 6px;
+  background: #e0e8f0;
+  border-radius: 10px;
+}
+.scroll-container::-webkit-scrollbar-thumb {
+  background: var(--blue-deep);
+  border-radius: 10px;
+}
+
+.card-group {
+  flex-shrink: 0;
+  width: 100%;
+  display: flex;
+  gap: 16px;
+  padding: 0 10px;
+  scroll-snap-align: start;
+  justify-content: center;
+}
+
+.car-card {
+  background: var(--white);
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  box-shadow: var(--shadow-car-sm);
+  border: 1.5px solid transparent;
+  transition: all var(--transition);
+  cursor: pointer;
+  position: relative;
+  flex: 1 1 0;
+  min-width: 0;
+  text-decoration: none;
+  color: inherit;
+}
+.car-card:hover {
+  border-color: var(--teal);
+  box-shadow: var(--shadow-car-lg);
+  transform: translateY(-4px);
+  background: #fafeff;
+}
+.car-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  width: 4px;
+  background: var(--teal);
+  border-radius: 4px 0 0 4px;
+  opacity: 0;
+  transition: opacity var(--transition);
+}
+.car-card:hover::before { opacity: 1; }
+
+.car-card.featured {
+  border-color: rgba(255,138,0,0.2);
+  background: #fffdf8;
+}
+.car-card.featured::before {
+  background: var(--orange);
+  opacity: 1;
+}
+
+.car-img {
+  width: 90px;
+  height: 90px;
+  border-radius: 16px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  color: #fff;
+  position: relative;
+  box-shadow: 0 6px 18px rgba(11, 99, 216, 0.2);
+  transition: all var(--transition);
+  overflow: hidden;
+}
+.car-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.car-card:hover .car-img {
+  box-shadow: 0 10px 28px rgba(11, 99, 216, 0.35);
+  transform: scale(1.04);
+}
+
+.car-img.grad1 { background: linear-gradient(135deg, #0B63D8, #18D6D8); }
+.car-img.grad2 { background: linear-gradient(135deg, #18D6D8, #AEEBFF); }
+.car-img.grad3 { background: linear-gradient(135deg, #0B63D8, #AEEBFF); }
+.car-img.grad4 { background: linear-gradient(135deg, #18D6D8, #0B63D8); }
+.car-img.grad5 { background: linear-gradient(135deg, #AEEBFF, #18D6D8); }
+
+.badge-special {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  background: var(--orange);
+  color: #fff;
+  font-size: 9px;
+  font-weight: 800;
+  padding: 3px 8px;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(255,138,0,0.4);
+  z-index: 2;
+  white-space: nowrap;
+}
+
+.car-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.car-name {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--text-dark);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.car-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  font-size: 10px;
+}
+.car-meta span {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  background: #f0f7fc;
+  padding: 2px 7px;
+  border-radius: 8px;
+  white-space: nowrap;
+  color: var(--text-mid);
+}
+.car-meta span i { color: var(--teal); font-size: 9px; }
+
+.car-rating {
+  font-size: 10px;
+  font-weight: 600;
+  color: #f5a623;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.car-rating span {
+  color: var(--text-mid);
+  font-weight: 400;
+}
+
+.car-action {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+  flex-shrink: 0;
+}
+.car-price {
+  font-size: 16px;
+  font-weight: 900;
+  color: var(--blue-deep);
+  text-align: left;
+}
+.car-price small {
+  font-size: 9px;
+  font-weight: 400;
+  color: var(--text-mid);
+  display: block;
+  text-align: left;
+  white-space: nowrap;
+}
+.btn-book {
+  background: var(--orange);
+  color: #fff;
+  border: none;
+  padding: 7px 16px;
+  border-radius: 18px;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: 'Vazirmatn', sans-serif;
+  transition: all var(--transition);
+  box-shadow: 0 4px 14px rgba(255,138,0,0.25);
+  white-space: nowrap;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.btn-book:hover {
+  background: #e07800;
+  box-shadow: 0 8px 24px rgba(255,138,0,0.45);
+  color: #fff;
+}
+
+@media (max-width: 768px) {
+  .card-group {
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+  .car-card {
+    width: 100%;
+    max-width: 400px;
+  }
+  .scroll-container {
+    scroll-snap-type: none;
+  }
+  .scroll-hint {
+    display: none;
+  }
+  .scroll-controls {
+    justify-content: space-around;
+  }
 }

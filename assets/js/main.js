@@ -339,4 +339,51 @@ document.addEventListener('DOMContentLoaded', function() {
             if (e.key === 'ArrowLeft') lightboxNext.click();
         });
     }
+
+    // 6. Car Rental Drag-to-Scroll & Navigation Buttons Logic
+    const scroller = document.getElementById('scroller');
+    const scrollRightBtn = document.getElementById('scrollRight');
+    const scrollLeftBtn = document.getElementById('scrollLeft');
+
+    if (scroller) {
+        if (scrollRightBtn) {
+            scrollRightBtn.addEventListener('click', () => {
+                scroller.scrollBy({ left: 1000, behavior: 'smooth' });
+            });
+        }
+        if (scrollLeftBtn) {
+            scrollLeftBtn.addEventListener('click', () => {
+                scroller.scrollBy({ left: -1000, behavior: 'smooth' });
+            });
+        }
+
+        let isDown = false;
+        let startX;
+        let scrollLeftPos;
+
+        scroller.addEventListener('mousedown', (e) => {
+            isDown = true;
+            scroller.style.cursor = 'grabbing';
+            startX = e.pageX - scroller.offsetLeft;
+            scrollLeftPos = scroller.scrollLeft;
+        });
+
+        scroller.addEventListener('mouseleave', () => {
+            isDown = false;
+            scroller.style.cursor = 'grab';
+        });
+
+        scroller.addEventListener('mouseup', () => {
+            isDown = false;
+            scroller.style.cursor = 'grab';
+        });
+
+        scroller.addEventListener('mousemove', (e) => {
+            if (!isDown) return;
+            e.preventDefault();
+            const x = e.pageX - scroller.offsetLeft;
+            const walk = (x - startX) * 1.5;
+            scroller.scrollLeft = scrollLeftPos - walk;
+        });
+    }
 });

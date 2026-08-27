@@ -1,70 +1,146 @@
 <?php
 /**
- * Car Rental Homepage Section Template (Horizontal Scrollable Layout)
+ * Car Rental Homepage Section Template (Kish Harmony 4-Plan Layout)
  */
 ?>
 
 <div class="car-rental-section-wrapper">
 	<div class="container">
-		<div class="section-title-box">
-			<h2><i class="fa-solid fa-car-side"></i> اجاره آنلاین خودرو در کیش</h2>
-			<p>تجربه‌ای لذت‌بخش و خاطره‌انگیز با رنت لوکس‌ترین ماشین‌های روز در کیش هارمونی</p>
+
+		<!-- Brand Header -->
+		<div class="brand-header">
+			<div class="logo-text-brand">کیش <span>هارمونی</span></div>
+			<p class="tagline"><i class="fa-solid fa-umbrella-beach"></i> سامانه جامع گردشگری و رنت خودرو در جزیره کیش <i class="fa-solid fa-umbrella-beach"></i></p>
 		</div>
 
-		<div class="horizontal-scroll-container">
+		<!-- Section Head & Controls -->
+		<div class="car-section-head">
+			<h3><i class="fa-solid fa-th-large"></i> خودروهای ویژه رنت کیش</h3>
+		</div>
+
+		<div class="scroll-controls">
+			<button class="scroll-btn" id="scrollRight" aria-label="بعدی"><i class="fa-solid fa-chevron-right"></i></button>
+			<span class="scroll-hint"><i class="fa-solid fa-arrows-alt-h"></i> برای مشاهده بیشتر بکشید یا کلیک کنید</span>
+			<button class="scroll-btn" id="scrollLeft" aria-label="قبلی"><i class="fa-solid fa-chevron-left"></i></button>
+		</div>
+
+		<!-- Scroll Container -->
+		<div class="scroll-container" id="scroller">
 			<?php
 			$args = array(
 				'post_type'      => 'car_rental',
-				'posts_per_page' => 8,
+				'posts_per_page' => 9,
 			);
 			$car_query = new WP_Query( $args );
 
-			if ( $car_query->have_posts() ) :
-				while ( $car_query->have_posts() ) : $car_query->the_post();
+			$cars = array();
+
+			if ( $car_query->have_posts() ) {
+				while ( $car_query->have_posts() ) {
+					$car_query->the_post();
 					$car_id       = get_the_ID();
 					$price        = get_post_meta( $car_id, '_car_price', true );
 					$model_year   = get_post_meta( $car_id, '_car_model_year', true );
 					$transmission = get_post_meta( $car_id, '_car_transmission', true );
+					$fuel         = get_post_meta( $car_id, '_car_fuel', true );
 					$seats        = get_post_meta( $car_id, '_car_seats', true );
+					$deposit      = get_post_meta( $car_id, '_car_deposit', true );
+					$featured     = get_post_meta( $car_id, '_car_featured', true );
 					$thumb        = get_the_post_thumbnail_url( $car_id, 'medium_large' );
-					if ( ! $thumb ) {
-						$thumb = 'https://via.placeholder.com/400x250?text=Kish+Car+Rental';
-					}
-			?>
-					<div class="car-card horizontal-card">
-						<div class="car-card-img-wrapper">
-							<img src="<?php echo esc_url( $thumb ); ?>" alt="<?php the_title_attribute(); ?>">
-							<?php if ( ! empty( $model_year ) ) : ?>
-								<span class="car-year-badge"><?php echo esc_html( $model_year ); ?></span>
-							<?php endif; ?>
-						</div>
-						<div class="car-card-body">
-							<h3 class="car-title"><?php the_title(); ?></h3>
 
-							<div class="car-features-tags">
-								<?php if ( ! empty( $transmission ) ) : ?>
-									<span class="car-tag"><i class="fa-solid fa-gear"></i> <?php echo esc_html( $transmission ); ?></span>
-								<?php endif; ?>
-
-								<?php if ( ! empty( $seats ) ) : ?>
-									<span class="car-tag"><i class="fa-solid fa-user-group"></i> <?php echo esc_html( $seats ); ?> نفره</span>
-								<?php endif; ?>
-							</div>
-
-							<div class="car-card-footer">
-								<div class="car-price-box">
-									<span class="car-price-amount"><?php echo number_format( intval( $price ) ); ?></span>
-									<span class="car-price-unit">تومان / روزانه</span>
-								</div>
-								<a href="<?php the_permalink(); ?>" class="car-reserve-btn">درخواست رزرو</a>
-							</div>
-						</div>
-					</div>
-			<?php
-				endwhile;
+					$cars[] = array(
+						'title'        => get_the_title(),
+						'link'         => get_permalink(),
+						'price'        => ! empty( $price ) ? intval( $price ) : 3500,
+						'year'         => ! empty( $model_year ) ? $model_year : '2023',
+						'transmission' => ! empty( $transmission ) ? $transmission : 'اتومات',
+						'fuel'         => ! empty( $fuel ) ? $fuel : 'بنزینی',
+						'seats'        => ! empty( $seats ) ? $seats : '5',
+						'deposit'      => $deposit,
+						'featured'     => ( $featured === '1' || $featured === 'yes' ),
+						'thumb'        => $thumb,
+					);
+				}
 				wp_reset_postdata();
-			endif;
+			}
+
+			// Sample fallback cars to guarantee 3 full groups of 3 cards (9 cards total) if database is empty/sparse
+			if ( count( $cars ) < 9 ) {
+				$defaults = array(
+					array( 'title' => 'پورشه کاین', 'price' => 4500, 'year' => '2023', 'transmission' => 'اتومات', 'fuel' => 'هیبریدی', 'seats' => '5', 'featured' => true, 'icon' => 'fa-car-side' ),
+					array( 'title' => 'بی‌ام‌و X5', 'price' => 3800, 'year' => '2022', 'transmission' => 'اتومات', 'fuel' => 'چهارچرخ', 'seats' => '5', 'featured' => false, 'icon' => 'fa-truck' ),
+					array( 'title' => 'مرسدس C200', 'price' => 3200, 'year' => '2021', 'transmission' => 'اتومات', 'fuel' => 'بیمه کامل', 'seats' => '5', 'featured' => false, 'icon' => 'fa-car' ),
+					array( 'title' => 'تسلا مدل ۳', 'price' => 5200, 'year' => '2023', 'transmission' => 'اتوپایلوت', 'fuel' => 'الکتریکی', 'seats' => '5', 'featured' => true, 'icon' => 'fa-bolt' ),
+					array( 'title' => 'تویوتا پرادو', 'price' => 2900, 'year' => '2020', 'transmission' => 'اتومات', 'fuel' => 'آفرود', 'seats' => '7', 'featured' => false, 'icon' => 'fa-truck-monster' ),
+					array( 'title' => 'کیا سراتو', 'price' => 1500, 'year' => '2019', 'transmission' => 'دنده‌ای', 'fuel' => 'اقتصادی', 'seats' => '5', 'featured' => false, 'icon' => 'fa-car-side' ),
+					array( 'title' => 'لکسوس NX', 'price' => 3600, 'year' => '2022', 'transmission' => 'اتومات', 'fuel' => 'بیمه کامل', 'seats' => '5', 'featured' => false, 'icon' => 'fa-car' ),
+					array( 'title' => 'جگوار F-Pace', 'price' => 4700, 'year' => '2023', 'transmission' => 'اتومات', 'fuel' => 'لوکس', 'seats' => '5', 'featured' => true, 'icon' => 'fa-truck' ),
+					array( 'title' => 'هیوندای النترا', 'price' => 1800, 'year' => '2020', 'transmission' => 'اتومات', 'fuel' => 'اقتصادی', 'seats' => '5', 'featured' => false, 'icon' => 'fa-car-side' ),
+				);
+
+				foreach ( $defaults as $def ) {
+					if ( count( $cars ) >= 9 ) { break; }
+					$def['link'] = get_post_type_archive_link( 'car_rental' ) ?: '#';
+					$def['thumb'] = false;
+					$cars[] = $def;
+				}
+			}
+
+			// Chunk into groups of 3 cards each
+			$car_groups = array_chunk( $cars, 3 );
+			$grad_index = 1;
+
+			foreach ( $car_groups as $group_idx => $group ) :
 			?>
+				<div class="card-group">
+					<?php foreach ( $group as $car ) :
+						$is_feat    = ! empty( $car['featured'] );
+						$grad_class = 'grad' . ( ( $grad_index % 5 ) + 1 );
+						$grad_index++;
+					?>
+						<div class="car-card <?php echo $is_feat ? 'featured' : ''; ?>">
+							<div class="car-img <?php echo esc_attr( $grad_class ); ?>">
+								<?php if ( ! empty( $car['thumb'] ) ) : ?>
+									<img src="<?php echo esc_url( $car['thumb'] ); ?>" alt="<?php echo esc_attr( $car['title'] ); ?>">
+								<?php else : ?>
+									<i class="fa-solid <?php echo esc_attr( $car['icon'] ?? 'fa-car-side' ); ?>"></i>
+								<?php endif; ?>
+
+								<?php if ( $is_feat ) : ?>
+									<span class="badge-special">ویژه</span>
+								<?php endif; ?>
+							</div>
+
+							<div class="car-info">
+								<div class="car-name"><?php echo esc_html( $car['title'] ); ?></div>
+								<div class="car-meta">
+									<?php if ( ! empty( $car['transmission'] ) ) : ?>
+										<span><i class="fa-solid fa-cog"></i> <?php echo esc_html( $car['transmission'] ); ?></span>
+									<?php endif; ?>
+									<?php if ( ! empty( $car['fuel'] ) ) : ?>
+										<span><i class="fa-solid fa-gas-pump"></i> <?php echo esc_html( $car['fuel'] ); ?></span>
+									<?php endif; ?>
+									<?php if ( ! empty( $car['seats'] ) ) : ?>
+										<span><i class="fa-solid fa-users"></i> <?php echo esc_html( $car['seats'] ); ?> نفره</span>
+									<?php endif; ?>
+								</div>
+								<div class="car-rating">
+									<i class="fa-solid fa-star"></i> ۵.۰ <span>(تحویل در کیش)</span>
+								</div>
+							</div>
+
+							<div class="car-action">
+								<div class="car-price">
+									<?php echo number_format( $car['price'] ); ?>
+									<small>هزار تومان / روز</small>
+								</div>
+								<a href="<?php echo esc_url( $car['link'] ); ?>" class="btn-book">رزرو آنلاین</a>
+							</div>
+						</div>
+					<?php endforeach; ?>
+				</div>
+			<?php endforeach; ?>
 		</div>
+
 	</div>
 </div>
