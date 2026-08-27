@@ -7,6 +7,111 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+function kish_harmony_add_admin_menu() {
+	// Main Admin Menu
+	add_menu_page(
+		'تنظیمات ظاهری سایت',
+		'تنظیمات ظاهری سایت',
+		'manage_options',
+		'kish-harmony-settings',
+		'kish_harmony_general_settings_page',
+		'dashicons-admin-customizer',
+		59
+	);
+
+	// Submenus
+	add_submenu_page(
+		'kish-harmony-settings',
+		'عمومی و عملکرد',
+		'عمومی و عملکرد',
+		'manage_options',
+		'kish-harmony-settings',
+		'kish_harmony_general_settings_page'
+	);
+
+	add_submenu_page(
+		'kish-harmony-settings',
+		'تنظیمات هدر',
+		'تنظیمات هدر',
+		'manage_options',
+		'kish-harmony-header',
+		'kish_harmony_header_settings_page'
+	);
+
+	add_submenu_page(
+		'kish-harmony-settings',
+		'خدمات ویژه شما',
+		'خدمات ویژه شما',
+		'manage_options',
+		'kish-harmony-services',
+		'kish_harmony_services_settings_page'
+	);
+
+	add_submenu_page(
+		'kish-harmony-settings',
+		'تنظیمات بنر سایت',
+		'تنظیمات بنر سایت',
+		'manage_options',
+		'kish-harmony-banners',
+		'kish_harmony_banner_settings_page'
+	);
+
+	add_submenu_page(
+		'kish-harmony-settings',
+		'تنظیمات جستجو',
+		'تنظیمات جستجو',
+		'manage_options',
+		'kish-harmony-search',
+		'kish_harmony_search_settings_page'
+	);
+
+	add_submenu_page(
+		'kish-harmony-settings',
+		'تنظیم تفریحات',
+		'تنظیم تفریحات',
+		'manage_options',
+		'kish-harmony-categories',
+		'kish_harmony_categories_settings_page'
+	);
+
+	add_submenu_page(
+		'kish-harmony-settings',
+		'پیشنهادهای ویژه',
+		'پیشنهادهای ویژه',
+		'manage_options',
+		'kish-harmony-special-offers',
+		'kish_harmony_special_offers_settings_page'
+	);
+
+	add_submenu_page(
+		'kish-harmony-settings',
+		'تنظیمات آب و هوا',
+		'تنظیمات آب و هوا',
+		'manage_options',
+		'kish-harmony-weather',
+		'kish_harmony_weather_settings_page'
+	);
+
+	add_submenu_page(
+		'kish-harmony-settings',
+		'گالری تصاویر',
+		'گالری تصاویر',
+		'manage_options',
+		'kish-harmony-gallery',
+		'kish_harmony_gallery_settings_page'
+	);
+
+	add_submenu_page(
+		'kish-harmony-settings',
+		'تنظیمات فوتر',
+		'تنظیمات فوتر',
+		'manage_options',
+		'kish-harmony-footer',
+		'kish_harmony_footer_settings_page'
+	);
+}
+add_action( 'admin_menu', 'kish_harmony_add_admin_menu' );
+
 function kish_harmony_general_settings_page() {
 	if ( isset( $_POST['kish_harmony_save_general'] ) && check_admin_referer( 'kish_harmony_general_nonce' ) ) {
 		$section_order     = isset( $_POST['section_order'] ) ? array_map( 'sanitize_text_field', $_POST['section_order'] ) : array();
