@@ -1,0 +1,33 @@
+/* Smart Header Logo Responsive Sizing */
+.header-logo, .floating-logo {
+  max-width: 32vw;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.header-logo .logo-text, .floating-logo .logo-text {
+  font-size: clamp(0.85rem, 1.5vw + 0.5rem, 1.4rem);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 180px;
+}
+
+@media screen and (max-width: 768px) {
+  .header-logo, .floating-logo {
+    max-width: 28vw;
+  }
+  .header-logo .logo-text, .floating-logo .logo-text {
+    max-width: 120px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .header-logo, .floating-logo {
+    max-width: 25vw;
+  }
+  .header-logo .logo-text, .floating-logo .logo-text {
+    max-width: 90px;
+  }
+}

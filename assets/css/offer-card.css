@@ -1,0 +1,92 @@
+/* Offer Card - Classic Professional Model */
+.offer-card {
+  width: 265px;
+  flex-shrink: 0;
+  height: 100%;
+  background: #ffffff;
+  border-radius: 1.2rem;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.04), 0 12px 28px rgba(0,0,0,0.08);
+  border: 1px solid rgba(0,0,0,0.04);
+  display: flex;
+  flex-direction: column;
+  transition: all 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  overflow: hidden;
+}
+
+.offer-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 10px 24px rgba(0,0,0,0.08), 0 20px 44px rgba(233,30,99,0.12);
+  border-color: rgba(233,30,99,0.18);
+}
+
+.card-image-wrap {
+  height: 175px;
+  width: 100%;
+  background: #f0f0f0;
+  overflow: hidden;
+}
+
+.card-image-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.offer-card:hover .card-image-wrap img {
+  transform: scale(1.05);
+}
+
+.card-body {
+  padding: 1rem 1rem 0.8rem;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.offer-product-title {
+  text-align: center;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #222222;
+  margin-bottom: 0.6rem;
+  line-height: 1.5;
+}
+
+.price-block {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 0.65rem;
+  margin-bottom: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.new-price {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: #1a1a2e;
+}
+
+.old-price {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #999999;
+  text-decoration: line-through;
+}
+
+.discount-circle {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: #e91e63;
+  color: #ffffff;
+  font-size: 0.8rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(233,30,99,0.4);
+  margin: 0 auto 0.7rem auto;
+  flex-shrink: 0;
+}

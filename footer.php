@@ -6,6 +6,8 @@ $footer_options = get_option( 'kish_harmony_footer_options', array() );
 $brand_name     = get_option( 'kish_harmony_header_options' )['brand_name'] ?? 'جزیره‌ی آبی';
 $footer_text    = ! empty( $footer_options['footer_text'] ) ? $footer_options['footer_text'] : 'کیش هارمونی؛ مرجع رسمی رزرو خدمات و تفریحات جزیره کیش.';
 $vip_text       = ! empty( $footer_options['vip_text'] ) ? $footer_options['vip_text'] : 'پشتیبانی ۲۴ ساعته VIP';
+$cta_text       = ! empty( $footer_options['cta_text'] ) ? $footer_options['cta_text'] : 'مشاوره رایگان ←';
+$cta_link       = ! empty( $footer_options['cta_link'] ) ? $footer_options['cta_link'] : '#';
 $address        = ! empty( $footer_options['address'] ) ? $footer_options['address'] : 'جزیره کیش، برج صدف، واحد ۲۰۴';
 $map_link       = ! empty( $footer_options['map_link'] ) ? $footer_options['map_link'] : '#';
 $phones         = ! empty( $footer_options['phones'] ) && is_array( $footer_options['phones'] ) ? $footer_options['phones'] : array( '076-44440000' );
@@ -108,7 +110,7 @@ $trust_badges   = ! empty( $footer_options['trust_badges'] ) && is_array( $foote
 					</div>
 				<?php endforeach; ?>
 
-				<a href="<?php echo esc_url( home_url( '/contact' ) ); ?>" class="cta-button">مشاوره رایگان ←</a>
+				<a href="<?php echo esc_url( $cta_link ); ?>" class="cta-button"><?php echo esc_html( $cta_text ); ?></a>
 
 				<div class="socials">
 					<?php if ( ! empty( $socials['instagram'] ) ) : ?>

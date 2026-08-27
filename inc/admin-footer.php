@@ -1,6 +1,6 @@
 <?php
 /**
- * Footer Settings Page Callback (Expanded Footer Options)
+ * Footer Settings Page Callback (Expanded Options)
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -15,6 +15,8 @@ function kish_harmony_footer_settings_page() {
 	if ( isset( $_POST['kish_harmony_save_footer'] ) && check_admin_referer( 'kish_harmony_footer_nonce' ) ) {
 		$footer_text  = sanitize_text_field( $_POST['footer_text'] ?? '' );
 		$vip_text     = sanitize_text_field( $_POST['vip_text'] ?? '' );
+		$cta_text     = sanitize_text_field( $_POST['cta_text'] ?? '' );
+		$cta_link     = esc_url_raw( $_POST['cta_link'] ?? '' );
 		$address      = sanitize_text_field( $_POST['address'] ?? '' );
 		$map_link     = esc_url_raw( $_POST['map_link'] ?? '' );
 		$phones       = isset( $_POST['phones'] ) ? array_map( 'sanitize_text_field', $_POST['phones'] ) : array();
@@ -33,7 +35,7 @@ function kish_harmony_footer_settings_page() {
 					$sanitized_badges[] = array(
 						'img_url' => esc_url_raw( $b['img_url'] ?? '' ),
 						'link'    => esc_url_raw( $b['link'] ?? '' ),
-						'code'    => $raw_code, // Allow script / iframe for Enamad trust seals
+						'code'    => $raw_code,
 					);
 				}
 			}
@@ -42,6 +44,8 @@ function kish_harmony_footer_settings_page() {
 		$footer_data = array(
 			'footer_text'  => $footer_text,
 			'vip_text'     => $vip_text,
+			'cta_text'     => $cta_text,
+			'cta_link'     => $cta_link,
 			'address'      => $address,
 			'map_link'     => $map_link,
 			'phones'       => array_values( array_filter( $phones ) ),
@@ -60,6 +64,8 @@ function kish_harmony_footer_settings_page() {
 
 	$footer_text  = $options['footer_text'] ?? 'کیش هارمونی؛ مرجع رسمی رزرو خدمات و تفریحات جزیره کیش.';
 	$vip_text     = $options['vip_text'] ?? 'پشتیبانی ۲۴ ساعته VIP';
+	$cta_text     = $options['cta_text'] ?? 'مشاوره رایگان ←';
+	$cta_link     = $options['cta_link'] ?? '#';
 	$address      = $options['address'] ?? 'جزیره کیش، برج صدف، واحد ۲۰۴';
 	$map_link     = $options['map_link'] ?? '#';
 	$phones       = ! empty( $options['phones'] ) && is_array( $options['phones'] ) ? $options['phones'] : array( '076-44440000', '09120000000' );
@@ -81,6 +87,18 @@ function kish_harmony_footer_settings_page() {
 					<th scope="row">عنوان پشتیبانی VIP:</th>
 					<td>
 						<input type="text" name="vip_text" value="<?php echo esc_attr( $vip_text ); ?>" class="regular-text">
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">متن دکمه مشاوره رایگان:</th>
+					<td>
+						<input type="text" name="cta_text" value="<?php echo esc_attr( $cta_text ); ?>" class="regular-text">
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">لینک دکمه مشاوره رایگان:</th>
+					<td>
+						<input type="text" name="cta_link" value="<?php echo esc_url( $cta_link ); ?>" class="regular-text">
 					</td>
 				</tr>
 				<tr>
@@ -153,7 +171,6 @@ function kish_harmony_footer_settings_page() {
 
 	<script>
 	document.addEventListener('DOMContentLoaded', function() {
-		// Phone Repeater
 		const phoneContainer = document.getElementById('phones-repeater');
 		const addPhoneBtn = document.getElementById('add-phone-btn');
 		if (addPhoneBtn && phoneContainer) {
@@ -171,7 +188,6 @@ function kish_harmony_footer_settings_page() {
 			});
 		}
 
-		// Badge Repeater
 		const badgeContainer = document.getElementById('badges-repeater');
 		const addBadgeBtn = document.getElementById('add-badge-btn');
 		if (addBadgeBtn && badgeContainer) {

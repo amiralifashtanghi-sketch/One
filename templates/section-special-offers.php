@@ -1,6 +1,6 @@
 <?php
 /**
- * Special Offers Section Template
+ * Classic Professional Special Offers Template
  */
 $options  = get_option( 'kish_harmony_special_offers_options', array() );
 $title    = ! empty( $options['title'] ) ? $options['title'] : 'پیشنهادهای ویژه';
@@ -19,7 +19,6 @@ $args = array(
 
 $special_query = new WP_Query( $args );
 
-// Fallback if no specific special offer ticked
 if ( ! $special_query->have_posts() ) {
 	$args = array(
 		'post_type'      => 'product',
@@ -32,7 +31,7 @@ if ( ! $special_query->have_posts() ) {
 <div class="special-offers-wrapper" id="special-offers">
 	<div class="container">
 		<div class="special-section-header">
-			<h2 class="special-title"><span class="fire-icon">🔥</span> <?php echo esc_html( $title ); ?></h2>
+			<h2 class="special-title"><span class="fire-emoji">🔥</span> <?php echo esc_html( $title ); ?></h2>
 			<p class="special-subtitle"><?php echo esc_html( $subtitle ); ?></p>
 		</div>
 
@@ -44,47 +43,63 @@ if ( ! $special_query->have_posts() ) {
 					$capacity   = get_post_meta( $product_id, '_special_capacity', true );
 					$thumb      = get_the_post_thumbnail_url( $product_id, 'medium' );
 					if ( ! $thumb ) {
-						$thumb = 'https://via.placeholder.com/300x200?text=Kish+Harmony';
+						$thumb = 'https://via.placeholder.com/265x175?text=Kish+Harmony';
 					}
 
-					$price_html = '';
+					$regular_price = '';
+					$sale_price    = '';
 					if ( function_exists( 'wc_get_product' ) ) {
 						$product = wc_get_product( $product_id );
 						if ( $product ) {
-							$price_html = $product->get_price_html();
+							$regular_price = $product->get_regular_price();
+							$sale_price    = $product->get_price();
 						}
 					}
+
+					$cap_num = is_numeric( $capacity ) ? intval( $capacity ) : 10;
+					$cap_percent = min( 100, max( 5, $cap_num * 10 ) );
+					$is_low_stock = $cap_percent <= 15;
 				?>
-					<div class="special-product-card">
-						<div class="special-card-image-box">
+					<div class="offer-card">
+						<div class="card-image-wrap">
 							<img src="<?php echo esc_url( $thumb ); ?>" alt="<?php the_title_attribute(); ?>">
 						</div>
-						<div class="special-card-body">
-							<h3 class="special-product-name"><?php the_title(); ?></h3>
+						<div class="card-body">
+							<h3 class="offer-product-title"><?php the_title(); ?></h3>
 
-							<!-- Conditional Discount & Capacity Meta -->
-							<?php if ( ! empty( $discount ) || ! empty( $capacity ) ) : ?>
-								<div class="special-meta-row">
-									<?php if ( ! empty( $discount ) ) : ?>
-										<span class="special-discount-tag"><?php echo esc_html( $discount ); ?>٪ تخفیف</span>
-									<?php endif; ?>
+							<div class="price-block">
+								<?php if ( ! empty( $regular_price ) && $regular_price > $sale_price ) : ?>
+									<span class="old-price"><?php echo number_format( $regular_price ); ?> تومان</span>
+								<?php endif; ?>
+								<span class="new-price"><?php echo number_format( $sale_price ); ?> تومان</span>
+							</div>
 
-									<?php if ( ! empty( $capacity ) ) : ?>
-										<span class="special-capacity-tag"><i class="fa-solid fa-users"></i> ظرفیت: <?php echo esc_html( $capacity ); ?> نفر</span>
-									<?php endif; ?>
+							<?php if ( ! empty( $discount ) ) : ?>
+								<div class="discount-circle">
+									<?php echo esc_html( $discount ); ?>٪
 								</div>
 							<?php endif; ?>
 
-							<div class="special-price-box">
-								<?php echo $price_html; ?>
-							</div>
+							<?php if ( '' !== $capacity ) : ?>
+								<div class="capacity-row">
+									<div class="capacity-header">
+										<span class="capacity-text">⏳ فقط <?php echo esc_html( $capacity ); ?> سانس</span>
+										<span class="capacity-count"><?php echo $cap_percent; ?>٪</span>
+									</div>
+									<div class="capacity-bar <?php echo $is_low_stock ? 'low-stock' : ''; ?>">
+										<div class="fill" style="width: <?php echo $cap_percent; ?>%;"></div>
+									</div>
+								</div>
+							<?php endif; ?>
 
-							<a href="<?php the_permalink(); ?>" class="special-reserve-btn">رزرو آنلاین <i class="fa-solid fa-angle-left"></i></a>
+							<div class="reserve-btn-wrapper">
+								<a href="<?php the_permalink(); ?>" class="reserve-btn">🎟️ رزرو با تخفیف</a>
+							</div>
 						</div>
 					</div>
 				<?php endwhile; wp_reset_postdata(); ?>
 			<?php else : ?>
-				<p>محصولی برای نمایش وجود ندارد.</p>
+				<p>محصولی جهت نمایش یافت نشد.</p>
 			<?php endif; ?>
 		</div>
 	</div>

@@ -1,0 +1,25 @@
+/* Footer Logo Strip Fix */
+.logo-strip {
+  width: 100%;
+  max-width: 100%;
+  overflow: visible !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 15px 24px 35px 24px;
+}
+
+.logo-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  max-width: 100%;
+  overflow: visible !important;
+}
+
+.logo-text {
+  max-width: 100% !important;
+  overflow: visible !important;
+  white-space: nowrap;
+}
