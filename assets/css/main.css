@@ -1516,3 +1516,289 @@ img { max-width: 100%; height: auto; display: block; }
     justify-content: space-around;
   }
 }
+
+/* ==========================================================================
+   KishPedia Banner Section (7-Plan Detailed Specifications)
+   ========================================================================== */
+
+.kishpedia-section-outer {
+  margin: 50px 0;
+  width: 100%;
+}
+
+.kishpedia-banner-container {
+  width: 100%;
+  max-width: 1300px;
+  min-height: 550px;
+  margin: 0 auto;
+  border-radius: 20px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+  position: relative;
+  overflow: hidden;
+  background-color: #eef7ff;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  direction: rtl;
+  font-family: 'Vazirmatn', sans-serif;
+}
+
+/* Layer 2: Island Map Image */
+.kishpedia-banner-container .island-map {
+  position: absolute;
+  top: 20px;
+  right: 10px;
+  width: 300px;
+  height: 300px;
+  opacity: 0.95;
+  pointer-events: none;
+  z-index: 2;
+  object-fit: contain;
+}
+.island-map-placeholder {
+  background: radial-gradient(circle, rgba(24, 214, 216, 0.2) 0%, rgba(11, 99, 216, 0.05) 70%);
+  border-radius: 50%;
+}
+
+/* Layer 3: Left Blend Gradient Overlay */
+.kishpedia-banner-container .left-blend-gradient {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 45%;
+  background: linear-gradient(to left, transparent, #eef7ff);
+  z-index: 3;
+  pointer-events: none;
+}
+
+/* Layer 4: Character Shark PNG Image */
+.kishpedia-banner-container .character-wrapper {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 400px;
+  height: 450px;
+  z-index: 4;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  pointer-events: none;
+}
+.kishpedia-banner-container .character-wrapper img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  object-position: bottom left;
+}
+.character-placeholder {
+  font-size: 140px;
+  color: rgba(11, 99, 216, 0.15);
+  margin-bottom: 30px;
+}
+
+/* Banner Content Grid Layout (Left 40% / Right 60%) */
+.banner-content-grid {
+  position: relative;
+  z-index: 5;
+  display: flex;
+  width: 100%;
+  min-height: 550px;
+  padding: 45px 50px 35px 50px;
+}
+.left-col-spacer {
+  width: 40%;
+  flex-shrink: 0;
+}
+.right-col-content {
+  width: 60%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* Typography & Title (H1) */
+.h1-title-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 12px;
+}
+.orange-accent-line {
+  width: 3px;
+  height: 48px;
+  background-color: #ff7e36;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+.banner-title {
+  font-size: 38px;
+  line-height: 1.4;
+  font-weight: 700;
+  margin: 0;
+  font-family: 'Vazirmatn', sans-serif;
+}
+.banner-title .text-blue-light { color: #0066aa; }
+.banner-title .text-blue-dark  { color: #0077cc; }
+.banner-title .text-orange     { color: #ff7e36; }
+
+/* Description */
+.banner-description {
+  font-size: 16px;
+  font-weight: 500;
+  color: #555555;
+  margin-bottom: 25px;
+  line-height: 1.6;
+}
+
+/* Feature Grid (6 Items) */
+.feature-grid {
+  display: flex;
+  flex-wrap: wrap;
+  row-gap: 15px;
+  column-gap: 30px;
+  margin-bottom: 30px;
+}
+.feature-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.feature-item i {
+  font-size: 14px;
+  color: #333333;
+}
+.feature-item span {
+  font-size: 14px;
+  font-weight: 600;
+  color: #333333;
+  white-space: nowrap;
+}
+
+/* Responsive Specification for KishPedia Banner (Mobile Layout) */
+@media screen and (max-width: 992px) {
+  .kishpedia-banner-container {
+    min-height: auto;
+  }
+  .banner-content-grid {
+    flex-direction: column;
+    padding: 30px 20px;
+    min-height: auto;
+  }
+  .left-col-spacer {
+    display: none;
+  }
+  .right-col-content {
+    width: 100%;
+    align-items: center;
+    text-align: center;
+  }
+  .kishpedia-banner-container .island-map {
+    display: none !important;
+  }
+  .kishpedia-banner-container .left-blend-gradient {
+    display: none !important;
+  }
+  .orange-accent-line {
+    display: none !important;
+  }
+  .kishpedia-banner-container .character-wrapper {
+    position: relative;
+    width: 200px;
+    height: 230px;
+    margin: 0 auto 20px auto;
+  }
+  .banner-title {
+    font-size: 28px;
+    text-align: center;
+  }
+  .h1-title-wrapper {
+    justify-content: center;
+  }
+  .banner-description {
+    text-align: center;
+  }
+  .feature-grid {
+    justify-content: center;
+    row-gap: 12px;
+    column-gap: 20px;
+  }
+  .banner-buttons-group {
+    justify-content: center;
+  }
+  .banner-footer-services {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+  }
+}
+
+/* Slim Pill Buttons Group */
+.banner-buttons-group {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 35px;
+}
+
+.btn-pill {
+  border-radius: 50px;
+  padding: 4px 18px;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.3;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.btn-pill-left {
+  background-color: #ffffff;
+  color: #005f9e;
+  border: 1px solid #005f9e;
+  box-shadow: 0 1px 4px rgba(0, 95, 158, 0.08);
+}
+.btn-pill-left:hover {
+  background-color: #f0f7fc;
+  transform: translateY(-2px);
+  color: #004d80;
+}
+
+.btn-pill-right {
+  background-color: #ff7e36;
+  color: #ffffff;
+  border: 1px solid #ff7e36;
+  box-shadow: 0 2px 6px rgba(255, 126, 54, 0.15);
+}
+.btn-pill-right:hover {
+  background-color: #e66b28;
+  border-color: #e66b28;
+  color: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 14px rgba(255, 126, 54, 0.35);
+}
+
+/* Footer Service Icons (3 Items) */
+.banner-footer-services {
+  display: flex;
+  align-items: center;
+  gap: 40px;
+}
+.banner-footer-services .service-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.banner-footer-services .service-item i {
+  font-size: 20px;
+  color: #005f9e;
+}
+.banner-footer-services .service-item span {
+  font-size: 13px;
+  font-weight: 600;
+  color: #333333;
+  white-space: nowrap;
+}
