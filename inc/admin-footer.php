@@ -48,15 +48,18 @@ function kish_harmony_footer_settings_page() {
 		echo '<div class="updated"><p>تنظیمات جامع فوتر با موفقیت ذخیره شد.</p></div>';
 	}
 
-	$options = get_option( 'kish_harmony_footer_options', array(
-		'footer_text'  => 'کیش هارمونی؛ مرجع رسمی رزرو خدمات و تفریحات جزیره کیش.',
-		'vip_text'     => 'پشتیبانی ۲۴ ساعته VIP',
-		'address'      => 'جزیره کیش، برج صدف، واحد ۲۰۴',
-		'map_link'     => '#',
-		'phones'       => array( '076-44440000', '09120000000' ),
-		'socials'      => array( 'instagram' => '#', 'telegram' => '#', 'whatsapp' => '#' ),
-		'trust_badges' => array(),
-	) );
+	$options = get_option( 'kish_harmony_footer_options', array() );
+	if ( ! is_array( $options ) ) {
+		$options = array();
+	}
+
+	$footer_text  = $options['footer_text'] ?? 'کیش هارمونی؛ مرجع رسمی رزرو خدمات و تفریحات جزیره کیش.';
+	$vip_text     = $options['vip_text'] ?? 'پشتیبانی ۲۴ ساعته VIP';
+	$address      = $options['address'] ?? 'جزیره کیش، برج صدف، واحد ۲۰۴';
+	$map_link     = $options['map_link'] ?? '#';
+	$phones       = ! empty( $options['phones'] ) && is_array( $options['phones'] ) ? $options['phones'] : array( '076-44440000', '09120000000' );
+	$socials      = ! empty( $options['socials'] ) && is_array( $options['socials'] ) ? $options['socials'] : array( 'instagram' => '#', 'telegram' => '#', 'whatsapp' => '#' );
+	$trust_badges = ! empty( $options['trust_badges'] ) && is_array( $options['trust_badges'] ) ? $options['trust_badges'] : array();
 	?>
 	<div class="wrap">
 		<h1>تنظیمات جامع فوتر "جزیره‌ی آبی"</h1>
@@ -66,30 +69,27 @@ function kish_harmony_footer_settings_page() {
 				<tr>
 					<th scope="row">متن درباره ما (فوتر):</th>
 					<td>
-						<textarea name="footer_text" rows="3" class="large-text"><?php echo esc_textarea( $options['footer_text'] ); ?></textarea>
+						<textarea name="footer_text" rows="3" class="large-text"><?php echo esc_textarea( $footer_text ); ?></textarea>
 					</td>
 				</tr>
 				<tr>
 					<th scope="row">عنوان پشتیبانی VIP:</th>
 					<td>
-						<input type="text" name="vip_text" value="<?php echo esc_attr( $options['vip_text'] ); ?>" class="regular-text">
+						<input type="text" name="vip_text" value="<?php echo esc_attr( $vip_text ); ?>" class="regular-text">
 					</td>
 				</tr>
 				<tr>
 					<th scope="row">آدرس آیکون لوکیشن و متن آدرس:</th>
 					<td>
-						<input type="text" name="address" value="<?php echo esc_attr( $options['address'] ); ?>" class="large-text" placeholder="متن آدرس"><br><br>
-						<input type="text" name="map_link" value="<?php echo esc_url( $options['map_link'] ); ?>" class="large-text" placeholder="لینک گوگل مپ / نشان">
+						<input type="text" name="address" value="<?php echo esc_attr( $address ); ?>" class="large-text" placeholder="متن آدرس"><br><br>
+						<input type="text" name="map_link" value="<?php echo esc_url( $map_link ); ?>" class="large-text" placeholder="لینک گوگل مپ / نشان">
 					</td>
 				</tr>
 			</table>
 
 			<h2>تلفن‌های پشتیبانی (چند شماره)</h2>
 			<div id="phones-repeater">
-				<?php
-				$phones = ! empty( $options['phones'] ) ? $options['phones'] : array( '' );
-				foreach ( $phones as $idx => $p ) :
-				?>
+				<?php foreach ( $phones as $idx => $p ) : ?>
 					<div class="phone-row" style="margin-bottom:10px;">
 						<input type="text" name="phones[]" value="<?php echo esc_attr( $p ); ?>" class="regular-text">
 						<button type="button" class="button remove-phone-btn" style="color:red;">حذف</button>
@@ -102,37 +102,38 @@ function kish_harmony_footer_settings_page() {
 			<table class="form-table">
 				<tr>
 					<th scope="row">اینستاگرام:</th>
-					<td><input type="text" name="socials[instagram]" value="<?php echo esc_url( $options['socials']['instagram'] ?? '' ); ?>" class="regular-text"></td>
+					<td><input type="text" name="socials[instagram]" value="<?php echo esc_url( $socials['instagram'] ?? '' ); ?>" class="regular-text"></td>
 				</tr>
 				<tr>
 					<th scope="row">تلگرام:</th>
-					<td><input type="text" name="socials[telegram]" value="<?php echo esc_url( $options['socials']['telegram'] ?? '' ); ?>" class="regular-text"></td>
+					<td><input type="text" name="socials[telegram]" value="<?php echo esc_url( $socials['telegram'] ?? '' ); ?>" class="regular-text"></td>
 				</tr>
 				<tr>
 					<th scope="row">واتساپ:</th>
-					<td><input type="text" name="socials[whatsapp]" value="<?php echo esc_url( $options['socials']['whatsapp'] ?? '' ); ?>" class="regular-text"></td>
+					<td><input type="text" name="socials[whatsapp]" value="<?php echo esc_url( $socials['whatsapp'] ?? '' ); ?>" class="regular-text"></td>
 				</tr>
 			</table>
 
 			<h2>نمادهای اعتماد و اینمادها (چند نماد)</h2>
 			<div id="badges-repeater">
-				<?php
-				$badges = ! empty( $options['trust_badges'] ) ? $options['trust_badges'] : array();
-				foreach ( $badges as $idx => $b ) :
+				<?php foreach ( $trust_badges as $idx => $b ) :
+					$img_url = $b['img_url'] ?? '';
+					$link    = $b['link'] ?? '';
+					$code    = $b['code'] ?? '';
 				?>
 					<div class="badge-row" style="background:#fff; border:1px solid #ccc; padding:15px; margin-bottom:15px; border-radius:8px; position:relative;">
 						<button type="button" class="button remove-badge-btn" style="position:absolute; top:10px; left:10px; color:red; border-color:red;">حذف این نماد</button>
 						<p>
 							<label>آدرس عکس نماد:</label><br>
-							<input type="text" name="trust_badges[<?php echo $idx; ?>][img_url]" value="<?php echo esc_url( $b['img_url'] ); ?>" class="large-text">
+							<input type="text" name="trust_badges[<?php echo $idx; ?>][img_url]" value="<?php echo esc_url( $img_url ); ?>" class="large-text">
 						</p>
 						<p>
 							<label>لینک کلیک نماد:</label><br>
-							<input type="text" name="trust_badges[<?php echo $idx; ?>][link]" value="<?php echo esc_url( $b['link'] ); ?>" class="large-text">
+							<input type="text" name="trust_badges[<?php echo $idx; ?>][link]" value="<?php echo esc_url( $link ); ?>" class="large-text">
 						</p>
 						<p>
 							<label>یا کد HTML / script / iframe نماد (اختیاری):</label><br>
-							<textarea name="trust_badges[<?php echo $idx; ?>][code]" rows="2" class="large-text"><?php echo esc_textarea( $b['code'] ); ?></textarea>
+							<textarea name="trust_badges[<?php echo $idx; ?>][code]" rows="2" class="large-text"><?php echo esc_textarea( $code ); ?></textarea>
 						</p>
 					</div>
 				<?php endforeach; ?>

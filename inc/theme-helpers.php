@@ -20,7 +20,7 @@ function kish_harmony_render_custom_blocks_for( $position ) {
 			$type    = $block['type'] ?? 'html';
 			$content = $block['content'] ?? '';
 
-			if ( empty( $content ) ) {
+			if ( empty( trim( $content ) ) ) {
 				continue;
 			}
 
@@ -30,11 +30,12 @@ function kish_harmony_render_custom_blocks_for( $position ) {
 			} elseif ( $type === 'php' ) {
 				try {
 					eval( '?>' . $content . '<?php ' );
-				} catch ( Exception $e ) {
-					echo esc_html( $e->getMessage() );
+				} catch ( Throwable $e ) {
+					echo '<div class="error-msg">خطا در اجرای کد PHP: ' . esc_html( $e->getMessage() ) . '</div>';
 				}
 			} else {
-				echo wp_kses_post( $content );
+				// Render raw HTML so design/styles work perfectly
+				echo $content;
 			}
 			echo '</div>';
 		}

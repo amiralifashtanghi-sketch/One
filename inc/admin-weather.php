@@ -18,9 +18,9 @@ function kish_harmony_get_live_weather_data() {
 		return $cached_data;
 	}
 
-	// Latitude: 26.5333, Longitude: 53.9833 for Kish Island
+	// Latitude: 26.5333, Longitude: 53.9833 for Kish Island (3 second fast timeout)
 	$api_url  = 'https://api.open-meteo.com/v1/forecast?latitude=26.5333&longitude=53.9833&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m&timezone=Asia%2FTehran';
-	$response = wp_remote_get( $api_url, array( 'timeout' => 5 ) );
+	$response = wp_remote_get( $api_url, array( 'timeout' => 3 ) );
 
 	if ( is_wp_error( $response ) ) {
 		return false;
@@ -81,16 +81,19 @@ function kish_harmony_weather_settings_page() {
 		echo '<div class="updated"><p>تنظیمات ویجت آب و هوا با موفقیت ذخیره شد.</p></div>';
 	}
 
-	$options = get_option( 'kish_harmony_weather_options', array(
-		'title'       => 'آب و هوای لحظه‌ای کیش',
-		'subtitle'    => 'وضعیت امروز جزیره زیبای کیش برای برنامه‌ریزی تفریحات شما',
-		'auto_api'    => '1',
-		'temp'        => '۲۸°C',
-		'status_text' => 'آفتابی و مطلوب',
-		'humidity'    => '۶۵٪',
-		'wind'        => '۱۲ کیلومتر بر ساعت',
-		'bg_image'    => '',
-	) );
+	$options = get_option( 'kish_harmony_weather_options', array() );
+	if ( ! is_array( $options ) ) {
+		$options = array();
+	}
+
+	$title       = $options['title'] ?? 'آب و هوای لحظه‌ای کیش';
+	$subtitle    = $options['subtitle'] ?? 'وضعیت امروز جزیره زیبای کیش برای برنامه‌ریزی تفریحات شما';
+	$auto_api    = $options['auto_api'] ?? '1';
+	$temp        = $options['temp'] ?? '۲۸°C';
+	$status_text = $options['status_text'] ?? 'آفتابی و مطلوب';
+	$humidity    = $options['humidity'] ?? '۶۵٪';
+	$wind        = $options['wind'] ?? '۱۲ کیلومتر بر ساعت';
+	$bg_image    = $options['bg_image'] ?? '';
 
 	$live_weather = kish_harmony_get_live_weather_data();
 	?>
@@ -111,7 +114,7 @@ function kish_harmony_weather_settings_page() {
 					<th scope="row">دریافت خودکار و زنده آب و هوا:</th>
 					<td>
 						<label>
-							<input type="checkbox" name="auto_api" value="1" <?php checked( $options['auto_api'], '1' ); ?>>
+							<input type="checkbox" name="auto_api" value="1" <?php checked( $auto_api, '1' ); ?>>
 							دریافت اتوماتیک و لحظه‌ای آب و هوای کیش (بدون نیاز به API Key)
 						</label>
 					</td>
@@ -119,43 +122,43 @@ function kish_harmony_weather_settings_page() {
 				<tr>
 					<th scope="row">عنوان ویجت:</th>
 					<td>
-						<input type="text" name="title" value="<?php echo esc_attr( $options['title'] ); ?>" class="large-text">
+						<input type="text" name="title" value="<?php echo esc_attr( $title ); ?>" class="large-text">
 					</td>
 				</tr>
 				<tr>
 					<th scope="row">متن زیرعنوان:</th>
 					<td>
-						<input type="text" name="subtitle" value="<?php echo esc_attr( $options['subtitle'] ); ?>" class="large-text">
+						<input type="text" name="subtitle" value="<?php echo esc_attr( $subtitle ); ?>" class="large-text">
 					</td>
 				</tr>
 				<tr>
 					<th scope="row">دمای هوا (دستی):</th>
 					<td>
-						<input type="text" name="temp" value="<?php echo esc_attr( $options['temp'] ); ?>" class="regular-text">
+						<input type="text" name="temp" value="<?php echo esc_attr( $temp ); ?>" class="regular-text">
 					</td>
 				</tr>
 				<tr>
 					<th scope="row">وضعیت هوا (دستی):</th>
 					<td>
-						<input type="text" name="status_text" value="<?php echo esc_attr( $options['status_text'] ); ?>" class="regular-text">
+						<input type="text" name="status_text" value="<?php echo esc_attr( $status_text ); ?>" class="regular-text">
 					</td>
 				</tr>
 				<tr>
 					<th scope="row">میزان رطوبت (دستی):</th>
 					<td>
-						<input type="text" name="humidity" value="<?php echo esc_attr( $options['humidity'] ); ?>" class="regular-text">
+						<input type="text" name="humidity" value="<?php echo esc_attr( $humidity ); ?>" class="regular-text">
 					</td>
 				</tr>
 				<tr>
 					<th scope="row">سرعت باد (دستی):</th>
 					<td>
-						<input type="text" name="wind" value="<?php echo esc_attr( $options['wind'] ); ?>" class="regular-text">
+						<input type="text" name="wind" value="<?php echo esc_attr( $wind ); ?>" class="regular-text">
 					</td>
 				</tr>
 				<tr>
 					<th scope="row">تصویر پس‌زمینه ویجت (Glassmorphism BG):</th>
 					<td>
-						<input type="text" name="bg_image" value="<?php echo esc_url( $options['bg_image'] ); ?>" class="large-text">
+						<input type="text" name="bg_image" value="<?php echo esc_url( $bg_image ); ?>" class="large-text">
 					</td>
 				</tr>
 			</table>

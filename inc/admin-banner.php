@@ -40,21 +40,24 @@ function kish_harmony_banner_settings_page() {
 		echo '<div class="updated"><p>تنظیمات بنرها با موفقیت ذخیره شد.</p></div>';
 	}
 
-	$options = get_option( 'kish_harmony_banner_options', array(
-		'auto_scroll'  => '1',
-		'scroll_speed' => 5,
-		'banners'      => array(
-			array(
-				'title'       => 'سفر به جزیره زیبای کیش با کیش هارمونی',
-				'subtitle'    => 'رزرو آنلاین بهترین تورها، تفریحات دریایی و اجاره خودرو با پشتیبانی اختصاصی',
-				'bg_image'    => 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1300&q=80',
-				'shark_image' => '',
-				'map_image'   => '',
-				'btn_text'    => 'مشاهده پیشنهادهای ویژه',
-				'btn_link'    => '#special-offers',
-			),
+	$options = get_option( 'kish_harmony_banner_options', array() );
+	if ( ! is_array( $options ) ) {
+		$options = array();
+	}
+
+	$auto_scroll  = isset( $options['auto_scroll'] ) ? $options['auto_scroll'] : '1';
+	$scroll_speed = isset( $options['scroll_speed'] ) ? intval( $options['scroll_speed'] ) : 5;
+	$banners      = ! empty( $options['banners'] ) && is_array( $options['banners'] ) ? $options['banners'] : array(
+		array(
+			'title'       => 'سفر به جزیره زیبای کیش با کیش هارمونی',
+			'subtitle'    => 'رزرو آنلاین بهترین تورها، تفریحات دریایی و اجاره خودرو با پشتیبانی اختصاصی',
+			'bg_image'    => 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1300&q=80',
+			'shark_image' => '',
+			'map_image'   => '',
+			'btn_text'    => 'مشاهده پیشنهادهای ویژه',
+			'btn_link'    => '#special-offers',
 		),
-	) );
+	);
 	?>
 	<div class="wrap">
 		<h1>تنظیمات بنرهای تبلیغاتی کیش هارمونی (اسلایدر)</h1>
@@ -65,7 +68,7 @@ function kish_harmony_banner_settings_page() {
 					<th scope="row">اسکرول اتوماتیک اسلایدها:</th>
 					<td>
 						<label>
-							<input type="checkbox" name="auto_scroll" value="1" <?php checked( $options['auto_scroll'], '1' ); ?>>
+							<input type="checkbox" name="auto_scroll" value="1" <?php checked( $auto_scroll, '1' ); ?>>
 							فعال بودن اسکرول خودکار بنرها
 						</label>
 					</td>
@@ -73,45 +76,53 @@ function kish_harmony_banner_settings_page() {
 				<tr>
 					<th scope="row">زمان تعویض هر بنر (ثانیه):</th>
 					<td>
-						<input type="number" name="scroll_speed" value="<?php echo esc_attr( $options['scroll_speed'] ); ?>" class="small-text" min="1" max="60"> ثانیه
+						<input type="number" name="scroll_speed" value="<?php echo esc_attr( $scroll_speed ); ?>" class="small-text" min="1" max="60"> ثانیه
 					</td>
 				</tr>
 			</table>
 
 			<h2>مدیریت بنرها</h2>
 			<div id="banners-repeater">
-				<?php foreach ( $options['banners'] as $idx => $b ) : ?>
+				<?php foreach ( $banners as $idx => $b ) :
+					$title       = $b['title'] ?? '';
+					$subtitle    = $b['subtitle'] ?? '';
+					$btn_text    = $b['btn_text'] ?? '';
+					$btn_link    = $b['btn_link'] ?? '';
+					$bg_image    = $b['bg_image'] ?? '';
+					$shark_image = $b['shark_image'] ?? '';
+					$map_image   = $b['map_image'] ?? '';
+				?>
 					<div class="banner-item-row" style="background:#fff; border:1px solid #ccc; padding:15px; margin-bottom:15px; border-radius:8px; position:relative;">
 						<button type="button" class="button remove-banner-btn" style="position:absolute; top:10px; left:10px; color:red; border-color:red;">حذف این بنر</button>
 						<h3 style="margin-top:0;">بنر #<?php echo $idx + 1; ?></h3>
 						<div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px;">
 							<div>
 								<label>عنوان بنر:</label><br>
-								<input type="text" name="banners[<?php echo $idx; ?>][title]" value="<?php echo esc_attr( $b['title'] ); ?>" class="large-text">
+								<input type="text" name="banners[<?php echo $idx; ?>][title]" value="<?php echo esc_attr( $title ); ?>" class="large-text">
 							</div>
 							<div>
 								<label>زیرعنوان / توضیحات:</label><br>
-								<input type="text" name="banners[<?php echo $idx; ?>][subtitle]" value="<?php echo esc_attr( $b['subtitle'] ); ?>" class="large-text">
+								<input type="text" name="banners[<?php echo $idx; ?>][subtitle]" value="<?php echo esc_attr( $subtitle ); ?>" class="large-text">
 							</div>
 							<div>
 								<label>متن دکمه:</label><br>
-								<input type="text" name="banners[<?php echo $idx; ?>][btn_text]" value="<?php echo esc_attr( $b['btn_text'] ); ?>" class="regular-text">
+								<input type="text" name="banners[<?php echo $idx; ?>][btn_text]" value="<?php echo esc_attr( $btn_text ); ?>" class="regular-text">
 							</div>
 							<div>
 								<label>لینک دکمه:</label><br>
-								<input type="text" name="banners[<?php echo $idx; ?>][btn_link]" value="<?php echo esc_url( $b['btn_link'] ); ?>" class="regular-text">
+								<input type="text" name="banners[<?php echo $idx; ?>][btn_link]" value="<?php echo esc_url( $btn_link ); ?>" class="regular-text">
 							</div>
 							<div>
 								<label>آدرس تصویر پس‌زمینه (BG Image):</label><br>
-								<input type="text" name="banners[<?php echo $idx; ?>][bg_image]" value="<?php echo esc_url( $b['bg_image'] ); ?>" class="large-text">
+								<input type="text" name="banners[<?php echo $idx; ?>][bg_image]" value="<?php echo esc_url( $bg_image ); ?>" class="large-text">
 							</div>
 							<div>
 								<label>آدرس تصویر کاراکتر کوسه (PNG بدون بک‌گراند):</label><br>
-								<input type="text" name="banners[<?php echo $idx; ?>][shark_image]" value="<?php echo esc_url( $b['shark_image'] ); ?>" class="large-text">
+								<input type="text" name="banners[<?php echo $idx; ?>][shark_image]" value="<?php echo esc_url( $shark_image ); ?>" class="large-text">
 							</div>
 							<div>
 								<label>آدرس تصویر نقشه جزیره (PNG):</label><br>
-								<input type="text" name="banners[<?php echo $idx; ?>][map_image]" value="<?php echo esc_url( $b['map_image'] ); ?>" class="large-text">
+								<input type="text" name="banners[<?php echo $idx; ?>][map_image]" value="<?php echo esc_url( $map_image ); ?>" class="large-text">
 							</div>
 						</div>
 					</div>
