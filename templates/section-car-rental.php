@@ -1,6 +1,6 @@
 <?php
 /**
- * Car Rental Homepage Section Template
+ * Car Rental Homepage Section Template (Horizontal Scrollable Layout)
  */
 ?>
 
@@ -11,11 +11,11 @@
 			<p>تجربه‌ای لذت‌بخش و خاطره‌انگیز با رنت لوکس‌ترین ماشین‌های روز در کیش هارمونی</p>
 		</div>
 
-		<div class="car-grid">
+		<div class="horizontal-scroll-container">
 			<?php
 			$args = array(
 				'post_type'      => 'car_rental',
-				'posts_per_page' => 6,
+				'posts_per_page' => 8,
 			);
 			$car_query = new WP_Query( $args );
 
@@ -31,7 +31,7 @@
 						$thumb = 'https://via.placeholder.com/400x250?text=Kish+Car+Rental';
 					}
 			?>
-					<div class="car-card">
+					<div class="car-card horizontal-card">
 						<div class="car-card-img-wrapper">
 							<img src="<?php echo esc_url( $thumb ); ?>" alt="<?php the_title_attribute(); ?>">
 							<?php if ( ! empty( $model_year ) ) : ?>

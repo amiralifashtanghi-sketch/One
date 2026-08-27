@@ -1,6 +1,6 @@
 <?php
 /**
- * Gallery Settings Page Callback
+ * Gallery Settings Page Callback (Dynamic Repeater)
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -68,7 +68,8 @@ function kish_harmony_gallery_settings_page() {
 			<h2>تصاویر گالری</h2>
 			<div id="gallery-repeater">
 				<?php foreach ( $options['images'] as $idx => $img ) : ?>
-					<div style="background:#fff; border:1px solid #ccc; padding:15px; margin-bottom:15px; border-radius:8px; display:flex; gap:15px; align-items:center;">
+					<div class="gallery-item-row" style="background:#fff; border:1px solid #ccc; padding:15px; margin-bottom:15px; border-radius:8px; position:relative; display:flex; gap:15px; align-items:center;">
+						<button type="button" class="button remove-gallery-btn" style="position:absolute; top:10px; left:10px; color:red; border-color:red;">حذف این عکس</button>
 						<div>
 							<label>آدرس تصویر (URL):</label><br>
 							<input type="text" name="gallery_images[<?php echo $idx; ?>][url]" value="<?php echo esc_url( $img['url'] ); ?>" class="regular-text" required>
@@ -81,10 +82,45 @@ function kish_harmony_gallery_settings_page() {
 				<?php endforeach; ?>
 			</div>
 
+			<button type="button" id="add-gallery-btn" class="button" style="margin-bottom:20px;">+ افزودن تصویر جدید</button>
+
 			<p class="submit">
 				<input type="submit" name="kish_harmony_save_gallery" class="button button-primary" value="ذخیره گالری تصاویر">
 			</p>
 		</form>
 	</div>
+
+	<script>
+	document.addEventListener('DOMContentLoaded', function() {
+		const container = document.getElementById('gallery-repeater');
+		const addBtn = document.getElementById('add-gallery-btn');
+
+		if (addBtn && container) {
+			addBtn.addEventListener('click', function() {
+				const idx = Date.now();
+				const html = `
+					<div class="gallery-item-row" style="background:#fff; border:1px solid #ccc; padding:15px; margin-bottom:15px; border-radius:8px; position:relative; display:flex; gap:15px; align-items:center;">
+						<button type="button" class="button remove-gallery-btn" style="position:absolute; top:10px; left:10px; color:red; border-color:red;">حذف این عکس</button>
+						<div>
+							<label>آدرس تصویر (URL):</label><br>
+							<input type="text" name="gallery_images[${idx}][url]" value="" class="regular-text" required>
+						</div>
+						<div>
+							<label>توضیح/کپشن تصویر:</label><br>
+							<input type="text" name="gallery_images[${idx}][caption]" value="" class="regular-text">
+						</div>
+					</div>
+				`;
+				container.insertAdjacentHTML('beforeend', html);
+			});
+
+			container.addEventListener('click', function(e) {
+				if (e.target.classList.contains('remove-gallery-btn')) {
+					e.target.closest('.gallery-item-row').remove();
+				}
+			});
+		}
+	});
+	</script>
 	<?php
 }

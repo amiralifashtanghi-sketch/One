@@ -1,6 +1,6 @@
 <?php
 /**
- * WooCommerce Custom Meta Boxes & Admin Settings for Special Offers
+ * WooCommerce Custom Meta Boxes & Auto-Decrement Capacity Logic
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -43,7 +43,7 @@ function kish_harmony_render_product_meta_box( $post ) {
 	<p>
 		<label>تعداد ظرفیت باقیمانده:</label><br>
 		<input type="number" name="special_capacity" value="<?php echo esc_attr( $capacity ); ?>" style="width:100%;" min="0">
-		<span class="description" style="font-size:11px;">در صورت خالی بودن، پنهان می‌شود.</span>
+		<span class="description" style="font-size:11px;">با ثبت هر سفارش، به‌صورت اتوماتیک کم می‌شود.</span>
 	</p>
 	<?php
 }
@@ -72,47 +72,35 @@ function kish_harmony_save_product_meta( $post_id ) {
 add_action( 'save_post_product', 'kish_harmony_save_product_meta' );
 
 /**
- * Admin Settings Page Callback for Special Offers Section Header
+ * Auto Decrement Special Capacity on WooCommerce Order Creation / Payment
  */
-function kish_harmony_special_offers_settings_page() {
-	if ( isset( $_POST['kish_harmony_save_special_offers'] ) && check_admin_referer( 'kish_harmony_special_offers_nonce' ) ) {
-		$title    = sanitize_text_field( $_POST['title'] ?? '' );
-		$subtitle = sanitize_text_field( $_POST['subtitle'] ?? '' );
-
-		update_option( 'kish_harmony_special_offers_options', array(
-			'title'    => $title,
-			'subtitle' => $subtitle,
-		) );
-		echo '<div class="updated"><p>تنظیمات سرتیتر پیشنهادهای ویژه با موفقیت ذخیره شد.</p></div>';
+function kish_harmony_decrement_special_capacity( $order_id ) {
+	if ( ! $order_id ) {
+		return;
 	}
 
-	$options = get_option( 'kish_harmony_special_offers_options', array(
-		'title'    => 'پیشنهادهای ویژه',
-		'subtitle' => 'تخفیف‌های استثنایی و محدود تورها و تفریحات کیش',
-	) );
-	?>
-	<div class="wrap">
-		<h1>تنظیمات بخش پیشنهادهای ویژه صفحه اصلی</h1>
-		<form method="post" action="">
-			<?php wp_nonce_field( 'kish_harmony_special_offers_nonce' ); ?>
-			<table class="form-table">
-				<tr>
-					<th scope="row">عنوان سرتیتر:</th>
-					<td>
-						<input type="text" name="title" value="<?php echo esc_attr( $options['title'] ); ?>" class="large-text">
-					</td>
-				</tr>
-				<tr>
-					<th scope="row">متن زیرعنوان:</th>
-					<td>
-						<input type="text" name="subtitle" value="<?php echo esc_attr( $options['subtitle'] ); ?>" class="large-text">
-					</td>
-				</tr>
-			</table>
-			<p class="submit">
-				<input type="submit" name="kish_harmony_save_special_offers" class="button button-primary" value="ذخیره تنظیمات سرتیتر">
-			</p>
-		</form>
-	</div>
-	<?php
+	$order = wc_get_order( $order_id );
+	if ( ! $order ) {
+		return;
+	}
+
+	// Avoid duplicate reduction
+	if ( get_post_meta( $order_id, '_kish_harmony_capacity_reduced', true ) ) {
+		return;
+	}
+
+	foreach ( $order->get_items() as $item ) {
+		$product_id = $item->get_product_id();
+		$qty        = $item->get_quantity();
+
+		$current_capacity = get_post_meta( $product_id, '_special_capacity', true );
+		if ( '' !== $current_capacity && is_numeric( $current_capacity ) ) {
+			$new_capacity = max( 0, intval( $current_capacity ) - intval( $qty ) );
+			update_post_meta( $product_id, '_special_capacity', $new_capacity );
+		}
+	}
+
+	update_post_meta( $order_id, '_kish_harmony_capacity_reduced', '1' );
 }
+add_action( 'woocommerce_thankyou', 'kish_harmony_decrement_special_capacity' );
+add_action( 'woocommerce_order_status_completed', 'kish_harmony_decrement_special_capacity' );

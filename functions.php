@@ -88,6 +88,7 @@ require_once KISH_HARMONY_DIR . '/inc/admin-services.php';
 require_once KISH_HARMONY_DIR . '/inc/admin-banner.php';
 require_once KISH_HARMONY_DIR . '/inc/ajax-search.php';
 require_once KISH_HARMONY_DIR . '/inc/admin-categories.php';
+require_once KISH_HARMONY_DIR . '/inc/admin-special-offers.php';
 require_once KISH_HARMONY_DIR . '/inc/admin-weather.php';
 require_once KISH_HARMONY_DIR . '/inc/admin-gallery.php';
 require_once KISH_HARMONY_DIR . '/inc/admin-footer.php';

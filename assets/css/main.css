@@ -1215,3 +1215,153 @@
   .gallery-grid { grid-template-columns: 1fr; }
   .gallery-item { height: 220px; }
 }
+
+/* Modern GTranslate styling in drawer */
+.drawer-gtranslate-modern {
+  background: rgba(11, 99, 216, 0.06);
+  border: 1px solid rgba(11, 99, 216, 0.15);
+  border-radius: 14px;
+  padding: 10px 14px;
+  margin-bottom: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.gtranslate-label {
+  font-size: 0.85rem;
+  font-weight: bold;
+  color: var(--kh-primary-blue);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.drawer-gtranslate-modern select {
+  width: 100%;
+  padding: 8px 12px;
+  border-radius: 10px;
+  border: 1px solid #cbd5e1;
+  background-color: #ffffff;
+  font-family: inherit;
+  font-size: 0.9rem;
+  color: #1e293b;
+  outline: none;
+}
+
+/* Banner Multi-Slide Component Styling */
+.banner-container-wrapper {
+  position: relative;
+  max-width: 1300px;
+  margin: 30px auto;
+  padding: 0 1rem;
+  overflow: hidden;
+}
+
+.banner-slider-track {
+  position: relative;
+  width: 100%;
+  min-height: 450px;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+}
+
+.slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.8s ease, visibility 0.8s ease;
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: center;
+}
+
+.slide.active {
+  opacity: 1;
+  visibility: visible;
+  position: relative;
+}
+
+.banner-slider-dots {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+  z-index: 10;
+}
+
+.banner-slider-dots .dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.3s ease;
+}
+
+.banner-slider-dots .dot.active {
+  background: var(--kh-orange);
+  transform: scale(1.2);
+}
+
+/* Social Icons & Trust Badges Styling in Footer */
+.footer-social-icons {
+  display: flex;
+  gap: 12px;
+  margin-top: 1.2rem;
+}
+
+.footer-social-icons a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  font-size: 1.2rem;
+  transition: background 0.3s ease, transform 0.3s ease;
+}
+
+.footer-social-icons a:hover {
+  background: var(--kh-orange);
+  transform: translateY(-3px);
+}
+
+.trust-badges-grid {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.trust-badges-grid .badge-item img {
+  width: 75px;
+  height: 75px;
+  object-fit: contain;
+  background: #fff;
+  padding: 6px;
+  border-radius: 12px;
+}
+
+/* General Horizontal Scroll Layout for Sections */
+.horizontal-scroll-container {
+  display: flex;
+  gap: 1.5rem;
+  overflow-x: auto;
+  padding: 10px 5px 25px;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+.horizontal-card {
+  min-width: 290px;
+  max-width: 290px;
+  flex-shrink: 0;
+}

@@ -1,15 +1,28 @@
 <?php
 /**
- * Weather Widget Section Template (Glassmorphism Style)
+ * Weather Widget Section Template (Live Open-Meteo Integration)
  */
 $options     = get_option( 'kish_harmony_weather_options', array() );
 $title       = ! empty( $options['title'] ) ? $options['title'] : 'آب و هوای <span class="highlight-orange">لحظه‌ای</span> کیش';
 $subtitle    = ! empty( $options['subtitle'] ) ? $options['subtitle'] : 'وضعیت امروز جزیره زیبای کیش برای برنامه‌ریزی تفریحات شما';
+$auto_api    = isset( $options['auto_api'] ) ? $options['auto_api'] : '1';
+
 $temp        = ! empty( $options['temp'] ) ? $options['temp'] : '۲۸°C';
 $status_text = ! empty( $options['status_text'] ) ? $options['status_text'] : 'آفتابی و مطلوب';
 $humidity    = ! empty( $options['humidity'] ) ? $options['humidity'] : '۶۵٪';
 $wind        = ! empty( $options['wind'] ) ? $options['wind'] : '۱۲ کیلومتر بر ساعت';
 $bg_image    = ! empty( $options['bg_image'] ) ? $options['bg_image'] : 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80';
+
+// Override with live API data if enabled
+if ( $auto_api === '1' && function_exists( 'kish_harmony_get_live_weather_data' ) ) {
+	$live_data = kish_harmony_get_live_weather_data();
+	if ( $live_data ) {
+		$temp        = $live_data['temp'];
+		$status_text = $live_data['status_text'];
+		$humidity    = $live_data['humidity'];
+		$wind        = $live_data['wind'];
+	}
+}
 ?>
 
 <div class="weather-widget-wrapper">

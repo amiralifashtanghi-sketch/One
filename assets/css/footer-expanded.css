@@ -1,0 +1,41 @@
+
+/* Social Icons & Trust Badges Styling in Footer */
+.footer-social-icons {
+  display: flex;
+  gap: 12px;
+  margin-top: 1.2rem;
+}
+
+.footer-social-icons a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  font-size: 1.2rem;
+  transition: background 0.3s ease, transform 0.3s ease;
+}
+
+.footer-social-icons a:hover {
+  background: var(--kh-orange);
+  transform: translateY(-3px);
+}
+
+.trust-badges-grid {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.trust-badges-grid .badge-item img {
+  width: 75px;
+  height: 75px;
+  object-fit: contain;
+  background: #fff;
+  padding: 6px;
+  border-radius: 12px;
+}

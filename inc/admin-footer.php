@@ -1,6 +1,6 @@
 <?php
 /**
- * Footer Settings Page Callback
+ * Footer Settings Page Callback (Expanded Footer Options)
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -9,26 +9,57 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 function kish_harmony_footer_settings_page() {
 	if ( isset( $_POST['kish_harmony_save_footer'] ) && check_admin_referer( 'kish_harmony_footer_nonce' ) ) {
+		$footer_text  = sanitize_text_field( $_POST['footer_text'] ?? '' );
+		$vip_text     = sanitize_text_field( $_POST['vip_text'] ?? '' );
+		$address      = sanitize_text_field( $_POST['address'] ?? '' );
+		$map_link     = esc_url_raw( $_POST['map_link'] ?? '' );
+		$phones       = isset( $_POST['phones'] ) ? array_map( 'sanitize_text_field', $_POST['phones'] ) : array();
+		$socials      = array(
+			'instagram' => esc_url_raw( $_POST['socials']['instagram'] ?? '' ),
+			'telegram'  => esc_url_raw( $_POST['socials']['telegram'] ?? '' ),
+			'whatsapp'  => esc_url_raw( $_POST['socials']['whatsapp'] ?? '' ),
+		);
+		$trust_badges = isset( $_POST['trust_badges'] ) ? $_POST['trust_badges'] : array();
+
+		$sanitized_badges = array();
+		if ( is_array( $trust_badges ) ) {
+			foreach ( $trust_badges as $b ) {
+				if ( ! empty( $b['code'] ) || ! empty( $b['img_url'] ) ) {
+					$sanitized_badges[] = array(
+						'img_url' => esc_url_raw( $b['img_url'] ?? '' ),
+						'link'    => esc_url_raw( $b['link'] ?? '' ),
+						'code'    => wp_kses_post( $b['code'] ?? '' ),
+					);
+				}
+			}
+		}
+
 		$footer_data = array(
-			'footer_text'  => sanitize_text_field( $_POST['footer_text'] ?? '' ),
-			'vip_text'     => sanitize_text_field( $_POST['vip_text'] ?? '' ),
-			'phone_number' => sanitize_text_field( $_POST['phone_number'] ?? '' ),
-			'enamad_code'  => wp_kses_post( $_POST['enamad_code'] ?? '' ),
+			'footer_text'  => $footer_text,
+			'vip_text'     => $vip_text,
+			'address'      => $address,
+			'map_link'     => $map_link,
+			'phones'       => array_values( array_filter( $phones ) ),
+			'socials'      => $socials,
+			'trust_badges' => $sanitized_badges,
 		);
 
 		update_option( 'kish_harmony_footer_options', $footer_data );
-		echo '<div class="updated"><p>تنظیمات فوتر با موفقیت ذخیره شد.</p></div>';
+		echo '<div class="updated"><p>تنظیمات جامع فوتر با موفقیت ذخیره شد.</p></div>';
 	}
 
 	$options = get_option( 'kish_harmony_footer_options', array(
 		'footer_text'  => 'کیش هارمونی؛ مرجع رسمی رزرو خدمات و تفریحات جزیره کیش.',
 		'vip_text'     => 'پشتیبانی ۲۴ ساعته VIP',
-		'phone_number' => '076-44440000',
-		'enamad_code'  => '',
+		'address'      => 'جزیره کیش، برج صدف، واحد ۲۰۴',
+		'map_link'     => '#',
+		'phones'       => array( '076-44440000', '09120000000' ),
+		'socials'      => array( 'instagram' => '#', 'telegram' => '#', 'whatsapp' => '#' ),
+		'trust_badges' => array(),
 	) );
 	?>
 	<div class="wrap">
-		<h1>تنظیمات فوتر "جزیره‌ی آبی"</h1>
+		<h1>تنظیمات جامع فوتر "جزیره‌ی آبی"</h1>
 		<form method="post" action="">
 			<?php wp_nonce_field( 'kish_harmony_footer_nonce' ); ?>
 			<table class="form-table">
@@ -45,22 +76,125 @@ function kish_harmony_footer_settings_page() {
 					</td>
 				</tr>
 				<tr>
-					<th scope="row">شماره تلفن پشتیبانی:</th>
+					<th scope="row">آدرس آیکون لوکیشن و متن آدرس:</th>
 					<td>
-						<input type="text" name="phone_number" value="<?php echo esc_attr( $options['phone_number'] ); ?>" class="regular-text">
-					</td>
-				</tr>
-				<tr>
-					<th scope="row">کد اینماد و نمادهای اعتماد (HTML / script / iframe):</th>
-					<td>
-						<textarea name="enamad_code" rows="5" class="large-text"><?php echo esc_textarea( $options['enamad_code'] ); ?></textarea>
+						<input type="text" name="address" value="<?php echo esc_attr( $options['address'] ); ?>" class="large-text" placeholder="متن آدرس"><br><br>
+						<input type="text" name="map_link" value="<?php echo esc_url( $options['map_link'] ); ?>" class="large-text" placeholder="لینک گوگل مپ / نشان">
 					</td>
 				</tr>
 			</table>
+
+			<h2>تلفن‌های پشتیبانی (چند شماره)</h2>
+			<div id="phones-repeater">
+				<?php
+				$phones = ! empty( $options['phones'] ) ? $options['phones'] : array( '' );
+				foreach ( $phones as $idx => $p ) :
+				?>
+					<div class="phone-row" style="margin-bottom:10px;">
+						<input type="text" name="phones[]" value="<?php echo esc_attr( $p ); ?>" class="regular-text">
+						<button type="button" class="button remove-phone-btn" style="color:red;">حذف</button>
+					</div>
+				<?php endforeach; ?>
+			</div>
+			<button type="button" id="add-phone-btn" class="button" style="margin-bottom:20px;">+ افزودن شماره جدید</button>
+
+			<h2>شبکه‌های اجتماعی</h2>
+			<table class="form-table">
+				<tr>
+					<th scope="row">اینستاگرام:</th>
+					<td><input type="text" name="socials[instagram]" value="<?php echo esc_url( $options['socials']['instagram'] ?? '' ); ?>" class="regular-text"></td>
+				</tr>
+				<tr>
+					<th scope="row">تلگرام:</th>
+					<td><input type="text" name="socials[telegram]" value="<?php echo esc_url( $options['socials']['telegram'] ?? '' ); ?>" class="regular-text"></td>
+				</tr>
+				<tr>
+					<th scope="row">واتساپ:</th>
+					<td><input type="text" name="socials[whatsapp]" value="<?php echo esc_url( $options['socials']['whatsapp'] ?? '' ); ?>" class="regular-text"></td>
+				</tr>
+			</table>
+
+			<h2>نمادهای اعتماد و اینمادها (چند نماد)</h2>
+			<div id="badges-repeater">
+				<?php
+				$badges = ! empty( $options['trust_badges'] ) ? $options['trust_badges'] : array();
+				foreach ( $badges as $idx => $b ) :
+				?>
+					<div class="badge-row" style="background:#fff; border:1px solid #ccc; padding:15px; margin-bottom:15px; border-radius:8px; position:relative;">
+						<button type="button" class="button remove-badge-btn" style="position:absolute; top:10px; left:10px; color:red; border-color:red;">حذف این نماد</button>
+						<p>
+							<label>آدرس عکس نماد:</label><br>
+							<input type="text" name="trust_badges[<?php echo $idx; ?>][img_url]" value="<?php echo esc_url( $b['img_url'] ); ?>" class="large-text">
+						</p>
+						<p>
+							<label>لینک کلیک نماد:</label><br>
+							<input type="text" name="trust_badges[<?php echo $idx; ?>][link]" value="<?php echo esc_url( $b['link'] ); ?>" class="large-text">
+						</p>
+						<p>
+							<label>یا کد HTML / script / iframe نماد (اختیاری):</label><br>
+							<textarea name="trust_badges[<?php echo $idx; ?>][code]" rows="2" class="large-text"><?php echo esc_textarea( $b['code'] ); ?></textarea>
+						</p>
+					</div>
+				<?php endforeach; ?>
+			</div>
+			<button type="button" id="add-badge-btn" class="button" style="margin-bottom:20px;">+ افزودن نماد جدید</button>
+
 			<p class="submit">
-				<input type="submit" name="kish_harmony_save_footer" class="button button-primary" value="ذخیره تنظیمات فوتر">
+				<input type="submit" name="kish_harmony_save_footer" class="button button-primary" value="ذخیره جامع تنظیمات فوتر">
 			</p>
 		</form>
 	</div>
+
+	<script>
+	document.addEventListener('DOMContentLoaded', function() {
+		// Phone Repeater
+		const phoneContainer = document.getElementById('phones-repeater');
+		const addPhoneBtn = document.getElementById('add-phone-btn');
+		if (addPhoneBtn && phoneContainer) {
+			addPhoneBtn.addEventListener('click', function() {
+				const html = `
+					<div class="phone-row" style="margin-bottom:10px;">
+						<input type="text" name="phones[]" value="" class="regular-text">
+						<button type="button" class="button remove-phone-btn" style="color:red;">حذف</button>
+					</div>
+				`;
+				phoneContainer.insertAdjacentHTML('beforeend', html);
+			});
+			phoneContainer.addEventListener('click', function(e) {
+				if (e.target.classList.contains('remove-phone-btn')) e.target.closest('.phone-row').remove();
+			});
+		}
+
+		// Badge Repeater
+		const badgeContainer = document.getElementById('badges-repeater');
+		const addBadgeBtn = document.getElementById('add-badge-btn');
+		if (addBadgeBtn && badgeContainer) {
+			addBadgeBtn.addEventListener('click', function() {
+				const idx = Date.now();
+				const html = `
+					<div class="badge-row" style="background:#fff; border:1px solid #ccc; padding:15px; margin-bottom:15px; border-radius:8px; position:relative;">
+						<button type="button" class="button remove-badge-btn" style="position:absolute; top:10px; left:10px; color:red; border-color:red;">حذف این نماد</button>
+						<p>
+							<label>آدرس عکس نماد:</label><br>
+							<input type="text" name="trust_badges[${idx}][img_url]" value="" class="large-text">
+						</p>
+						<p>
+							<label>لینک کلیک نماد:</label><br>
+							<input type="text" name="trust_badges[${idx}][link]" value="" class="large-text">
+						</p>
+						<p>
+							<label>یا کد HTML / script / iframe نماد (اختیاری):</label><br>
+							<textarea name="trust_badges[${idx}][code]" rows="2" class="large-text"></textarea>
+						</p>
+					</div>
+				`;
+				badgeContainer.insertAdjacentHTML('beforeend', html);
+			});
+			badgeContainer.addEventListener('click', function(e) {
+				if (e.target.classList.contains('remove-badge-btn')) e.target.closest('.badge-row').remove();
+			});
+		}
+	});
+	</script>
 	<?php
 }

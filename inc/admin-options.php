@@ -1,6 +1,6 @@
 <?php
 /**
- * Theme Options Admin Panel
+ * General & Performance Settings Page Callback
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -112,29 +112,28 @@ function kish_harmony_add_admin_menu() {
 }
 add_action( 'admin_menu', 'kish_harmony_add_admin_menu' );
 
-/**
- * General & Performance Settings Page
- */
 function kish_harmony_general_settings_page() {
 	if ( isset( $_POST['kish_harmony_save_general'] ) && check_admin_referer( 'kish_harmony_general_nonce' ) ) {
-		$section_order = isset( $_POST['section_order'] ) ? sanitize_text_field( $_POST['section_order'] ) : '';
+		$section_order     = isset( $_POST['section_order'] ) ? array_map( 'sanitize_text_field', $_POST['section_order'] ) : array();
 		$disabled_sections = isset( $_POST['disabled_sections'] ) ? array_map( 'sanitize_text_field', $_POST['disabled_sections'] ) : array();
-		$custom_blocks = isset( $_POST['custom_blocks'] ) ? $_POST['custom_blocks'] : array();
+		$custom_blocks     = isset( $_POST['custom_blocks'] ) ? $_POST['custom_blocks'] : array();
 
 		// Sanitize custom blocks
 		$sanitized_blocks = array();
 		if ( is_array( $custom_blocks ) ) {
 			foreach ( $custom_blocks as $block ) {
-				$sanitized_blocks[] = array(
-					'position' => sanitize_text_field( $block['position'] ?? '' ),
-					'type'     => sanitize_text_field( $block['type'] ?? 'html' ),
-					'content'  => wp_kses_post( $block['content'] ?? '' ),
-				);
+				if ( ! empty( $block['content'] ) ) {
+					$sanitized_blocks[] = array(
+						'position' => sanitize_text_field( $block['position'] ?? '' ),
+						'type'     => sanitize_text_field( $block['type'] ?? 'html' ),
+						'content'  => wp_kses_post( $block['content'] ?? '' ),
+					);
+				}
 			}
 		}
 
 		$general_data = array(
-			'section_order'     => $section_order,
+			'section_order'     => implode( ',', $section_order ),
 			'disabled_sections' => $disabled_sections,
 			'custom_blocks'     => $sanitized_blocks,
 		);
@@ -143,21 +142,9 @@ function kish_harmony_general_settings_page() {
 		echo '<div class="updated"><p>تنظیمات عمومی با موفقیت ذخیره شد.</p></div>';
 	}
 
-	$options = get_option( 'kish_harmony_general_options', array(
-		'section_order' => 'header,hero,services,banner,search,categories,special_offers,car_rental,kishpedia,weather,gallery,footer',
-		'disabled_sections' => array(),
-		'custom_blocks' => array(),
-	) );
-
-	// WooCommerce Status Test
-	$wc_active = class_exists( 'WooCommerce' );
-	// GTranslate Status Test
-	$gtranslate_active = shortcode_exists( 'gtranslate' ) || defined( 'GTRANSLATE_MAIN_FILE' );
-
-	$sections_list = array(
+	$all_sections = array(
 		'banner'         => 'بنر اصلی بالای صفحه (Hero Banner)',
 		'services'       => 'دکمه‌های خدمات ویژه (۸ تایی)',
-		'banner'         => 'بنر تبلیغاتی کیش هارمونی',
 		'search'         => 'کادر جستجوی زنده (AJAX)',
 		'categories'     => 'دسته‌بندی تفریحات کیش',
 		'special_offers' => 'پیشنهادهای ویژه (ووکامرس)',
@@ -166,6 +153,25 @@ function kish_harmony_general_settings_page() {
 		'weather'        => 'ویجت آب و هوای کیش',
 		'gallery'        => 'گالری تصاویر مشتریان',
 	);
+
+	$options = get_option( 'kish_harmony_general_options', array(
+		'section_order'     => implode( ',', array_keys( $all_sections ) ),
+		'disabled_sections' => array(),
+		'custom_blocks'     => array(),
+	) );
+
+	$saved_order = explode( ',', $options['section_order'] );
+	// Ensure all sections exist in the order list
+	foreach ( array_keys( $all_sections ) as $sec_key ) {
+		if ( ! in_array( $sec_key, $saved_order, true ) ) {
+			$saved_order[] = $sec_key;
+		}
+	}
+
+	// WooCommerce Status Test
+	$wc_active = class_exists( 'WooCommerce' );
+	// GTranslate Status Test
+	$gtranslate_active = shortcode_exists( 'gtranslate' ) || defined( 'GTRANSLATE_MAIN_FILE' );
 	?>
 	<div class="wrap">
 		<h1>تنظیمات عمومی و عملکرد قالب کیش هارمونی</h1>
@@ -185,20 +191,25 @@ function kish_harmony_general_settings_page() {
 		<form method="post" action="">
 			<?php wp_nonce_field( 'kish_harmony_general_nonce' ); ?>
 
-			<h2>مدیریت و غیرفعال‌سازی بخش‌های ۱۰ گانه</h2>
-			<table class="form-table">
-				<tr>
-					<th scope="row">بخش‌های فعال / غیرفعال:</th>
-					<td>
-						<?php foreach ( $sections_list as $key => $title ) : ?>
-							<label style="display: block; margin-bottom: 8px;">
-								<input type="checkbox" name="disabled_sections[]" value="<?php echo esc_attr( $key ); ?>" <?php checked( in_array( $key, (array) $options['disabled_sections'] ) ); ?>>
-								غیرفعال کردن <strong><?php echo esc_html( $title ); ?></strong>
-							</label>
-						<?php endforeach; ?>
-					</td>
-				</tr>
-			</table>
+			<h2>چیدمان و فعال/غیرفعال‌سازی بخش‌های صفحه اصلی</h2>
+			<p>می‌توانید ترتیب نمایش بخش‌ها را با کشیدن یا جابجایی لیست تغییر دهید یا هر بخش را غیرفعال کنید.</p>
+
+			<ul id="section-order-list" style="max-width:600px; background:#fff; border:1px solid #ccc; border-radius:8px; padding:10px;">
+				<?php foreach ( $saved_order as $key ) :
+					if ( ! isset( $all_sections[ $key ] ) ) continue;
+					$title = $all_sections[ $key ];
+					$is_disabled = in_array( $key, (array) $options['disabled_sections'], true );
+				?>
+					<li class="section-order-item" style="display:flex; justify-content:space-between; align-items:center; padding:10px; border-bottom:1px solid #eee; background:#f9f9f9; margin-bottom:6px; border-radius:4px;">
+						<input type="hidden" name="section_order[]" value="<?php echo esc_attr( $key ); ?>">
+						<span><strong>≡ <?php echo esc_html( $title ); ?></strong></span>
+						<label style="color:red;">
+							<input type="checkbox" name="disabled_sections[]" value="<?php echo esc_attr( $key ); ?>" <?php checked( $is_disabled ); ?>>
+							غیرفعال
+						</label>
+					</li>
+				<?php endforeach; ?>
+			</ul>
 
 			<h2>افزودن بخش‌های سفارشی (HTML / PHP / Shortcode)</h2>
 			<p>می‌توانید کدهای دلخواه خود را بین بخش‌های مختلف صفحه اصلی قرار دهید.</p>
@@ -209,11 +220,12 @@ function kish_harmony_general_settings_page() {
 				if ( ! empty( $custom_blocks ) ) :
 					foreach ( $custom_blocks as $idx => $block ) :
 				?>
-					<div class="custom-block-row" style="background:#fff; padding:15px; margin-bottom:15px; border:1px solid #ccc; border-radius:6px;">
+					<div class="custom-block-row" style="background:#fff; padding:15px; margin-bottom:15px; border:1px solid #ccc; border-radius:6px; position:relative;">
+						<button type="button" class="button remove-custom-block" style="position:absolute; top:10px; left:10px; color:red; border-color:red;">حذف این بلوک</button>
 						<p>
 							<label>موقعیت درج: </label>
 							<select name="custom_blocks[<?php echo $idx; ?>][position]">
-								<?php foreach ( $sections_list as $s_key => $s_title ) : ?>
+								<?php foreach ( $all_sections as $s_key => $s_title ) : ?>
 									<option value="after_<?php echo $s_key; ?>" <?php selected( $block['position'], 'after_' . $s_key ); ?>>بعد از <?php echo esc_html( $s_title ); ?></option>
 								<?php endforeach; ?>
 							</select>
@@ -235,10 +247,55 @@ function kish_harmony_general_settings_page() {
 				?>
 			</div>
 
+			<button type="button" id="add-custom-block-btn" class="button" style="margin-bottom:20px;">+ افزودن بلوک سفارشی جدید</button>
+
 			<p class="submit">
 				<input type="submit" name="kish_harmony_save_general" class="button button-primary" value="ذخیره تنظیمات عمومی">
 			</p>
 		</form>
 	</div>
+
+	<script>
+	document.addEventListener('DOMContentLoaded', function() {
+		const container = document.getElementById('custom-blocks-container');
+		const addBtn = document.getElementById('add-custom-block-btn');
+
+		if (addBtn && container) {
+			addBtn.addEventListener('click', function() {
+				const idx = Date.now();
+				const html = `
+					<div class="custom-block-row" style="background:#fff; padding:15px; margin-bottom:15px; border:1px solid #ccc; border-radius:6px; position:relative;">
+						<button type="button" class="button remove-custom-block" style="position:absolute; top:10px; left:10px; color:red; border-color:red;">حذف این بلوک</button>
+						<p>
+							<label>موقعیت درج: </label>
+							<select name="custom_blocks[${idx}][position]">
+								<?php foreach ( $all_sections as $s_key => $s_title ) : ?>
+									<option value="after_<?php echo $s_key; ?>">بعد از <?php echo esc_html( $s_title ); ?></option>
+								<?php endforeach; ?>
+							</select>
+
+							<label style="margin-right:15px;">نوع کد: </label>
+							<select name="custom_blocks[${idx}][type]">
+								<option value="html">کد HTML / متنی</option>
+								<option value="shortcode">شورت‌کد (Shortcode)</option>
+								<option value="php">کد PHP</option>
+							</select>
+						</p>
+						<p>
+							<textarea name="custom_blocks[${idx}][content]" rows="4" style="width:100%;" placeholder="کد یا شورت‌کد خود را اینجا وارد کنید..."></textarea>
+						</p>
+					</div>
+				`;
+				container.insertAdjacentHTML('beforeend', html);
+			});
+
+			container.addEventListener('click', function(e) {
+				if (e.target.classList.contains('remove-custom-block')) {
+					e.target.closest('.custom-block-row').remove();
+				}
+			});
+		}
+	});
+	</script>
 	<?php
 }

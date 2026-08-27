@@ -1,0 +1,60 @@
+
+/* Banner Multi-Slide Component Styling */
+.banner-container-wrapper {
+  position: relative;
+  max-width: 1300px;
+  margin: 30px auto;
+  padding: 0 1rem;
+  overflow: hidden;
+}
+
+.banner-slider-track {
+  position: relative;
+  width: 100%;
+  min-height: 450px;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+}
+
+.slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.8s ease, visibility 0.8s ease;
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: center;
+}
+
+.slide.active {
+  opacity: 1;
+  visibility: visible;
+  position: relative;
+}
+
+.banner-slider-dots {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+  z-index: 10;
+}
+
+.banner-slider-dots .dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.3s ease;
+}
+
+.banner-slider-dots .dot.active {
+  background: var(--kh-orange);
+  transform: scale(1.2);
+}

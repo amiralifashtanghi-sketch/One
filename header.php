@@ -27,12 +27,6 @@ $cart_url    = function_exists( 'wc_get_cart_url' ) ? wc_get_cart_url() : '#';
 			<span></span>
 			<span></span>
 		</button>
-
-		<?php if ( $enable_gtranslate && shortcode_exists( 'gtranslate' ) ) : ?>
-			<div class="header__gtranslate">
-				<?php echo do_shortcode( '[gtranslate]' ); ?>
-			</div>
-		<?php endif; ?>
 	</div>
 
 	<div class="header__center">
@@ -71,6 +65,14 @@ $cart_url    = function_exists( 'wc_get_cart_url' ) ? wc_get_cart_url() : '#';
 			<span class="drawer-title"><?php echo esc_html( $brand_name ); ?></span>
 			<button class="drawer-close" id="drawerClose">&times;</button>
 		</div>
+
+		<?php if ( $enable_gtranslate && shortcode_exists( 'gtranslate' ) ) : ?>
+			<div class="drawer-gtranslate-modern">
+				<span class="gtranslate-label"><i class="fa-solid fa-language"></i> انتخاب زبان:</span>
+				<?php echo do_shortcode( '[gtranslate]' ); ?>
+			</div>
+		<?php endif; ?>
+
 		<nav class="drawer-nav">
 			<?php
 			if ( $header_menu_id ) {

@@ -1,0 +1,16 @@
+
+/* General Horizontal Scroll Layout for Sections */
+.horizontal-scroll-container {
+  display: flex;
+  gap: 1.5rem;
+  overflow-x: auto;
+  padding: 10px 5px 25px;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+.horizontal-card {
+  min-width: 290px;
+  max-width: 290px;
+  flex-shrink: 0;
+}

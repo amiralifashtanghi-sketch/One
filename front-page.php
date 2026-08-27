@@ -4,7 +4,6 @@
  */
 get_header();
 
-// Section Rendering Loop in order with custom blocks support
 $sections = array(
 	'banner'         => 'templates/section-banner.php',
 	'services'       => 'templates/section-services.php',
@@ -17,10 +16,14 @@ $sections = array(
 	'gallery'        => 'templates/section-gallery.php',
 );
 
+$general_options = get_option( 'kish_harmony_general_options', array() );
+$order_setting   = ! empty( $general_options['section_order'] ) ? explode( ',', $general_options['section_order'] ) : array_keys( $sections );
+
 echo '<main class="main-content-area">';
 
-foreach ( $sections as $key => $template_path ) {
-	if ( kish_harmony_is_section_enabled( $key ) ) {
+foreach ( $order_setting as $key ) {
+	if ( isset( $sections[ $key ] ) && kish_harmony_is_section_enabled( $key ) ) {
+		$template_path = $sections[ $key ];
 		if ( file_exists( KISH_HARMONY_DIR . '/' . $template_path ) ) {
 			include KISH_HARMONY_DIR . '/' . $template_path;
 		}
