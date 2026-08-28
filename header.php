@@ -18,6 +18,7 @@ $enable_gtranslate = isset( $header_options['enable_gtranslate'] ) ? $header_opt
 // WooCommerce Account & Cart Links
 $account_url = function_exists( 'wc_get_page_permalink' ) ? wc_get_page_permalink( 'myaccount' ) : home_url( '/my-account' );
 $cart_url    = function_exists( 'wc_get_cart_url' ) ? wc_get_cart_url() : home_url( '/cart' );
+$cart_count  = function_exists( 'WC' ) && WC()->cart ? WC()->cart->get_cart_contents_count() : 0;
 $hero_enabled = true;
 
 if ( function_exists( 'kish_harmony_is_section_enabled' ) ) {
@@ -53,12 +54,15 @@ $show_hero_header = $is_front && $hero_enabled;
 	</div>
 
 	<div class="header__right">
-		<a href="<?php echo esc_url( $cart_url ); ?>" class="header__icon" aria-label="سبد خرید">
+		<a href="<?php echo esc_url( $cart_url ); ?>" class="header__icon cart-icon-badge-wrap" aria-label="سبد خرید" style="position:relative;">
 			<svg viewBox="0 0 24 24">
 				<path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4zM3 6h18" />
 				<circle cx="8" cy="10" r="2" />
 				<circle cx="16" cy="10" r="2" />
 			</svg>
+			<?php if ( $cart_count > 0 ) : ?>
+				<span class="cart-badge-count" style="position: absolute; top: -5px; right: -5px; background: var(--kh-orange, #FF8A00); color: #fff; font-size: 0.75rem; font-weight: bold; width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center;"><?php echo esc_html( $cart_count ); ?></span>
+			<?php endif; ?>
 		</a>
 		<a href="<?php echo esc_url( $account_url ); ?>" class="header__icon" aria-label="حساب کاربری">
 			<svg viewBox="0 0 24 24">

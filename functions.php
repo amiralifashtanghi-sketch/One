@@ -160,4 +160,5 @@ require_once KISH_HARMONY_DIR . '/inc/admin-car-rental.php';
 require_once KISH_HARMONY_DIR . '/inc/admin-footer.php';
 require_once KISH_HARMONY_DIR . '/inc/custom-post-types.php';
 require_once KISH_HARMONY_DIR . '/inc/woocommerce-meta.php';
+require_once KISH_HARMONY_DIR . '/inc/admin-woocommerce.php';
 require_once KISH_HARMONY_DIR . '/inc/theme-helpers.php';

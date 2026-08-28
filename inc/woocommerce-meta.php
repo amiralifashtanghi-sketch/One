@@ -25,9 +25,11 @@ add_action( 'add_meta_boxes', 'kish_harmony_add_product_meta_fields' );
 function kish_harmony_render_product_meta_box( $post ) {
 	wp_nonce_field( 'kish_harmony_product_meta_nonce', 'kish_harmony_product_nonce' );
 
-	$is_special = get_post_meta( $post->ID, '_is_special_offer', true );
-	$discount   = get_post_meta( $post->ID, '_special_discount_percent', true );
-	$capacity   = get_post_meta( $post->ID, '_special_capacity', true );
+	$is_special    = get_post_meta( $post->ID, '_is_special_offer', true );
+	$discount      = get_post_meta( $post->ID, '_special_discount_percent', true );
+	$capacity      = get_post_meta( $post->ID, '_special_capacity', true );
+	$is_recreation = get_post_meta( $post->ID, '_is_recreation', true );
+	$terms_rules   = get_post_meta( $post->ID, '_recreation_terms', true );
 	?>
 	<p>
 		<label>
@@ -45,6 +47,16 @@ function kish_harmony_render_product_meta_box( $post ) {
 		<input type="number" name="special_capacity" value="<?php echo esc_attr( $capacity ); ?>" style="width:100%;" min="0">
 		<span class="description" style="font-size:11px;">با ثبت هر سفارش، به‌صورت اتوماتیک کم می‌شود.</span>
 	</p>
+	<p style="border-top:1px solid #ccc; padding-top:10px; margin-top:10px;">
+		<label>
+			<input type="checkbox" name="is_recreation" value="1" <?php checked( $is_recreation, '1' ); ?>>
+			<strong>این محصول یک تفریح است (نیاز به انتخاب تاریخ)</strong>
+		</label>
+	</p>
+	<p>
+		<label>قوانین و مقررات اختصاصی تفریح:</label><br>
+		<textarea name="recreation_terms" rows="4" style="width:100%; font-size:12px;" placeholder="قوانین تفریح را اینجا وارد کنید..."><?php echo esc_textarea( $terms_rules ); ?></textarea>
+	</p>
 	<?php
 }
 
@@ -61,13 +73,17 @@ function kish_harmony_save_product_meta( $post_id ) {
 		return;
 	}
 
-	$is_special = isset( $_POST['is_special_offer'] ) ? '1' : '0';
-	$discount   = sanitize_text_field( $_POST['special_discount_percent'] ?? '' );
-	$capacity   = sanitize_text_field( $_POST['special_capacity'] ?? '' );
+	$is_special    = isset( $_POST['is_special_offer'] ) ? '1' : '0';
+	$discount      = sanitize_text_field( $_POST['special_discount_percent'] ?? '' );
+	$capacity      = sanitize_text_field( $_POST['special_capacity'] ?? '' );
+	$is_recreation = isset( $_POST['is_recreation'] ) ? '1' : '0';
+	$terms_rules   = sanitize_textarea_field( $_POST['recreation_terms'] ?? '' );
 
 	update_post_meta( $post_id, '_is_special_offer', $is_special );
 	update_post_meta( $post_id, '_special_discount_percent', $discount );
 	update_post_meta( $post_id, '_special_capacity', $capacity );
+	update_post_meta( $post_id, '_is_recreation', $is_recreation );
+	update_post_meta( $post_id, '_recreation_terms', $terms_rules );
 }
 add_action( 'save_post_product', 'kish_harmony_save_product_meta' );
 
