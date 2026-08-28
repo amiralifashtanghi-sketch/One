@@ -104,6 +104,9 @@ function kish_harmony_scripts() {
 		}
 		.site-header { background: linear-gradient(135deg, {$primary_color} 0%, {$secondary_color} 100%) !important; }
 		.site-footer { background: {$primary_color} !important; }
+		.hero-section { background: linear-gradient(135deg, {$primary_color} 0%, {$secondary_color} 100%) !important; }
+		.hero-card, .service-card { border-top: 3px solid {$secondary_color} !important; }
+		.hero-card:hover, .service-card:hover { border-color: {$accent_color} !important; }
 	";
 	wp_add_inline_style( 'kish-harmony-main', $custom_css );
 

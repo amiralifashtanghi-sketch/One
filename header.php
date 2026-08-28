@@ -18,11 +18,18 @@ $enable_gtranslate = isset( $header_options['enable_gtranslate'] ) ? $header_opt
 // WooCommerce Account & Cart Links
 $account_url = function_exists( 'wc_get_page_permalink' ) ? wc_get_page_permalink( 'myaccount' ) : home_url( '/my-account' );
 $cart_url    = function_exists( 'wc_get_cart_url' ) ? wc_get_cart_url() : home_url( '/cart' );
-$is_front    = is_front_page();
+$hero_enabled = true;
+
+if ( function_exists( 'kish_harmony_is_section_enabled' ) ) {
+	$hero_enabled = kish_harmony_is_section_enabled( 'hero' );
+}
+
+$is_front         = is_front_page();
+$show_hero_header = $is_front && $hero_enabled;
 ?>
 
 <!-- Glassmorphic Fixed Header -->
-<header class="header <?php echo ! $is_front ? 'internal-page-header' : ''; ?>" id="header">
+<header class="header <?php echo ! $show_hero_header ? 'internal-page-header' : ''; ?>" id="header">
 	<div class="header__left">
 		<button class="hamburger" id="hamburgerBtn" aria-label="منو" aria-expanded="false">
 			<span></span>
@@ -32,7 +39,7 @@ $is_front    = is_front_page();
 	</div>
 
 	<div class="header__center">
-		<?php if ( ! $is_front ) : ?>
+		<?php if ( ! $show_hero_header ) : ?>
 			<!-- Static Center Logo for Internal Pages -->
 			<a href="<?php echo esc_url( home_url( '/' ) ); ?>" class="header-logo">
 				<?php if ( ! empty( $brand_logo ) ) : ?>
@@ -62,7 +69,7 @@ $is_front    = is_front_page();
 	</div>
 </header>
 
-<?php if ( $is_front ) : ?>
+<?php if ( $show_hero_header ) : ?>
 	<!-- Floating Animated Logo (Only on Front Page) -->
 	<a href="<?php echo esc_url( home_url( '/' ) ); ?>" class="floating-logo" id="floatingLogo">
 		<?php if ( ! empty( $brand_logo ) ) : ?>

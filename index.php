@@ -1,26 +1,51 @@
 <?php
 /**
- * Main Index Fallback Template
+ * Main Index & Blog Posts Archive Template
  */
+
 get_header();
 ?>
 
-<div class="container" style="padding: 120px 1rem 40px;">
-	<?php if ( have_posts() ) : ?>
-		<div class="posts-grid" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
-			<?php while ( have_posts() ) : the_post(); ?>
-				<article class="post-card" style="background:#fff; border-radius:16px; padding:20px; box-shadow:0 4px 15px rgba(0,0,0,0.05);">
-					<h2><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h2>
-					<div class="post-excerpt" style="margin: 15px 0; color:#5a6f80;">
-						<?php the_excerpt(); ?>
-					</div>
-					<a href="<?php the_permalink(); ?>" style="color:var(--kh-orange); font-weight:bold;">ادامه مطلب &rarr;</a>
-				</article>
-			<?php endwhile; ?>
+<main id="primary" class="site-main blog-index-wrapper">
+	<div class="container" style="max-width: 1200px; margin: 40px auto; padding: 0 20px;">
+		<div style="text-align: center; margin-bottom: 40px;">
+			<h1 style="font-size: 2.2rem; color: var(--kh-primary-blue, #0B63D8); font-weight: 800;">📚 کیش‌پدیا - مجله گردشگری و راهنمای سفر به کیش</h1>
+			<p style="color: #64748b; font-size: 1.1rem;">جدیدترین اخبار، راهنماهای جاذبه‌های گردشگری و مقالات مفصل جزیره کیش</p>
 		</div>
-	<?php else : ?>
-		<p>هیچ محتوایی یافت نشد.</p>
-	<?php endif; ?>
-</div>
 
-<?php get_footer(); ?>
+		<?php if ( have_posts() ) : ?>
+			<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 30px;">
+				<?php
+				while ( have_posts() ) :
+					the_post();
+					$thumb = get_the_post_thumbnail_url( get_the_ID(), 'medium_large' ) ?: 'https://via.placeholder.com/400x250?text=Kishpedia';
+				?>
+					<div style="background: #fff; border-radius: 18px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.05); display: flex; flex-direction: column; justify-content: space-between;">
+						<div>
+							<img src="<?php echo esc_url( $thumb ); ?>" alt="<?php the_title_attribute(); ?>" style="width: 100%; height: 200px; object-fit: cover;">
+							<div style="padding: 22px;">
+								<div style="color: #94a3b8; font-size: 0.85rem; margin-bottom: 8px;">📅 <?php echo get_the_date(); ?></div>
+								<h2 style="font-size: 1.25rem; margin: 0 0 12px 0; color: #1e293b; font-weight: 800; line-height: 1.5;"><?php the_title(); ?></h2>
+								<div style="color: #64748b; font-size: 0.95rem; line-height: 1.7;">
+									<?php echo wp_trim_words( get_the_excerpt(), 20, '...' ); ?>
+								</div>
+							</div>
+						</div>
+						<div style="padding: 0 22px 22px 22px;">
+							<a href="<?php the_permalink(); ?>" style="display: block; width: 100%; text-align: center; background: #f1f5f9; color: var(--kh-primary-blue, #0B63D8); text-decoration: none; padding: 12px; border-radius: 10px; font-weight: bold; transition: 0.3s;">مطالعه کامل مقاله ←</a>
+						</div>
+					</div>
+				<?php endwhile; ?>
+			</div>
+
+			<div style="margin-top: 40px; text-align: center;">
+				<?php the_posts_pagination(); ?>
+			</div>
+		<?php else : ?>
+			<p style="text-align: center;">هنوز مقاله‌ای در کیش‌پدیا منتشر نشده است.</p>
+		<?php endif; ?>
+	</div>
+</main>
+
+<?php
+get_footer();

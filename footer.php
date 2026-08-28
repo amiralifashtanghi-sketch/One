@@ -4,6 +4,7 @@
  */
 $footer_options = get_option( 'kish_harmony_footer_options', array() );
 $brand_name     = get_option( 'kish_harmony_header_options' )['brand_name'] ?? 'جزیره‌ی آبی';
+$copyright_text = ! empty( $footer_options['copyright_text'] ) ? $footer_options['copyright_text'] : '© 2026 کلیه حقوق مادی و معنوی متعلق به Kishharmony می‌باشد. ساخته شده با ♥️ در ایران';
 $footer_text    = ! empty( $footer_options['footer_text'] ) ? $footer_options['footer_text'] : 'کیش هارمونی؛ مرجع رسمی رزرو خدمات و تفریحات جزیره کیش.';
 $vip_text       = ! empty( $footer_options['vip_text'] ) ? $footer_options['vip_text'] : 'پشتیبانی ۲۴ ساعته VIP';
 $cta_text       = ! empty( $footer_options['cta_text'] ) ? $footer_options['cta_text'] : 'مشاوره رایگان ←';
@@ -140,8 +141,7 @@ $trust_badges   = ! empty( $footer_options['trust_badges'] ) && is_array( $foote
 		</div>
 
 		<div class="footer-bottom">
-			<span>© <?php echo date( 'Y' ); ?> کلیه حقوق مادی و معنوی متعلق به <?php echo esc_html( $brand_name ); ?> می‌باشد.</span>
-			<span>ساخته شده با <span class="heart">♥</span> در ایران</span>
+			<span><?php echo esc_html( $copyright_text ); ?></span>
 		</div>
 	</div>
 </footer>

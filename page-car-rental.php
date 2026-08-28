@@ -1,80 +1,61 @@
 <?php
 /**
- * Template Name: اجاره خودرو (Car Rental Page)
+ * Template Name: Car Rental Custom Page
  */
+
 get_header();
 ?>
 
-<div class="car-rental-page-wrapper">
-	<div class="container">
-		<div class="car-page-header">
-			<h1><i class="fa-solid fa-car"></i> اجاره آنلاین خودرو در جزیره کیش</h1>
-			<p>جدیدترین و لوکس‌ترین خودروهای کیش را با بهترین قیمت و شرایط آسان رزرو کنید</p>
+<main id="primary" class="site-main page-cars-wrapper">
+	<div class="container" style="max-width: 1200px; margin: 40px auto; padding: 0 20px;">
+		<div style="text-align: center; margin-bottom: 40px;">
+			<h1 style="font-size: 2.2rem; color: var(--kh-primary-blue, #0B63D8); font-weight: 800;">🚗 سامانه آنلاین رنت خودرو کیش</h1>
+			<p style="color: #64748b; font-size: 1.1rem;">انتخاب، رزرو فوری و تحویل خودرو در فرودگاه کیش</p>
 		</div>
 
-		<div class="car-grid">
-			<?php
-			$args = array(
-				'post_type'      => 'car_rental',
-				'posts_per_page' => 12,
-			);
-			$car_query = new WP_Query( $args );
+		<?php
+		$cars_query = new WP_Query( array(
+			'post_type'      => 'car_rental',
+			'posts_per_page' => 12,
+		) );
 
-			if ( $car_query->have_posts() ) :
-				while ( $car_query->have_posts() ) : $car_query->the_post();
+		if ( $cars_query->have_posts() ) :
+		?>
+			<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 30px;">
+				<?php
+				while ( $cars_query->have_posts() ) :
+					$cars_query->the_post();
 					$car_id       = get_the_ID();
-					$price        = get_post_meta( $car_id, '_car_price', true );
+					$daily_price  = get_post_meta( $car_id, '_car_price', true ) ?: get_post_meta( $car_id, '_car_daily_price', true );
 					$model_year   = get_post_meta( $car_id, '_car_model_year', true );
 					$transmission = get_post_meta( $car_id, '_car_transmission', true );
-					$fuel         = get_post_meta( $car_id, '_car_fuel', true );
-					$seats        = get_post_meta( $car_id, '_car_seats', true );
-					$thumb        = get_the_post_thumbnail_url( $car_id, 'large' );
-					if ( ! $thumb ) {
-						$thumb = 'https://via.placeholder.com/400x250?text=Kish+Car+Rental';
-					}
-			?>
-					<div class="car-card">
-						<div class="car-card-img-wrapper">
-							<img src="<?php echo esc_url( $thumb ); ?>" alt="<?php the_title_attribute(); ?>">
-							<?php if ( ! empty( $model_year ) ) : ?>
-								<span class="car-year-badge"><?php echo esc_html( $model_year ); ?></span>
-							<?php endif; ?>
-						</div>
-						<div class="car-card-body">
-							<h3 class="car-title"><?php the_title(); ?></h3>
-
-							<div class="car-features-tags">
-								<?php if ( ! empty( $transmission ) ) : ?>
-									<span class="car-tag"><i class="fa-solid fa-gear"></i> <?php echo esc_html( $transmission ); ?></span>
-								<?php endif; ?>
-
-								<?php if ( ! empty( $seats ) ) : ?>
-									<span class="car-tag"><i class="fa-solid fa-user-group"></i> <?php echo esc_html( $seats ); ?> نفره</span>
-								<?php endif; ?>
-
-								<?php if ( ! empty( $fuel ) ) : ?>
-									<span class="car-tag"><i class="fa-solid fa-gas-pump"></i> <?php echo esc_html( $fuel ); ?></span>
-								<?php endif; ?>
-							</div>
-
-							<div class="car-card-footer">
-								<div class="car-price-box">
-									<span class="car-price-amount"><?php echo number_format( intval( $price ) ); ?></span>
-									<span class="car-price-unit">تومان / روزانه</span>
+					$thumb        = get_the_post_thumbnail_url( $car_id, 'medium_large' ) ?: 'https://via.placeholder.com/400x250?text=Kish+Car';
+				?>
+					<div style="background: #fff; border-radius: 18px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.06); display: flex; flex-direction: column; justify-content: space-between; border-top: 4px solid var(--kh-secondary-color, #18D6D8);">
+						<div>
+							<img src="<?php echo esc_url( $thumb ); ?>" alt="<?php the_title_attribute(); ?>" style="width: 100%; height: 210px; object-fit: cover;">
+							<div style="padding: 22px;">
+								<h3 style="font-size: 1.35rem; margin: 0 0 10px 0; color: #1e293b; font-weight: 800;"><?php the_title(); ?></h3>
+								<div style="color: #64748b; font-size: 0.95rem; margin-bottom: 15px; background: #f8fafc; padding: 10px; border-radius: 8px;">
+									<span>مدل: <strong><?php echo esc_html( $model_year ?: '۲۰۲۳' ); ?></strong></span> |
+									<span>گیربکس: <strong><?php echo esc_html( $transmission ?: 'اتوماتیک' ); ?></strong></span>
 								</div>
-								<a href="<?php the_permalink(); ?>" class="car-reserve-btn">درخواست رزرو</a>
+								<div style="font-weight: 800; font-size: 1.3rem; color: var(--kh-orange, #FF8A00);">
+									<?php echo number_format( floatval( $daily_price ) ); ?> تومان / روز
+								</div>
 							</div>
+						</div>
+						<div style="padding: 0 22px 22px 22px;">
+							<a href="<?php the_permalink(); ?>" style="display: block; width: 100%; text-align: center; background: linear-gradient(135deg, var(--kh-primary-blue, #0B63D8) 0%, var(--kh-turquoise, #18D6D8) 100%); color: #fff; text-decoration: none; padding: 14px; border-radius: 12px; font-weight: bold; font-size: 1.05rem;">⚡ رزرو آنلاین خودرو</a>
 						</div>
 					</div>
-			<?php
-				endwhile;
-				wp_reset_postdata();
-			else :
-				echo '<p>هیچ خودرویی تاکنون ثبت نشده است.</p>';
-			endif;
-			?>
-		</div>
+				<?php endwhile; wp_reset_postdata(); ?>
+			</div>
+		<?php else : ?>
+			<p style="text-align: center;">هیچ خودرویی تاکنون ثبت نشده است.</p>
+		<?php endif; ?>
 	</div>
-</div>
+</main>
 
-<?php get_footer(); ?>
+<?php
+get_footer();

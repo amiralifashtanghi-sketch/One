@@ -13,8 +13,9 @@ function kish_harmony_footer_settings_page() {
 	}
 
 	if ( isset( $_POST['kish_harmony_save_footer'] ) && check_admin_referer( 'kish_harmony_footer_nonce' ) ) {
-		$footer_text  = sanitize_text_field( $_POST['footer_text'] ?? '' );
-		$vip_text     = sanitize_text_field( $_POST['vip_text'] ?? '' );
+		$copyright_text = sanitize_text_field( $_POST['copyright_text'] ?? '' );
+		$footer_text    = sanitize_text_field( $_POST['footer_text'] ?? '' );
+		$vip_text       = sanitize_text_field( $_POST['vip_text'] ?? '' );
 		$cta_text     = sanitize_text_field( $_POST['cta_text'] ?? '' );
 		$cta_link     = esc_url_raw( $_POST['cta_link'] ?? '' );
 		$address      = sanitize_text_field( $_POST['address'] ?? '' );
@@ -42,8 +43,9 @@ function kish_harmony_footer_settings_page() {
 		}
 
 		$footer_data = array(
-			'footer_text'  => $footer_text,
-			'vip_text'     => $vip_text,
+			'copyright_text' => $copyright_text,
+			'footer_text'    => $footer_text,
+			'vip_text'       => $vip_text,
 			'cta_text'     => $cta_text,
 			'cta_link'     => $cta_link,
 			'address'      => $address,
@@ -62,7 +64,8 @@ function kish_harmony_footer_settings_page() {
 		$options = array();
 	}
 
-	$footer_text  = $options['footer_text'] ?? 'کیش هارمونی؛ مرجع رسمی رزرو خدمات و تفریحات جزیره کیش.';
+	$copyright_text = $options['copyright_text'] ?? '© 2026 کلیه حقوق مادی و معنوی متعلق به Kishharmony می‌باشد. ساخته شده با ♥️ در ایران';
+	$footer_text    = $options['footer_text'] ?? 'کیش هارمونی؛ مرجع رسمی رزرو خدمات و تفریحات جزیره کیش.';
 	$vip_text     = $options['vip_text'] ?? 'پشتیبانی ۲۴ ساعته VIP';
 	$cta_text     = $options['cta_text'] ?? 'مشاوره رایگان ←';
 	$cta_link     = $options['cta_link'] ?? '#';
@@ -77,6 +80,12 @@ function kish_harmony_footer_settings_page() {
 		<form method="post" action="">
 			<?php wp_nonce_field( 'kish_harmony_footer_nonce' ); ?>
 			<table class="form-table">
+				<tr>
+					<th scope="row">متن حقوق مادی و معنوی (کپی‌رایت پایین فوتر):</th>
+					<td>
+						<input type="text" name="copyright_text" value="<?php echo esc_attr( $copyright_text ); ?>" class="large-text">
+					</td>
+				</tr>
 				<tr>
 					<th scope="row">متن درباره ما (فوتر):</th>
 					<td>

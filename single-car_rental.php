@@ -3,8 +3,6 @@
  * Single Car Rental Page Template with Direct Checkout Connection
  */
 
-get_header();
-
 $car_id       = get_the_ID();
 $daily_price  = get_post_meta( $car_id, '_car_daily_price', true );
 $model_year   = get_post_meta( $car_id, '_car_model_year', true );
@@ -13,7 +11,7 @@ $transmission = get_post_meta( $car_id, '_car_transmission', true );
 $features     = get_post_meta( $car_id, '_car_features', true );
 $wc_prod_id   = get_post_meta( $car_id, '_car_wc_product_id', true );
 
-// Handle Add to Cart for Car Rental
+// Handle Add to Cart for Car Rental before output
 if ( isset( $_POST['book_car_now'] ) && ! empty( $wc_prod_id ) && function_exists( 'WC' ) ) {
 	$days = isset( $_POST['rental_days'] ) ? max( 1, intval( $_POST['rental_days'] ) ) : 1;
 	WC()->cart->empty_cart();
@@ -21,6 +19,8 @@ if ( isset( $_POST['book_car_now'] ) && ! empty( $wc_prod_id ) && function_exist
 	wp_redirect( wc_get_checkout_url() );
 	exit;
 }
+
+get_header();
 ?>
 
 <main id="primary" class="site-main car-single-wrapper">
