@@ -39,8 +39,8 @@ $is_front    = is_front_page();
 					<img src="<?php echo esc_url( $brand_logo ); ?>" alt="<?php echo esc_attr( $brand_name ); ?>" style="max-height:36px;">
 				<?php else : ?>
 					<span class="logo-icon">✦</span>
-					<span class="logo-text"><?php echo esc_html( $brand_name ); ?></span>
 				<?php endif; ?>
+				<span class="logo-text"><?php echo esc_html( $brand_name ); ?></span>
 			</a>
 		<?php endif; ?>
 	</div>
@@ -69,8 +69,8 @@ $is_front    = is_front_page();
 			<img src="<?php echo esc_url( $brand_logo ); ?>" alt="<?php echo esc_attr( $brand_name ); ?>" class="header-logo-img">
 		<?php else : ?>
 			<span class="logo-icon">✦</span>
-			<span class="logo-text"><?php echo esc_html( $brand_name ); ?></span>
 		<?php endif; ?>
+		<span class="logo-text"><?php echo esc_html( $brand_name ); ?></span>
 	</a>
 <?php endif; ?>
 
@@ -80,7 +80,14 @@ $is_front    = is_front_page();
 <!-- Modern Drawer Navigation -->
 <nav class="drawer" id="drawerMenu" aria-label="منوی اصلی">
 	<div class="drawer-header">
-		<div class="title"><span class="brand-icon">✦</span> منوی <?php echo esc_html( $brand_name ); ?></div>
+		<div class="title">
+			<?php if ( ! empty( $brand_logo ) ) : ?>
+				<img src="<?php echo esc_url( $brand_logo ); ?>" alt="<?php echo esc_attr( $brand_name ); ?>" style="max-height:28px; width:auto; border-radius:4px;">
+			<?php else : ?>
+				<span class="brand-icon">✦</span>
+			<?php endif; ?>
+			منوی <?php echo esc_html( $brand_name ); ?>
+		</div>
 		<button class="drawer-close" id="drawerClose" aria-label="بستن منو">✕</button>
 	</div>
 

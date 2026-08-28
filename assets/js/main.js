@@ -5,6 +5,16 @@ document.addEventListener('DOMContentLoaded', function() {
     const banner = document.getElementById('banner');
     const floatingLogo = document.getElementById('floatingLogo');
 
+    if (header) {
+        window.addEventListener('scroll', function() {
+            if (window.scrollY > 10) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        }, { passive: true });
+    }
+
     if (header && banner && floatingLogo) {
         const logoIcon = floatingLogo.querySelector('.logo-icon');
         const logoText = floatingLogo.querySelector('.logo-text');
@@ -184,7 +194,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (index >= totalSlides) index = 0;
 
                 currentIndex = index;
-                sliderTrack.style.transform = `translateX(-${currentIndex * 100}%)`;
+                sliderTrack.style.transform = `translateX(${currentIndex * 100}%)`;
 
                 dots.forEach((dot, idx) => {
                     dot.classList.toggle('active', idx === currentIndex);

@@ -20,10 +20,18 @@ if ( empty( $banners ) ) {
 	<?php endif; ?>
 
 	<div class="slider" id="bannerSliderTrack">
-		<?php foreach ( $banners as $idx => $b ) :
+		<?php
+		$default_fallback_bgs = array(
+			'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1400&q=80',
+			'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1400&q=80',
+			'https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?auto=format&fit=crop&w=1400&q=80',
+		);
+
+		foreach ( $banners as $idx => $b ) :
 			$title       = ! empty( $b['title'] ) ? $b['title'] : '';
 			$subtitle    = ! empty( $b['subtitle'] ) ? $b['subtitle'] : '';
-			$bg_image    = ! empty( $b['bg_image'] ) ? $b['bg_image'] : 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1400&q=80';
+			$fallback_bg = $default_fallback_bgs[ $idx % count( $default_fallback_bgs ) ];
+			$bg_image    = ! empty( $b['bg_image'] ) ? $b['bg_image'] : $fallback_bg;
 			$shark_image = ! empty( $b['shark_image'] ) ? $b['shark_image'] : '';
 			$map_image   = ! empty( $b['map_image'] ) ? $b['map_image'] : '';
 			$btn_text    = ! empty( $b['btn_text'] ) ? $b['btn_text'] : '';

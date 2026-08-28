@@ -27,12 +27,6 @@ function kish_harmony_render_custom_blocks_for( $position ) {
 			echo '<div class="custom-block-section ' . esc_attr( $position ) . '">';
 			if ( $type === 'shortcode' ) {
 				echo do_shortcode( $content );
-			} elseif ( $type === 'php' ) {
-				try {
-					eval( '?>' . $content . '<?php ' );
-				} catch ( Throwable $e ) {
-					echo '<div class="error-msg">خطا در اجرای کد PHP: ' . esc_html( $e->getMessage() ) . '</div>';
-				}
 			} else {
 				// Render raw HTML/CSS/JS without escaping or filtering
 				echo $content;

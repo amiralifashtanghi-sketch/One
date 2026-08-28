@@ -43,7 +43,10 @@ $placeholder = ! empty( $options['placeholder'] ) ? $options['placeholder'] : '�
 				</div>
 
 				<input type="text" name="s" class="search-input" id="ajaxSearchInput" placeholder="<?php echo esc_attr( $placeholder ); ?>" autocomplete="off">
-				<button type="submit" class="search-btn" id="searchSubmitBtn">جست‌وجو</button>
+				<button type="submit" class="search-btn" id="searchSubmitBtn">
+					<span class="btn-text-label">جست‌وجو</span>
+					<i class="fa-solid fa-magnifying-glass btn-icon-mobile" style="display:none;"></i>
+				</button>
 			</form>
 
 			<!-- Live AJAX Search Dropdown Results Wrapper -->

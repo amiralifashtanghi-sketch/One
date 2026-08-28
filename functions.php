@@ -92,6 +92,7 @@ require_once KISH_HARMONY_DIR . '/inc/admin-special-offers.php';
 require_once KISH_HARMONY_DIR . '/inc/admin-weather.php';
 require_once KISH_HARMONY_DIR . '/inc/admin-gallery.php';
 require_once KISH_HARMONY_DIR . '/inc/admin-kishpedia.php';
+require_once KISH_HARMONY_DIR . '/inc/admin-car-rental.php';
 require_once KISH_HARMONY_DIR . '/inc/admin-footer.php';
 require_once KISH_HARMONY_DIR . '/inc/custom-post-types.php';
 require_once KISH_HARMONY_DIR . '/inc/woocommerce-meta.php';
