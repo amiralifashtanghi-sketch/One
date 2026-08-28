@@ -19,10 +19,10 @@ document.addEventListener('DOMContentLoaded', function() {
         const logoIcon = floatingLogo.querySelector('.logo-icon');
         const logoText = floatingLogo.querySelector('.logo-text');
 
-        const LARGE_ICON_SIZE = 56;
-        const SMALL_ICON_SIZE = 36;
-        const LARGE_TEXT_SIZE_REM = 2.2;
-        const SMALL_TEXT_SIZE_REM = 1.3;
+        let LARGE_ICON_SIZE = 56;
+        let SMALL_ICON_SIZE = 36;
+        let LARGE_TEXT_SIZE_REM = 2.2;
+        let SMALL_TEXT_SIZE_REM = 1.3;
 
         let bannerCenterY = 0;
         let headerCenterY = 0;
@@ -32,6 +32,12 @@ document.addEventListener('DOMContentLoaded', function() {
             bannerCenterY = bannerRect.top + bannerRect.height / 2;
 
             const width = window.innerWidth;
+            const isMobile = width <= 768;
+            LARGE_ICON_SIZE = isMobile ? 32 : 56;
+            SMALL_ICON_SIZE = isMobile ? 24 : 36;
+            LARGE_TEXT_SIZE_REM = isMobile ? 1.0 : 2.2;
+            SMALL_TEXT_SIZE_REM = isMobile ? 0.8 : 1.3;
+
             let scrolledTop, scrolledHeight;
             if (width <= 480) {
                 scrolledTop = 6;
