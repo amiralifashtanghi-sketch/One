@@ -241,7 +241,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // 4. Glassmorphic AJAX Live Search Logic with Shake Validation & Keyboard Interactions
+    // 4. Glassmorphic Light AJAX Live Search & Keyboard Navigation
     const searchForm = document.getElementById('searchForm');
     const searchInput = document.getElementById('ajaxSearchInput');
     const searchSubmitBtn = document.getElementById('searchSubmitBtn');
@@ -249,8 +249,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     if (searchInput && resultsWrapper) {
         let debounceTimer;
+        let selectedIndex = -1;
 
-        // Input shaking animation on empty form submit
         if (searchForm) {
             searchForm.addEventListener('submit', function(e) {
                 const query = searchInput.value.trim();
@@ -259,7 +259,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     const inputWrapper = searchInput.closest('.search-input-wrapper');
                     if (inputWrapper) {
                         inputWrapper.classList.remove('shakeInput');
-                        void inputWrapper.offsetWidth; // Trigger reflow
+                        void inputWrapper.offsetWidth;
                         inputWrapper.classList.add('shakeInput');
                         setTimeout(() => inputWrapper.classList.remove('shakeInput'), 500);
                     }
@@ -267,7 +267,6 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
 
-        // Live AJAX search input
         searchInput.addEventListener('input', function() {
             const query = this.value.trim();
             clearTimeout(debounceTimer);
@@ -293,13 +292,49 @@ document.addEventListener('DOMContentLoaded', function() {
                     if (data.success && data.data.html) {
                         resultsWrapper.innerHTML = data.data.html;
                         resultsWrapper.classList.add('active');
+                        selectedIndex = -1;
                     } else {
                         resultsWrapper.classList.remove('active');
                     }
                 })
                 .catch(error => console.error('Error fetching search results:', error));
-            }, 300);
+            }, 250);
         });
+
+        // Keyboard Navigation (ArrowUp, ArrowDown, Enter, Esc)
+        searchInput.addEventListener('keydown', function(e) {
+            const items = resultsWrapper.querySelectorAll('.search-result-item');
+            if (!items.length) return;
+
+            if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                selectedIndex = Math.min(selectedIndex + 1, items.length - 1);
+                updateSelected(items);
+            } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                selectedIndex = Math.max(selectedIndex - 1, 0);
+                updateSelected(items);
+            } else if (e.key === 'Enter' && selectedIndex >= 0) {
+                e.preventDefault();
+                const selectedItem = items[selectedIndex];
+                const link = selectedItem.getAttribute('href');
+                if (link) window.location.href = link;
+            } else if (e.key === 'Escape') {
+                resultsWrapper.classList.remove('active');
+            }
+        });
+
+        function updateSelected(items) {
+            items.forEach((item, idx) => {
+                if (idx === selectedIndex) {
+                    item.classList.add('selected');
+                    item.style.background = 'rgba(26, 95, 180, 0.12)';
+                } else {
+                    item.classList.remove('selected');
+                    item.style.background = 'transparent';
+                }
+            });
+        }
 
         document.addEventListener('click', function(e) {
             if (!searchInput.contains(e.target) && !resultsWrapper.contains(e.target)) {

@@ -16,8 +16,8 @@ $header_menu_id    = ! empty( $header_options['header_menu_id'] ) ? $header_opti
 $enable_gtranslate = isset( $header_options['enable_gtranslate'] ) ? $header_options['enable_gtranslate'] : '1';
 
 // WooCommerce Account & Cart Links
-$account_url = function_exists( 'wc_get_page_permalink' ) ? wc_get_page_permalink( 'myaccount' ) : '#';
-$cart_url    = function_exists( 'wc_get_cart_url' ) ? wc_get_cart_url() : '#';
+$account_url = function_exists( 'wc_get_page_permalink' ) ? wc_get_page_permalink( 'myaccount' ) : home_url( '/my-account' );
+$cart_url    = function_exists( 'wc_get_cart_url' ) ? wc_get_cart_url() : home_url( '/cart' );
 $is_front    = is_front_page();
 ?>
 

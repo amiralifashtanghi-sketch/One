@@ -476,24 +476,7 @@ img { max-width: 100%; height: auto; display: block; }
 }
 
 .nav-btn {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  background: rgba(11, 99, 216, 0.7);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border: 2px solid var(--kh-turquoise);
-  color: #ffffff;
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  font-size: 1.5rem;
-  cursor: pointer;
-  z-index: 10;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.3s ease;
+  display: none !important;
 }
 
 .nav-btn:hover {
@@ -623,15 +606,15 @@ img { max-width: 100%; height: auto; display: block; }
   .header { height: 62px; padding: 0 1rem; }
   .header.scrolled { border-radius: 35px; top: 8px; left: 2%; width: 96%; height: 52px; padding: 0 1.5rem; }
   .banner { height: auto; }
-  .categories-wrapper { margin-top: -40px; margin-left: 15px; margin-right: 15px; }
+  .categories-wrapper { margin-top: -30px; margin-left: 15px; margin-right: 15px; }
   .drawer { width: 290px; }
-  .banner-map-layer { display: block !important; opacity: 0.6; max-width: 140px; }
+  .banner-map-layer { display: block !important; opacity: 0.7; max-width: 130px; position: absolute; top: 10px; left: 10px; z-index: 2; }
   .banner-character-side { display: flex !important; position: absolute; bottom: 0; left: 5px; z-index: 3; }
-  .banner-shark-character { max-height: 120px; width: auto; }
-  .slide-content { max-width: 75%; padding: 1rem; margin-right: 1rem; z-index: 4; }
-  .slide-title { font-size: 1.3rem; margin-bottom: 0.4rem; }
-  .slide-desc { font-size: 0.85rem; margin-bottom: 0.8rem; }
-  .slide-btn { display: inline-block !important; padding: 0.5rem 1.2rem; font-size: 0.8rem; }
+  .banner-shark-character { max-height: 110px; width: auto; }
+  .slide-content { max-width: 70%; padding: 0.8rem; margin-right: 1rem; z-index: 4; }
+  .slide-title { font-size: 1.1rem; margin-bottom: 0.3rem; }
+  .slide-desc { font-size: 0.75rem; margin-bottom: 0.6rem; }
+  .slide-btn { display: inline-block !important; padding: 0.4rem 1rem; font-size: 0.75rem; }
 }
 
 @media screen and (max-width: 480px) {
@@ -959,29 +942,31 @@ img { max-width: 100%; height: auto; display: block; }
 
 @media screen and (max-width: 768px) {
   .header-logo, .floating-logo {
-    max-width: 42vw;
-    gap: 0.3rem;
+    max-width: 38vw;
+    gap: 0.25rem;
   }
   .header-logo .logo-text, .floating-logo .logo-text {
-    font-size: clamp(0.75rem, 2.5vw, 0.95rem);
-    max-width: 95px;
+    font-size: 0.85rem;
+    max-width: 85px;
   }
-  .floating-logo .header-logo-img {
-    max-height: 28px;
+  .floating-logo .header-logo-img, .header-logo img {
+    max-height: 26px;
+    width: auto;
   }
 }
 
 @media screen and (max-width: 480px) {
   .header-logo, .floating-logo {
-    max-width: 45vw;
+    max-width: 36vw;
     gap: 0.2rem;
   }
   .header-logo .logo-text, .floating-logo .logo-text {
-    font-size: clamp(0.65rem, 2.2vw, 0.85rem);
-    max-width: 80px;
+    font-size: 0.75rem;
+    max-width: 70px;
   }
-  .floating-logo .header-logo-img {
-    max-height: 24px;
+  .floating-logo .header-logo-img, .header-logo img {
+    max-height: 22px;
+    width: auto;
   }
 }
 
@@ -2182,35 +2167,110 @@ img { max-width: 100%; height: auto; display: block; }
 }
 
 /* ==========================================================================
-   Glassmorphic Corporate Search Component (60/30/10 Color Tokens)
+   Light Glassmorphic Search Component (Sample Code Specification)
    ========================================================================== */
 
 :root {
-  --blue-60: #1a5fb4;
-  --blue-50: #2a6fc9;
-  --blue-40: #3d7edb;
-  --blue-30: #5a9ae8;
-  --turquoise-30: #0eb8a8;
-  --turquoise-20: #2dd4c0;
-  --orange-10: #f59e0b;
-  --orange-8: #fbbf24;
-
-  --bg-gradient: linear-gradient(135deg, #0f1729, #16203a, #0e1f3d, #0c2d4a);
-  --card-bg: rgba(255, 255, 255, 0.06);
-  --card-border: rgba(255, 255, 255, 0.1);
-  --glass-blur: blur(20px);
+  --page-bg: #f2f5f9;
+  --card-bg-light: rgba(255, 255, 255, 0.75);
+  --card-border-light: rgba(255, 255, 255, 0.4);
+  --glass-blur-light: blur(16px);
+  --text-primary-light: #1e293b;
+  --text-secondary-light: #475569;
+  --text-muted-light: #64748b;
+  --shadow-dropdown: 0 20px 40px rgba(0, 0, 0, 0.15), 0 8px 16px rgba(0, 0, 0, 0.1);
 }
 
-.search-section-outer {
+.search-section-outer-light {
   position: relative;
   width: 100%;
-  padding: 40px 20px;
-  background: transparent !important;
-  overflow: hidden;
+  padding: 30px 20px;
+  background: var(--page-bg);
+  overflow: visible !important;
   direction: rtl;
   font-family: 'Vazirmatn', sans-serif;
-  border-radius: 0;
+  border-radius: 20px;
   margin: 30px 0;
+}
+
+.search-card-light {
+  background: var(--card-bg-light);
+  backdrop-filter: var(--glass-blur-light);
+  -webkit-backdrop-filter: var(--glass-blur-light);
+  border: 1px solid var(--card-border-light);
+  border-radius: 20px;
+  padding: 24px 22px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05), 0 2px 6px rgba(0, 0, 0, 0.03);
+  transition: box-shadow 0.3s ease, border-color 0.3s ease;
+  position: relative;
+  overflow: visible !important;
+  max-width: 520px;
+  margin: 0 auto;
+}
+
+.search-card-light:hover {
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08), 0 4px 10px rgba(0, 0, 0, 0.04);
+  border-color: rgba(255, 255, 255, 0.6);
+}
+
+.search-title {
+  color: var(--text-primary-light) !important;
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+.search-subtitle {
+  color: var(--text-muted-light) !important;
+  font-size: 0.75rem;
+}
+
+.search-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.6) !important;
+  border-radius: 14px;
+  border: 2px solid rgba(0, 0, 0, 0.06) !important;
+  overflow: visible !important;
+}
+
+.search-input-wrapper:focus-within {
+  border-color: #3d7edb !important;
+  box-shadow: 0 0 0 4px rgba(58, 126, 219, 0.15);
+  background: rgba(255, 255, 255, 0.85) !important;
+}
+
+.search-input {
+  color: var(--text-primary-light) !important;
+}
+
+.search-input::placeholder {
+  color: var(--text-muted-light) !important;
+}
+
+.search-results-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  left: 0;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 14px;
+  box-shadow: var(--shadow-dropdown);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  max-height: 280px;
+  overflow-y: auto;
+  z-index: 1000 !important;
+  display: none;
+  padding: 6px 0;
+  margin-top: 4px;
+}
+
+.search-results-dropdown.active, .search-results-dropdown.show {
+  display: block !important;
+  opacity: 1 !important;
+  visibility: visible !important;
 }
 
 /* Background Glowing Orbs */
