@@ -1675,6 +1675,257 @@ img { max-width: 100%; height: auto; display: block; }
   white-space: nowrap;
 }
 
+/* ==========================================================================
+   Kish Weather Widget Section (Glassmorphism Final Model Specification)
+   ========================================================================== */
+
+.weather-widget-outer {
+  width: 100%;
+  margin: 30px 0;
+}
+
+.weather-widget-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 35px 30px;
+  border-radius: 30px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2);
+  background: rgba(255, 255, 255, 0.2);
+  background-size: cover;
+  background-position: center;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  direction: rtl;
+  font-family: 'Vazirmatn', sans-serif;
+  color: #0a2647;
+}
+
+/* Header Styling */
+.weather-header {
+  margin-bottom: 25px;
+  text-align: right;
+}
+
+.weather-title {
+  font-size: 2.8rem;
+  font-weight: 700;
+  color: #0a2647;
+  margin-bottom: 6px;
+  line-height: 1.2;
+}
+
+.weather-title .accent-orange {
+  color: #ff8c00;
+}
+
+.weather-subtitle {
+  font-size: 1.1rem;
+  font-weight: 400;
+  color: #1a3b5c;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.weather-subtitle .wave-symbol {
+  color: #0a2647;
+  font-weight: 700;
+}
+
+/* Body Layout: Desktop Flex Row */
+.weather-body {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+/* Main Weather Card (Positioned Right in RTL) */
+.main-weather-card {
+  min-width: 250px;
+  padding: 20px 30px;
+  border-radius: 25px;
+  background: rgba(255, 255, 255, 0.35);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  box-shadow: 0 4px 15px rgba(31, 38, 135, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.temp-row {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.temp-number {
+  font-size: 4.5rem;
+  font-weight: bold;
+  color: #0a2647;
+  line-height: 1;
+}
+
+.weather-icon-sun {
+  font-size: 3.5rem;
+  color: #ffca28;
+}
+
+.weather-condition {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #0a2647;
+}
+
+.feels-like {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #1c3f6e;
+}
+
+.location-tag {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #0a2647;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.location-tag i {
+  color: #0a2647;
+}
+
+/* Character 3D Area (Positioned Left in RTL) */
+.character-area {
+  flex: 1;
+  min-width: 200px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.hippo-character-img {
+  width: 200px;
+  height: 200px;
+  object-fit: contain;
+}
+
+.hippo-character-placeholder {
+  font-size: 120px;
+  color: rgba(10, 38, 71, 0.25);
+}
+
+/* 5 Widget Items Row */
+.weather-widgets-row {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.widget-item {
+  flex: 1;
+  min-width: 90px;
+  max-width: 140px;
+  padding: 15px 20px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.35);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  box-shadow: 0 4px 15px rgba(31, 38, 135, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 4px;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  cursor: pointer;
+}
+
+.widget-item:hover {
+  transform: translateY(-5px);
+  background: rgba(255, 255, 255, 0.5);
+  box-shadow: 0 8px 22px rgba(31, 38, 135, 0.2);
+}
+
+.widget-item i {
+  font-size: 1.5rem;
+  margin-bottom: 2px;
+}
+
+.widget-item .icon-humidity { color: #0284c7; }
+.widget-item .icon-wind     { color: #2563eb; }
+.widget-item .icon-sea      { color: #0ea5e9; }
+.widget-item .icon-sunrise  { color: #eab308; }
+.widget-item .icon-sunset   { color: #f97316; }
+
+.widget-label {
+  font-size: 0.8rem;
+  color: #1a3b5c;
+  font-weight: 500;
+}
+
+.widget-value {
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: #0a2647;
+}
+
+.widget-note {
+  font-size: 0.7rem;
+  color: #374151;
+}
+
+/* Responsive Specification (Mobile Under 850px) */
+@media screen and (max-width: 850px) {
+  .weather-header {
+    text-align: center;
+  }
+  .weather-title {
+    font-size: 2rem;
+  }
+  .weather-subtitle {
+    justify-content: center;
+  }
+  .weather-body {
+    flex-direction: column-reverse;
+    gap: 20px;
+    align-items: center;
+  }
+  .main-weather-card {
+    width: 100%;
+    align-items: center;
+    text-align: center;
+  }
+  .temp-row {
+    justify-content: center;
+  }
+  .location-tag {
+    justify-content: center;
+  }
+  .character-area {
+    justify-content: center;
+    width: 100%;
+  }
+  .weather-widgets-row {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+  }
+  .widget-item {
+    max-width: 130px;
+  }
+}
+
 /* Responsive Specification for KishPedia Banner (Mobile Layout) */
 @media screen and (max-width: 992px) {
   .kishpedia-banner-container {
