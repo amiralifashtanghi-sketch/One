@@ -45,6 +45,13 @@ get_header();
 							</div>
 						<?php endif; ?>
 
+						<?php if ( has_excerpt() ) : ?>
+							<div class="recreation-comparison-table" style="margin: 20px 0; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 18px;">
+								<h3 style="margin-top: 0; color: var(--kh-primary-blue, #0B63D8); font-size: 1.15rem; font-weight: 800;">📊 جدول مشخصات و مقایسه تفریح:</h3>
+								<?php the_excerpt(); ?>
+							</div>
+						<?php endif; ?>
+
 						<div class="product-description" style="margin: 20px 0; line-height: 1.8; color: #475569;">
 							<?php the_content(); ?>
 						</div>
@@ -64,6 +71,27 @@ get_header();
 						$rec_terms     = get_post_meta( $product_id, '_recreation_terms', true );
 						$btn_text      = get_option( 'kish_harmony_add_to_cart_btn_text', '🛒 افزودن به سبد خرید' );
 						?>
+
+						<?php if ( $product && $product->is_type( 'variable' ) ) :
+							$available_variations = $product->get_available_variations();
+							$attributes           = $product->get_variation_attributes();
+						?>
+							<div class="product-variations-wrapper" style="background: #f8fafc; padding: 18px; border-radius: 12px; margin-bottom: 20px; border: 1px solid #e2e8f0;">
+								<h3 style="font-size: 1.1rem; margin-top: 0; color: var(--kh-primary-blue, #0B63D8); font-weight: 800;">⚙️ انتخاب گزینه‌ها و مشخصات:</h3>
+								<?php foreach ( $attributes as $attribute_name => $options ) : ?>
+									<div style="margin-bottom: 12px;">
+										<label style="font-weight: bold; display: block; margin-bottom: 6px;"><?php echo wc_attribute_label( $attribute_name ); ?>:</label>
+										<select name="attribute_<?php echo esc_attr( sanitize_title( $attribute_name ) ); ?>" class="variation-selector" required style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #cbd5e1; font-size: 1rem;">
+											<option value="">-- لطفاً انتخاب کنید --</option>
+											<?php foreach ( $options as $option ) : ?>
+												<option value="<?php echo esc_attr( $option ); ?>"><?php echo esc_html( $option ); ?></option>
+											<?php endforeach; ?>
+										</select>
+									</div>
+								<?php endforeach; ?>
+								<div id="variationDescription" style="display: none; background: #fff; padding: 12px; border-radius: 8px; border-right: 4px solid var(--kh-orange, #FF8A00); margin-top: 10px; font-size: 0.95rem; color: #334155;"></div>
+							</div>
+						<?php endif; ?>
 
 						<form class="custom-cart-quantity-form" id="productCartForm" method="post" enctype="multipart/form-data" style="display: flex; flex-direction: column; gap: 15px;">
 							<?php if ( '1' === $is_recreation ) : ?>
@@ -187,12 +215,12 @@ get_header();
 			?>
 				<div style="margin-top: 50px;">
 					<h2 style="font-size: 1.6rem; color: var(--kh-primary-blue, #0B63D8); font-weight: 800; margin-bottom: 25px;">🎯 پیشنهادهای مشابه و تفریحات مرتبط</h2>
-					<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 20px;">
+					<div style="display: flex; gap: 20px; overflow-x: auto; padding-bottom: 15px; scroll-snap-type: x mandatory;">
 						<?php while ( $related_query->have_posts() ) : $related_query->the_post();
 							$rel_id = get_the_ID();
 							$rel_thumb = get_the_post_thumbnail_url( $rel_id, 'medium' ) ?: 'https://via.placeholder.com/300x200';
 						?>
-							<div style="background: #fff; border-radius: 14px; overflow: hidden; box-shadow: 0 8px 20px rgba(0,0,0,0.04); display: flex; flex-direction: column; justify-content: space-between;">
+							<div style="flex: 0 0 260px; scroll-snap-align: start; background: #fff; border-radius: 14px; overflow: hidden; box-shadow: 0 8px 20px rgba(0,0,0,0.04); display: flex; flex-direction: column; justify-content: space-between;">
 								<div>
 									<img src="<?php echo esc_url( $rel_thumb ); ?>" alt="<?php the_title_attribute(); ?>" style="width: 100%; height: 160px; object-fit: cover;">
 									<div style="padding: 15px;">

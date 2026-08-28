@@ -8,6 +8,8 @@ $daily_price  = get_post_meta( $car_id, '_car_daily_price', true );
 $model_year   = get_post_meta( $car_id, '_car_model_year', true );
 $capacity     = get_post_meta( $car_id, '_car_capacity', true );
 $transmission = get_post_meta( $car_id, '_car_transmission', true );
+$fuel         = get_post_meta( $car_id, '_car_fuel', true );
+$custom_features = get_post_meta( $car_id, '_car_custom_features', true );
 $features     = get_post_meta( $car_id, '_car_features', true );
 $wc_prod_id   = get_post_meta( $car_id, '_car_wc_product_id', true );
 
@@ -71,11 +73,12 @@ get_header();
 						<?php if ( $model_year ) : ?><div><strong>سال ساخت:</strong> <?php echo esc_html( $model_year ); ?></div><?php endif; ?>
 						<?php if ( $capacity ) : ?><div><strong>ظرفیت:</strong> <?php echo esc_html( $capacity ); ?> نفر</div><?php endif; ?>
 						<?php if ( $transmission ) : ?><div><strong>گیربکس:</strong> <?php echo esc_html( $transmission ); ?></div><?php endif; ?>
+						<?php if ( $fuel ) : ?><div><strong>نوع سوخت:</strong> <?php echo esc_html( $fuel ); ?></div><?php endif; ?>
 					</div>
 
-					<div class="car-features" style="margin-bottom: 25px;">
-						<h3>امکانات خودرو:</h3>
-						<p><?php echo esc_html( $features ?: 'دارای بیمه کامل، تحویل در فرودگاه یا محل اقامت شما در کیش' ); ?></p>
+					<div class="car-description-full" style="margin-bottom: 25px; line-height: 1.8; color: #334155;">
+						<h3 style="color: var(--kh-primary-blue, #0B63D8); font-weight: 800; font-size: 1.2rem;">📝 توضیحات و امکانات کامل خودرو:</h3>
+						<?php the_content(); ?>
 					</div>
 
 					<div style="font-size: 1.6rem; color: var(--kh-orange, #FF8A00); font-weight: 800; margin-bottom: 25px;">
