@@ -125,12 +125,39 @@ function kish_harmony_save_car_meta( $post_id ) {
 		return;
 	}
 
-	update_post_meta( $post_id, '_car_price', sanitize_text_field( $_POST['car_price'] ?? '' ) );
+	$price = sanitize_text_field( $_POST['car_price'] ?? '' );
+	update_post_meta( $post_id, '_car_price', $price );
+	update_post_meta( $post_id, '_car_daily_price', $price );
 	update_post_meta( $post_id, '_car_model_year', sanitize_text_field( $_POST['car_model_year'] ?? '' ) );
 	update_post_meta( $post_id, '_car_transmission', sanitize_text_field( $_POST['car_transmission'] ?? '' ) );
 	update_post_meta( $post_id, '_car_fuel', sanitize_text_field( $_POST['car_fuel'] ?? '' ) );
 	update_post_meta( $post_id, '_car_seats', sanitize_text_field( $_POST['car_seats'] ?? '' ) );
 	update_post_meta( $post_id, '_car_deposit', sanitize_text_field( $_POST['car_deposit'] ?? '' ) );
+
+	// Auto Sync with WooCommerce Product for Online Booking & Checkout Payment
+	if ( class_exists( 'WooCommerce' ) ) {
+		$wc_prod_id = get_post_meta( $post_id, '_car_wc_product_id', true );
+		$post_title = get_the_title( $post_id );
+
+		if ( ! $wc_prod_id || ! get_post( $wc_prod_id ) ) {
+			$product = new WC_Product_Simple();
+			$product->set_name( 'اجاره خودرو: ' . $post_title );
+			$product->set_status( 'publish' );
+			$product->set_catalog_visibility( 'hidden' );
+			$product->set_price( $price );
+			$product->set_regular_price( $price );
+			$wc_prod_id = $product->save();
+			update_post_meta( $post_id, '_car_wc_product_id', $wc_prod_id );
+		} else {
+			$product = wc_get_product( $wc_prod_id );
+			if ( $product ) {
+				$product->set_name( 'اجاره خودرو: ' . $post_title );
+				$product->set_price( $price );
+				$product->set_regular_price( $price );
+				$product->save();
+			}
+		}
+	}
 }
 add_action( 'save_post_car_rental', 'kish_harmony_save_car_meta' );
 
