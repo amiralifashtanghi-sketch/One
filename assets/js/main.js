@@ -231,12 +231,33 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // 4. AJAX Live Search Logic
+    // 4. Glassmorphic AJAX Live Search Logic with Shake Validation & Keyboard Interactions
+    const searchForm = document.getElementById('searchForm');
     const searchInput = document.getElementById('ajaxSearchInput');
+    const searchSubmitBtn = document.getElementById('searchSubmitBtn');
     const resultsWrapper = document.getElementById('searchResultsWrapper');
 
     if (searchInput && resultsWrapper) {
         let debounceTimer;
+
+        // Input shaking animation on empty form submit
+        if (searchForm) {
+            searchForm.addEventListener('submit', function(e) {
+                const query = searchInput.value.trim();
+                if (!query) {
+                    e.preventDefault();
+                    const inputWrapper = searchInput.closest('.search-input-wrapper');
+                    if (inputWrapper) {
+                        inputWrapper.classList.remove('shakeInput');
+                        void inputWrapper.offsetWidth; // Trigger reflow
+                        inputWrapper.classList.add('shakeInput');
+                        setTimeout(() => inputWrapper.classList.remove('shakeInput'), 500);
+                    }
+                }
+            });
+        }
+
+        // Live AJAX search input
         searchInput.addEventListener('input', function() {
             const query = this.value.trim();
             clearTimeout(debounceTimer);
