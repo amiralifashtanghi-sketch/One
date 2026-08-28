@@ -137,10 +137,17 @@ function kish_harmony_general_settings_page() {
 			}
 		}
 
+		$primary_color   = isset( $_POST['primary_color'] ) ? sanitize_hex_color( $_POST['primary_color'] ) : '#0B63D8';
+		$secondary_color = isset( $_POST['secondary_color'] ) ? sanitize_hex_color( $_POST['secondary_color'] ) : '#18D6D8';
+		$accent_color    = isset( $_POST['accent_color'] ) ? sanitize_hex_color( $_POST['accent_color'] ) : '#FF8A00';
+
 		$general_data = array(
 			'section_order'     => implode( ',', $section_order ),
 			'disabled_sections' => $disabled_sections,
 			'custom_blocks'     => $sanitized_blocks,
+			'primary_color'     => $primary_color ?: '#0B63D8',
+			'secondary_color'   => $secondary_color ?: '#18D6D8',
+			'accent_color'      => $accent_color ?: '#FF8A00',
 		);
 
 		update_option( 'kish_harmony_general_options', $general_data );
@@ -176,6 +183,10 @@ function kish_harmony_general_settings_page() {
 
 	$wc_active         = class_exists( 'WooCommerce' );
 	$gtranslate_active = shortcode_exists( 'gtranslate' ) || defined( 'GTRANSLATE_MAIN_FILE' );
+
+	$primary_color   = $options['primary_color'] ?? '#0B63D8';
+	$secondary_color = $options['secondary_color'] ?? '#18D6D8';
+	$accent_color    = $options['accent_color'] ?? '#FF8A00';
 	?>
 	<div class="wrap">
 		<h1>تنظیمات عمومی و عملکرد قالب کیش هارمونی</h1>
@@ -193,6 +204,33 @@ function kish_harmony_general_settings_page() {
 
 		<form method="post" action="">
 			<?php wp_nonce_field( 'kish_harmony_general_nonce' ); ?>
+
+			<h2>رنگ‌بندی پویای ۳ گانه سازمانی سایت</h2>
+			<p>از این بخش می‌توانید ۳ رنگ اصلی سازمانی سایت را تغییر دهید. این تغییرات به صورت یکپارچه روی تمام بخش‌های سایت از هدر تا فوتر اعمال می‌شود.</p>
+
+			<div style="background:#fff; padding:20px; border-radius:8px; border:1px solid #ccc; max-width:650px; margin-bottom:25px;">
+				<table class="form-table" style="margin-top:0;">
+					<tr>
+						<th scope="row"><label for="primary_color">رنگ سازمانی ۱ (رنگ اصلی هدر، بنر و عناصر پایه):</label></th>
+						<td>
+							<input type="text" id="primary_color" name="primary_color" value="<?php echo esc_attr( $primary_color ); ?>" class="kish-color-field" data-default-color="#0B63D8">
+						</td>
+					</tr>
+					<tr>
+						<th scope="row"><label for="secondary_color">رنگ سازمانی ۲ (آیکون‌ها، هایلایت‌ها و خطوط تزیینی):</label></th>
+						<td>
+							<input type="text" id="secondary_color" name="secondary_color" value="<?php echo esc_attr( $secondary_color ); ?>" class="kish-color-field" data-default-color="#18D6D8">
+						</td>
+					</tr>
+					<tr>
+						<th scope="row"><label for="accent_color">رنگ سازمانی ۳ (دکمه‌های خرید، تخفیف و رزرو فوری):</label></th>
+						<td>
+							<input type="text" id="accent_color" name="accent_color" value="<?php echo esc_attr( $accent_color ); ?>" class="kish-color-field" data-default-color="#FF8A00">
+						</td>
+					</tr>
+				</table>
+				<button type="button" id="reset-colors-btn" class="button button-secondary" style="margin-top:10px;">بازگردانی به رنگ‌های پیش‌فرض کیش هارمونی</button>
+			</div>
 
 			<h2>چیدمان و فعال/غیرفعال‌سازی بخش‌های صفحه اصلی</h2>
 			<p>با دکمه‌های <strong>▲ بالا</strong> و <strong>▼ پایین</strong> کنار هر بخش می‌توانید چیدمان نمایش بخش‌ها در صفحه نخست را تغییر دهید.</p>
@@ -263,6 +301,21 @@ function kish_harmony_general_settings_page() {
 	</div>
 
 	<script>
+	jQuery(document).ready(function($) {
+		if ($.fn.wpColorPicker) {
+			$('.kish-color-field').wpColorPicker();
+		}
+
+		$('#reset-colors-btn').on('click', function(e) {
+			e.preventDefault();
+			if (confirm('آیا از بازگردانی رنگ‌ها به حالت پیش‌فرض مطمئن هستید؟')) {
+				$('#primary_color').wpColorPicker('color', '#0B63D8');
+				$('#secondary_color').wpColorPicker('color', '#18D6D8');
+				$('#accent_color').wpColorPicker('color', '#FF8A00');
+			}
+		});
+	});
+
 	document.addEventListener('DOMContentLoaded', function() {
 		// Move Up/Down controls
 		const orderList = document.getElementById('section-order-list');

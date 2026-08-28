@@ -54,6 +54,17 @@ add_action( 'after_setup_theme', 'kish_harmony_setup' );
 /**
  * Enqueue scripts and styles.
  */
+/**
+ * Enqueue Admin Scripts & Styles (Color Picker)
+ */
+function kish_harmony_admin_scripts( $hook ) {
+	if ( strpos( $hook, 'kish-harmony' ) !== false ) {
+		wp_enqueue_style( 'wp-color-picker' );
+		wp_enqueue_script( 'wp-color-picker' );
+	}
+}
+add_action( 'admin_enqueue_scripts', 'kish_harmony_admin_scripts' );
+
 function kish_harmony_scripts() {
 	// Local Vazirmatn Font
 	if ( file_exists( KISH_HARMONY_DIR . '/assets/fonts/vazirmatn.css' ) ) {
@@ -72,6 +83,29 @@ function kish_harmony_scripts() {
 	if ( file_exists( KISH_HARMONY_DIR . '/assets/css/main.css' ) ) {
 		wp_enqueue_style( 'kish-harmony-main', KISH_HARMONY_URI . '/assets/css/main.css', array(), KISH_HARMONY_VERSION );
 	}
+
+	// Dynamic Corporate Color Injection
+	$general_options = get_option( 'kish_harmony_general_options', array() );
+	$primary_color   = ! empty( $general_options['primary_color'] ) ? $general_options['primary_color'] : '#0B63D8';
+	$secondary_color = ! empty( $general_options['secondary_color'] ) ? $general_options['secondary_color'] : '#18D6D8';
+	$accent_color    = ! empty( $general_options['accent_color'] ) ? $general_options['accent_color'] : '#FF8A00';
+
+	$custom_css = "
+		:root {
+			--kh-primary-blue: {$primary_color} !important;
+			--blue-deep: {$primary_color} !important;
+			--deep-blue: {$primary_color} !important;
+			--kh-turquoise: {$secondary_color} !important;
+			--teal: {$secondary_color} !important;
+			--turquoise: {$secondary_color} !important;
+			--kh-orange: {$accent_color} !important;
+			--orange: {$accent_color} !important;
+			--accent-orange: {$accent_color} !important;
+		}
+		.site-header { background: linear-gradient(135deg, {$primary_color} 0%, {$secondary_color} 100%) !important; }
+		.site-footer { background: {$primary_color} !important; }
+	";
+	wp_add_inline_style( 'kish-harmony-main', $custom_css );
 
 	// Main JS
 	if ( file_exists( KISH_HARMONY_DIR . '/assets/js/main.js' ) ) {

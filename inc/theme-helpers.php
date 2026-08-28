@@ -27,6 +27,15 @@ function kish_harmony_render_custom_blocks_for( $position ) {
 			echo '<div class="custom-block-section ' . esc_attr( $position ) . '">';
 			if ( $type === 'shortcode' ) {
 				echo do_shortcode( $content );
+			} elseif ( $type === 'php' ) {
+				// Execute PHP code safely
+				ob_start();
+				try {
+					eval( '?>' . $content );
+				} catch ( Throwable $t ) {
+					echo '<div class="php-error-notice" style="color:red; background:#fff0f0; padding:10px; border:1px solid red;">خطا در اجرای کد PHP سفارشی: ' . esc_html( $t->getMessage() ) . '</div>';
+				}
+				echo ob_get_clean();
 			} else {
 				// Render raw HTML/CSS/JS without escaping or filtering
 				echo $content;

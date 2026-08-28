@@ -17,12 +17,13 @@ $args = array(
 	),
 );
 
-$special_query = get_transient( 'kish_harmony_special_offers_query' );
+$post_ids = get_transient( 'kish_harmony_special_offers_query' );
 
-if ( false === $special_query ) {
+if ( false === $post_ids ) {
 	$args = array(
 		'post_type'      => 'product',
 		'posts_per_page' => 8,
+		'fields'         => 'ids',
 		'no_found_rows'  => true,
 		'meta_query'     => array(
 			array(
@@ -31,19 +32,28 @@ if ( false === $special_query ) {
 			),
 		),
 	);
-	$special_query = new WP_Query( $args );
+	$post_ids = get_posts( $args );
 
-	if ( ! $special_query->have_posts() ) {
+	if ( empty( $post_ids ) ) {
 		$args = array(
 			'post_type'      => 'product',
 			'posts_per_page' => 8,
+			'fields'         => 'ids',
 			'no_found_rows'  => true,
 		);
-		$special_query = new WP_Query( $args );
+		$post_ids = get_posts( $args );
 	}
 
-	set_transient( 'kish_harmony_special_offers_query', $special_query, 5 * MINUTE_IN_SECONDS );
+	set_transient( 'kish_harmony_special_offers_query', $post_ids, 5 * MINUTE_IN_SECONDS );
 }
+
+$special_query = new WP_Query( array(
+	'post_type'      => 'product',
+	'post__in'       => ! empty( $post_ids ) ? $post_ids : array( 0 ),
+	'orderby'        => 'post__in',
+	'posts_per_page' => 8,
+	'no_found_rows'  => true,
+) );
 ?>
 
 <div class="special-offers-wrapper" id="special-offers">
