@@ -126,12 +126,14 @@ function kish_harmony_save_car_meta( $post_id ) {
 	}
 
 	$price = sanitize_text_field( $_POST['car_price'] ?? '' );
+	$seats = sanitize_text_field( $_POST['car_seats'] ?? '' );
 	update_post_meta( $post_id, '_car_price', $price );
 	update_post_meta( $post_id, '_car_daily_price', $price );
 	update_post_meta( $post_id, '_car_model_year', sanitize_text_field( $_POST['car_model_year'] ?? '' ) );
 	update_post_meta( $post_id, '_car_transmission', sanitize_text_field( $_POST['car_transmission'] ?? '' ) );
 	update_post_meta( $post_id, '_car_fuel', sanitize_text_field( $_POST['car_fuel'] ?? '' ) );
-	update_post_meta( $post_id, '_car_seats', sanitize_text_field( $_POST['car_seats'] ?? '' ) );
+	update_post_meta( $post_id, '_car_seats', $seats );
+	update_post_meta( $post_id, '_car_capacity', $seats );
 	update_post_meta( $post_id, '_car_deposit', sanitize_text_field( $_POST['car_deposit'] ?? '' ) );
 
 	// Auto Sync with WooCommerce Product for Online Booking & Checkout Payment

@@ -120,3 +120,67 @@ function kish_harmony_decrement_special_capacity( $order_id ) {
 }
 add_action( 'woocommerce_thankyou', 'kish_harmony_decrement_special_capacity' );
 add_action( 'woocommerce_order_status_completed', 'kish_harmony_decrement_special_capacity' );
+
+/**
+ * Store Recreation Date in Cart Item Data & Order Line Items
+ */
+function kish_harmony_add_recreation_date_to_cart_item( $cart_item_data, $product_id, $variation_id ) {
+	if ( isset( $_POST['recreation_date'] ) && ! empty( $_POST['recreation_date'] ) ) {
+		$cart_item_data['recreation_date'] = sanitize_text_field( $_POST['recreation_date'] );
+	}
+	return $cart_item_data;
+}
+add_filter( 'woocommerce_add_cart_item_data', 'kish_harmony_add_recreation_date_to_cart_item', 10, 3 );
+
+function kish_harmony_display_recreation_date_in_cart( $item_data, $cart_item ) {
+	if ( isset( $cart_item['recreation_date'] ) ) {
+		$item_data[] = array(
+			'key'   => 'تاریخ حضور / رزرو',
+			'value' => wc_clean( $cart_item['recreation_date'] ),
+		);
+	}
+	return $item_data;
+}
+add_filter( 'woocommerce_get_item_data', 'kish_harmony_display_recreation_date_in_cart', 10, 2 );
+
+function kish_harmony_add_recreation_date_to_order_items( $item, $cart_item_key, $values, $order ) {
+	if ( isset( $values['recreation_date'] ) ) {
+		$item->add_meta_data( 'تاریخ حضور / رزرو', $values['recreation_date'] );
+	}
+	if ( isset( $values['car_id'] ) ) {
+		$item->add_meta_data( '_car_id', $values['car_id'] );
+		$item->add_meta_data( 'تاریخ شروع رزرو خودرو', $values['booking_start'] );
+		$item->add_meta_data( 'تاریخ پایان رزرو خودرو', $values['booking_end'] );
+	}
+}
+add_action( 'woocommerce_checkout_create_order_line_item', 'kish_harmony_add_recreation_date_to_order_items', 10, 4 );
+
+/**
+ * Save Booked Dates to Car Rental CPT on Order Completion / Payment
+ */
+function kish_harmony_save_car_booking_dates( $order_id ) {
+	if ( ! $order_id ) {
+		return;
+	}
+	$order = wc_get_order( $order_id );
+	if ( ! $order ) {
+		return;
+	}
+
+	foreach ( $order->get_items() as $item ) {
+		$car_id        = $item->get_meta( '_car_id' );
+		$booking_start = $item->get_meta( 'تاریخ شروع رزرو خودرو' );
+		$booking_end   = $item->get_meta( 'تاریخ پایان رزرو خودرو' );
+
+		if ( $car_id && $booking_start && $booking_end ) {
+			$existing = get_post_meta( $car_id, '_car_booked_dates', true ) ?: array();
+			$existing[] = array(
+				'start' => $booking_start,
+				'end'   => $booking_end,
+			);
+			update_post_meta( $car_id, '_car_booked_dates', $existing );
+		}
+	}
+}
+add_action( 'woocommerce_order_status_processing', 'kish_harmony_save_car_booking_dates' );
+add_action( 'woocommerce_order_status_completed', 'kish_harmony_save_car_booking_dates' );

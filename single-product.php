@@ -45,15 +45,13 @@ get_header();
 							</div>
 						<?php endif; ?>
 
-						<?php if ( has_excerpt() ) : ?>
-							<div class="recreation-comparison-table" style="margin: 20px 0; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 18px;">
-								<h3 style="margin-top: 0; color: var(--kh-primary-blue, #0B63D8); font-size: 1.15rem; font-weight: 800;">📊 جدول مشخصات و مقایسه تفریح:</h3>
-								<?php the_excerpt(); ?>
-							</div>
-						<?php endif; ?>
-
 						<div class="product-description" style="margin: 20px 0; line-height: 1.8; color: #475569;">
 							<?php the_content(); ?>
+						</div>
+
+						<div class="product-meta-taxonomies" style="margin-top: 20px; padding-top: 15px; border-top: 1px dashed #e2e8f0; font-size: 0.9rem; color: #64748b;">
+							<div style="margin-bottom: 6px;"><?php echo get_the_term_list( $product_id, 'product_cat', '📁 <strong>دسته‌بندی‌ها:</strong> ', '، ' ); ?></div>
+							<div><?php echo get_the_term_list( $product_id, 'product_tag', '🏷️ <strong>برچسب‌ها:</strong> ', '، ' ); ?></div>
 						</div>
 					</div>
 
@@ -72,28 +70,74 @@ get_header();
 						$btn_text      = get_option( 'kish_harmony_add_to_cart_btn_text', '🛒 افزودن به سبد خرید' );
 						?>
 
-						<?php if ( $product && $product->is_type( 'variable' ) ) :
-							$available_variations = $product->get_available_variations();
-							$attributes           = $product->get_variation_attributes();
-						?>
-							<div class="product-variations-wrapper" style="background: #f8fafc; padding: 18px; border-radius: 12px; margin-bottom: 20px; border: 1px solid #e2e8f0;">
-								<h3 style="font-size: 1.1rem; margin-top: 0; color: var(--kh-primary-blue, #0B63D8); font-weight: 800;">⚙️ انتخاب گزینه‌ها و مشخصات:</h3>
-								<?php foreach ( $attributes as $attribute_name => $options ) : ?>
-									<div style="margin-bottom: 12px;">
-										<label style="font-weight: bold; display: block; margin-bottom: 6px;"><?php echo wc_attribute_label( $attribute_name ); ?>:</label>
-										<select name="attribute_<?php echo esc_attr( sanitize_title( $attribute_name ) ); ?>" class="variation-selector" required style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #cbd5e1; font-size: 1rem;">
-											<option value="">-- لطفاً انتخاب کنید --</option>
-											<?php foreach ( $options as $option ) : ?>
-												<option value="<?php echo esc_attr( $option ); ?>"><?php echo esc_html( $option ); ?></option>
-											<?php endforeach; ?>
-										</select>
-									</div>
-								<?php endforeach; ?>
-								<div id="variationDescription" style="display: none; background: #fff; padding: 12px; border-radius: 8px; border-right: 4px solid var(--kh-orange, #FF8A00); margin-top: 10px; font-size: 0.95rem; color: #334155;"></div>
-							</div>
-						<?php endif; ?>
-
 						<form class="custom-cart-quantity-form" id="productCartForm" method="post" enctype="multipart/form-data" style="display: flex; flex-direction: column; gap: 15px;">
+							<?php if ( $product && $product->is_type( 'variable' ) ) :
+								$available_variations = $product->get_available_variations();
+								$attributes           = $product->get_variation_attributes();
+							?>
+								<div class="product-variations-wrapper" style="background: #f8fafc; padding: 18px; border-radius: 12px; margin-bottom: 20px; border: 1px solid #e2e8f0;">
+									<h3 style="font-size: 1.1rem; margin-top: 0; color: var(--kh-primary-blue, #0B63D8); font-weight: 800;">⚙️ انتخاب گزینه‌ها و مشخصات:</h3>
+									<?php foreach ( $attributes as $attribute_name => $options ) : ?>
+										<div style="margin-bottom: 12px;">
+											<label style="font-weight: bold; display: block; margin-bottom: 6px;"><?php echo wc_attribute_label( $attribute_name ); ?>:</label>
+											<select name="attribute_<?php echo esc_attr( sanitize_title( $attribute_name ) ); ?>" class="variation-selector" required style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #cbd5e1; font-size: 1rem;">
+												<option value="">-- لطفاً انتخاب کنید --</option>
+												<?php foreach ( $options as $option ) : ?>
+													<option value="<?php echo esc_attr( $option ); ?>"><?php echo esc_html( $option ); ?></option>
+												<?php endforeach; ?>
+											</select>
+										</div>
+									<?php endforeach; ?>
+									<input type="hidden" name="variation_id" class="variation_id" id="variation_id" value="0">
+									<div id="variationDescription" style="display: none; background: #fff; padding: 12px; border-radius: 8px; border-right: 4px solid var(--kh-orange, #FF8A00); margin-top: 10px; font-size: 0.95rem; color: #334155;"></div>
+								</div>
+								<script>
+								const availableVariations = <?php echo wp_json_encode( $available_variations ); ?>;
+								document.addEventListener('DOMContentLoaded', function() {
+									const selectors = document.querySelectorAll('.variation-selector');
+									const descBox = document.getElementById('variationDescription');
+									const varIdInput = document.getElementById('variation_id');
+
+									function matchVariation() {
+										let selected = {};
+										let allChosen = true;
+										selectors.forEach(s => {
+											const attrName = s.name;
+											const val = s.value;
+											if (!val) allChosen = false;
+											selected[attrName] = val;
+										});
+
+										if (!allChosen) {
+											if (descBox) descBox.style.display = 'none';
+											if (varIdInput) varIdInput.value = '0';
+											return;
+										}
+
+										const matched = availableVariations.find(v => {
+											return Object.keys(v.attributes).every(attrKey => {
+												const val = v.attributes[attrKey];
+												return !val || val === selected[attrKey] || val === selected['attribute_' + attrKey];
+											});
+										});
+
+										if (matched) {
+											if (varIdInput) varIdInput.value = matched.variation_id;
+											if (descBox) {
+												if (matched.variation_description) {
+													descBox.innerHTML = matched.variation_description;
+													descBox.style.display = 'block';
+												} else {
+													descBox.style.display = 'none';
+												}
+											}
+										}
+									}
+
+									selectors.forEach(s => s.addEventListener('change', matchVariation));
+								});
+								</script>
+							<?php endif; ?>
 							<?php if ( '1' === $is_recreation ) : ?>
 								<div style="background: #eef2ff; padding: 15px; border-radius: 12px; border: 1px solid #c7d2fe;">
 									<label style="font-weight: bold; display: block; margin-bottom: 6px; color: #1e1b4b;">📅 تاریخ حضور و استفاده از تفریح:</label>
@@ -142,7 +186,11 @@ get_header();
 								const form = document.getElementById('productCartForm');
 
 								if (mainBtn && modal) {
-									mainBtn.addEventListener('click', function() {
+									mainBtn.addEventListener('click', function(e) {
+										if (!form.checkValidity()) {
+											form.reportValidity();
+											return;
+										}
 										modal.style.display = 'flex';
 									});
 									closeBtn.addEventListener('click', function() {
