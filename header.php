@@ -36,7 +36,7 @@ $is_front    = is_front_page();
 			<!-- Static Center Logo for Internal Pages -->
 			<a href="<?php echo esc_url( home_url( '/' ) ); ?>" class="header-logo">
 				<?php if ( ! empty( $brand_logo ) ) : ?>
-					<img src="<?php echo esc_url( $brand_logo ); ?>" alt="<?php echo esc_attr( $brand_name ); ?>" style="max-height:36px;">
+					<img src="<?php echo esc_url( $brand_logo ); ?>" alt="<?php echo esc_attr( $brand_name ); ?>" loading="eager" fetchpriority="high" style="max-height:36px;">
 				<?php else : ?>
 					<span class="logo-icon">✦</span>
 				<?php endif; ?>
@@ -66,7 +66,7 @@ $is_front    = is_front_page();
 	<!-- Floating Animated Logo (Only on Front Page) -->
 	<a href="<?php echo esc_url( home_url( '/' ) ); ?>" class="floating-logo" id="floatingLogo">
 		<?php if ( ! empty( $brand_logo ) ) : ?>
-			<img src="<?php echo esc_url( $brand_logo ); ?>" alt="<?php echo esc_attr( $brand_name ); ?>" class="header-logo-img">
+			<img src="<?php echo esc_url( $brand_logo ); ?>" alt="<?php echo esc_attr( $brand_name ); ?>" class="header-logo-img" loading="eager" fetchpriority="high">
 		<?php else : ?>
 			<span class="logo-icon">✦</span>
 		<?php endif; ?>

@@ -75,7 +75,7 @@ function kish_harmony_scripts() {
 
 	// Main JS
 	if ( file_exists( KISH_HARMONY_DIR . '/assets/js/main.js' ) ) {
-		wp_enqueue_script( 'kish-harmony-main', KISH_HARMONY_URI . '/assets/js/main.js', array(), KISH_HARMONY_VERSION, true );
+		wp_enqueue_script( 'kish-harmony-main', KISH_HARMONY_URI . '/assets/js/main.js', array(), KISH_HARMONY_VERSION, array( 'in_footer' => true, 'strategy' => 'defer' ) );
 
 		wp_localize_script( 'kish-harmony-main', 'kishHarmonyData', array(
 			'ajaxUrl' => admin_url( 'admin-ajax.php' ),
@@ -84,6 +84,29 @@ function kish_harmony_scripts() {
 	}
 }
 add_action( 'wp_enqueue_scripts', 'kish_harmony_scripts' );
+
+/**
+ * Add Preconnect & DNS Prefetch Resource Hints for fast external loading.
+ */
+function kish_harmony_resource_hints( $urls, $relation_type ) {
+	if ( 'preconnect' === $relation_type || 'dns-prefetch' === $relation_type ) {
+		$urls[] = 'https://cdnjs.cloudflare.com';
+		$urls[] = 'https://cdn.jsdelivr.net';
+	}
+	return $urls;
+}
+add_filter( 'wp_resource_hints', 'kish_harmony_resource_hints', 10, 2 );
+
+/**
+ * Flush Theme Transients on Content Changes for Performance Cache Management.
+ */
+function kish_harmony_flush_transients() {
+	delete_transient( 'kish_harmony_special_offers_query' );
+	delete_transient( 'kish_harmony_car_rentals_query' );
+	delete_transient( 'kish_harmony_categories_query' );
+}
+add_action( 'save_post', 'kish_harmony_flush_transients' );
+add_action( 'woocommerce_update_product', 'kish_harmony_flush_transients' );
 
 // Require Includes
 require_once KISH_HARMONY_DIR . '/inc/admin-options.php';

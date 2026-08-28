@@ -238,6 +238,14 @@ document.addEventListener('DOMContentLoaded', function() {
             sliderContainer.addEventListener('mouseenter', stopAutoSlide);
             sliderContainer.addEventListener('mouseleave', startAutoSlide);
 
+            document.addEventListener('visibilitychange', () => {
+                if (document.hidden) {
+                    stopAutoSlide();
+                } else {
+                    startAutoSlide();
+                }
+            });
+
             document.addEventListener('keydown', function(e) {
                 if (e.key === 'ArrowLeft') { nextSlide(); resetAutoSlide(); }
                 else if (e.key === 'ArrowRight') { prevSlide(); resetAutoSlide(); }

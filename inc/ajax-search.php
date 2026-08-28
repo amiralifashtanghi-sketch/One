@@ -86,6 +86,7 @@ function kish_harmony_ajax_search() {
 		'post_type'      => array( 'product', 'car_rental' ),
 		'post_status'    => 'publish',
 		'posts_per_page' => $max_results,
+		'no_found_rows'  => true,
 		's'              => $query,
 	);
 

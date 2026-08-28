@@ -27,7 +27,7 @@ $services = get_option( 'kish_harmony_services_options', array(
 		?>
 			<a href="<?php echo esc_url( $link ); ?>" class="<?php echo esc_attr( $class ); ?>">
 				<?php if ( ! empty( $item['image_url'] ) ) : ?>
-					<img src="<?php echo esc_url( $item['image_url'] ); ?>" alt="<?php echo esc_attr( $item['title'] ); ?>" style="width:24px; height:24px; object-fit:contain;">
+					<img src="<?php echo esc_url( $item['image_url'] ); ?>" alt="<?php echo esc_attr( $item['title'] ); ?>" loading="lazy" decoding="async" style="width:24px; height:24px; object-fit:contain;">
 				<?php elseif ( ! empty( $item['emoji'] ) ) : ?>
 					<span class="category-emoji"><?php echo esc_html( $item['emoji'] ); ?></span>
 				<?php endif; ?>

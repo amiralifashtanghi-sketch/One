@@ -32,42 +32,49 @@ $btn_label        = get_option( 'car_rental_btn_text', 'رزرو آنلاین' )
 		<!-- Scroll Container -->
 		<div class="scroll-container" id="scroller">
 			<?php
-			$args = array(
-				'post_type'      => 'car_rental',
-				'posts_per_page' => 12,
-			);
-			$car_query = new WP_Query( $args );
+			$cars = get_transient( 'kish_harmony_car_rentals_query' );
 
-			$cars = array();
+			if ( false === $cars ) {
+				$args = array(
+					'post_type'      => 'car_rental',
+					'posts_per_page' => 12,
+					'no_found_rows'  => true,
+				);
+				$car_query = new WP_Query( $args );
 
-			if ( $car_query->have_posts() ) {
-				while ( $car_query->have_posts() ) {
-					$car_query->the_post();
-					$car_id       = get_the_ID();
-					$price        = get_post_meta( $car_id, '_car_price', true );
-					$model_year   = get_post_meta( $car_id, '_car_model_year', true );
-					$transmission = get_post_meta( $car_id, '_car_transmission', true );
-					$fuel         = get_post_meta( $car_id, '_car_fuel', true );
-					$seats        = get_post_meta( $car_id, '_car_seats', true );
-					$deposit      = get_post_meta( $car_id, '_car_deposit', true );
-					$featured     = get_post_meta( $car_id, '_car_featured', true );
-					$thumb        = get_the_post_thumbnail_url( $car_id, 'medium_large' );
+				$cars = array();
 
-					$cars[] = array(
-						'title'        => get_the_title(),
-						'link'         => get_permalink(),
-						'price'        => ! empty( $price ) ? intval( $price ) : 0,
-						'year'         => $model_year,
-						'transmission' => $transmission,
-						'fuel'         => $fuel,
-						'seats'        => $seats,
-						'deposit'      => $deposit,
-						'featured'     => ( $featured === '1' || $featured === 'yes' ),
-						'thumb'        => $thumb,
-					);
+				if ( $car_query->have_posts() ) {
+					while ( $car_query->have_posts() ) {
+						$car_query->the_post();
+						$car_id       = get_the_ID();
+						$price        = get_post_meta( $car_id, '_car_price', true );
+						$model_year   = get_post_meta( $car_id, '_car_model_year', true );
+						$transmission = get_post_meta( $car_id, '_car_transmission', true );
+						$fuel         = get_post_meta( $car_id, '_car_fuel', true );
+						$seats        = get_post_meta( $car_id, '_car_seats', true );
+						$deposit      = get_post_meta( $car_id, '_car_deposit', true );
+						$featured     = get_post_meta( $car_id, '_car_featured', true );
+						$thumb        = get_the_post_thumbnail_url( $car_id, 'medium_large' );
+
+						$cars[] = array(
+							'title'        => get_the_title(),
+							'link'         => get_permalink(),
+							'price'        => ! empty( $price ) ? intval( $price ) : 0,
+							'year'         => $model_year,
+							'transmission' => $transmission,
+							'fuel'         => $fuel,
+							'seats'        => $seats,
+							'deposit'      => $deposit,
+							'featured'     => ( $featured === '1' || $featured === 'yes' ),
+							'thumb'        => $thumb,
+						);
+					}
+					wp_reset_postdata();
 				}
-				wp_reset_postdata();
+				set_transient( 'kish_harmony_car_rentals_query', $cars, 10 * MINUTE_IN_SECONDS );
 			}
+
 
 			if ( ! empty( $cars ) ) :
 				// Chunk into groups of 3 cards each

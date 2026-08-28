@@ -17,14 +17,32 @@ $args = array(
 	),
 );
 
-$special_query = new WP_Query( $args );
+$special_query = get_transient( 'kish_harmony_special_offers_query' );
 
-if ( ! $special_query->have_posts() ) {
+if ( false === $special_query ) {
 	$args = array(
 		'post_type'      => 'product',
 		'posts_per_page' => 8,
+		'no_found_rows'  => true,
+		'meta_query'     => array(
+			array(
+				'key'   => '_is_special_offer',
+				'value' => '1',
+			),
+		),
 	);
 	$special_query = new WP_Query( $args );
+
+	if ( ! $special_query->have_posts() ) {
+		$args = array(
+			'post_type'      => 'product',
+			'posts_per_page' => 8,
+			'no_found_rows'  => true,
+		);
+		$special_query = new WP_Query( $args );
+	}
+
+	set_transient( 'kish_harmony_special_offers_query', $special_query, 5 * MINUTE_IN_SECONDS );
 }
 ?>
 
