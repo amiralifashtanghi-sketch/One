@@ -59,8 +59,11 @@ function kish_harmony_banner_settings_page() {
 		),
 	);
 	?>
-	<div class="wrap">
+	<div class="wrap" style="direction: rtl; text-align: right;">
 		<h1>تنظیمات بنرهای تبلیغاتی کیش هارمونی (اسلایدر)</h1>
+		<div class="notice notice-info" style="padding:10px 15px; margin:15px 0;">
+			<p><strong>💡 راهنمای ابعاد تصاویر:</strong> جهت نمایش بدون برش و یکسان در تمام دستگاه‌ها (موبایل و دسکتاپ)، ابعاد استاندارد پیشنهادی <strong>۱۹۲۰ در ۱۰۸۰ پیکسل (نسبت ۱۶:۹)</strong> یا حداقل <strong>۱۲۸۰ در ۷۲۰ پیکسل</strong> می‌باشد.</p>
+		</div>
 		<form method="post" action="">
 			<?php wp_nonce_field( 'kish_harmony_banner_nonce' ); ?>
 			<table class="form-table">

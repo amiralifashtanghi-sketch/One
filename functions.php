@@ -55,8 +55,12 @@ add_action( 'after_setup_theme', 'kish_harmony_setup' );
  * Enqueue scripts and styles.
  */
 function kish_harmony_scripts() {
-	// Vazirmatn Font CDN
-	wp_enqueue_style( 'vazirmatn-font', 'https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css', array(), '33.003' );
+	// Local Vazirmatn Font
+	if ( file_exists( KISH_HARMONY_DIR . '/assets/fonts/vazirmatn.css' ) ) {
+		wp_enqueue_style( 'vazirmatn-font-local', KISH_HARMONY_URI . '/assets/fonts/vazirmatn.css', array(), '33.003' );
+	} else {
+		wp_enqueue_style( 'vazirmatn-font-cdn', 'https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css', array(), '33.003' );
+	}
 
 	// Font Awesome CDN
 	wp_enqueue_style( 'font-awesome', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css', array(), '6.4.0' );
