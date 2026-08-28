@@ -277,67 +277,181 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // 5. Gallery Lightbox Modal Logic
-    const galleryItems = document.querySelectorAll('.gallery-item');
-    const lightboxModal = document.getElementById('lightboxModal');
-    const lightboxImg = document.getElementById('lightboxImg');
-    const lightboxCaption = document.getElementById('lightboxCaption');
+    // 5. Gallery Lazy Load Skeleton & Bulletproof Lightbox Modal Logic
+    const galleryGrid = document.getElementById('galleryGrid');
+    const galleryImages = document.querySelectorAll('.gallery-item img');
+
+    galleryImages.forEach(img => {
+        const item = img.closest('.gallery-item');
+        if (img.complete) {
+            img.style.opacity = '1';
+            if (item) item.classList.add('loaded');
+        } else {
+            img.addEventListener('load', () => {
+                img.style.opacity = '1';
+                if (item) item.classList.add('loaded');
+            });
+        }
+        img.addEventListener('error', () => {
+            if (item) item.classList.add('loaded');
+        });
+    });
+
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImage = document.getElementById('lightboxImage');
     const lightboxClose = document.getElementById('lightboxClose');
     const lightboxPrev = document.getElementById('lightboxPrev');
     const lightboxNext = document.getElementById('lightboxNext');
+    const lightboxCounter = document.getElementById('lightboxCounter');
 
-    if (galleryItems.length && lightboxModal) {
+    if (galleryGrid && lightbox && lightboxImage) {
+        const items = document.querySelectorAll('.gallery-item');
+        const galleryItemsList = Array.from(items);
         let currentIndex = 0;
-        const imagesList = [];
+        let isTransitioning = false;
+        let pendingIndex = null;
+        let safetyTimer = null;
 
-        galleryItems.forEach((item, idx) => {
-            const img = item.querySelector('img');
-            if (img) {
-                imagesList.push({
-                    src: img.src,
-                    caption: img.alt || ''
-                });
-
-                item.addEventListener('click', function() {
-                    currentIndex = idx;
-                    openLightbox(currentIndex);
-                });
+        function updateCounter(index) {
+            if (lightboxCounter) {
+                lightboxCounter.textContent = `${index + 1} / ${galleryItemsList.length}`;
             }
-        });
+        }
+
+        function releaseLock() {
+            isTransitioning = false;
+            if (safetyTimer) {
+                clearTimeout(safetyTimer);
+                safetyTimer = null;
+            }
+            if (pendingIndex !== null) {
+                const nextIdx = pendingIndex;
+                pendingIndex = null;
+                changeImage(nextIdx);
+            }
+        }
 
         function openLightbox(index) {
-            if (imagesList[index]) {
-                lightboxImg.src = imagesList[index].src;
-                lightboxCaption.textContent = imagesList[index].caption;
-                lightboxModal.classList.add('active');
-            }
+            if (galleryItemsList.length === 0) return;
+            const img = galleryItemsList[index].querySelector('img');
+            if (!img) return;
+
+            lightboxImage.src = img.src;
+            lightboxImage.alt = img.alt || '';
+            currentIndex = index;
+            updateCounter(index);
+            lightbox.classList.add('active');
+            document.body.style.overflow = 'hidden';
         }
 
         function closeLightbox() {
-            lightboxModal.classList.remove('active');
+            lightbox.classList.remove('active');
+            document.body.style.overflow = '';
         }
+
+        function changeImage(newIndex) {
+            if (galleryItemsList.length === 0) return;
+            if (newIndex === currentIndex) return;
+
+            if (isTransitioning) {
+                pendingIndex = newIndex;
+                return;
+            }
+
+            isTransitioning = true;
+            pendingIndex = null;
+
+            lightboxImage.style.opacity = '0';
+
+            const targetImg = galleryItemsList[newIndex].querySelector('img');
+            if (!targetImg) {
+                releaseLock();
+                return;
+            }
+
+            const newSrc = targetImg.src;
+            const newAlt = targetImg.alt || '';
+
+            const applyChange = () => {
+                lightboxImage.src = newSrc;
+                lightboxImage.alt = newAlt;
+                currentIndex = newIndex;
+                updateCounter(newIndex);
+                lightboxImage.style.opacity = '1';
+                releaseLock();
+            };
+
+            const preloader = new Image();
+            let applied = false;
+
+            const doApply = () => {
+                if (!applied) {
+                    applied = true;
+                    applyChange();
+                }
+            };
+
+            preloader.onload = doApply;
+            preloader.onerror = doApply;
+
+            safetyTimer = setTimeout(() => {
+                if (!applied) {
+                    doApply();
+                }
+            }, 3000);
+
+            preloader.src = newSrc;
+
+            if (preloader.complete) {
+                doApply();
+            }
+        }
+
+        function showPrev() {
+            const newIndex = (currentIndex - 1 + galleryItemsList.length) % galleryItemsList.length;
+            changeImage(newIndex);
+        }
+
+        function showNext() {
+            const newIndex = (currentIndex + 1) % galleryItemsList.length;
+            changeImage(newIndex);
+        }
+
+        galleryGrid.addEventListener('click', function(e) {
+            const item = e.target.closest('.gallery-item');
+            if (!item) return;
+            const index = galleryItemsList.indexOf(item);
+            if (index !== -1) openLightbox(index);
+        });
 
         if (lightboxClose) lightboxClose.addEventListener('click', closeLightbox);
-        if (lightboxPrev) {
-            lightboxPrev.addEventListener('click', function() {
-                currentIndex = (currentIndex + 1) % imagesList.length;
-                openLightbox(currentIndex);
-            });
-        }
+        lightbox.addEventListener('click', function(e) {
+            if (e.target === lightbox) closeLightbox();
+        });
 
-        if (lightboxNext) {
-            lightboxNext.addEventListener('click', function() {
-                currentIndex = (currentIndex - 1 + imagesList.length) % imagesList.length;
-                openLightbox(currentIndex);
-            });
-        }
+        if (lightboxPrev) lightboxPrev.addEventListener('click', showPrev);
+        if (lightboxNext) lightboxNext.addEventListener('click', showNext);
 
         document.addEventListener('keydown', function(e) {
-            if (!lightboxModal.classList.contains('active')) return;
+            if (!lightbox.classList.contains('active')) return;
             if (e.key === 'Escape') closeLightbox();
-            if (e.key === 'ArrowRight') lightboxPrev.click();
-            if (e.key === 'ArrowLeft') lightboxNext.click();
+            if (e.key === 'ArrowLeft') showPrev();
+            if (e.key === 'ArrowRight') showNext();
         });
+
+        // Touch Swipe Handling
+        let touchStartX = 0;
+        lightbox.addEventListener('touchstart', function(e) {
+            touchStartX = e.changedTouches[0].screenX;
+        }, { passive: true });
+
+        lightbox.addEventListener('touchend', function(e) {
+            const touchEndX = e.changedTouches[0].screenX;
+            const diff = touchStartX - touchEndX;
+            if (Math.abs(diff) < 50) return;
+            if (diff > 0) showNext();
+            else showPrev();
+        }, { passive: true });
     }
 
     // 6. Car Rental Drag-to-Scroll & Navigation Buttons Logic

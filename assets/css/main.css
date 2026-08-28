@@ -1926,6 +1926,211 @@ img { max-width: 100%; height: auto; display: block; }
   }
 }
 
+/* ==========================================================================
+   Gallery Section & Lightbox Component (Strict 6-Plan Specifications)
+   ========================================================================== */
+
+.gallery-section {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 0 20px;
+  text-align: center;
+  font-family: 'Vazirmatn', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  direction: rtl;
+}
+
+.gallery-title {
+  font-size: 2rem;
+  color: #0a3144;
+  margin-bottom: 20px;
+  font-weight: bold;
+}
+
+/* Grid layout strictly 2 columns at all screen widths */
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr) !important;
+  gap: 14px;
+  margin-bottom: 25px;
+}
+
+.gallery-item {
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+  background: #e0e6ed; /* Skeleton background base */
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.gallery-item:hover {
+  transform: scale(1.02);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+}
+
+/* Skeleton Loading Shimmer Effect */
+.gallery-item::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  z-index: 1;
+  pointer-events: none;
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.gallery-item img {
+  width: 100%;
+  height: auto;
+  display: block;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  position: relative;
+  z-index: 2;
+}
+
+/* Hide shimmer when image is loaded */
+.gallery-item.loaded::before {
+  display: none;
+}
+
+.share-text {
+  font-size: 1.1rem;
+  color: #2f4f6e;
+  margin-top: 10px;
+  font-style: italic;
+}
+
+/* Lightbox Modal Overlay */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.92);
+  z-index: 5000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.35s ease, visibility 0.35s ease;
+  touch-action: none;
+  direction: ltr;
+}
+
+.lightbox.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Content Wrapper for Scale Transition */
+.lightbox__content-wrapper {
+  transform: scale(0.9);
+  transition: transform 0.35s cubic-bezier(0.25, 0.8, 0.25, 1.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  max-width: 90%;
+  max-height: 85vh;
+  position: relative;
+}
+
+.lightbox.active .lightbox__content-wrapper {
+  transform: scale(1);
+}
+
+.lightbox__image {
+  max-width: 100%;
+  max-height: 85vh;
+  object-fit: contain;
+  border-radius: 6px;
+  transition: opacity 0.25s ease;
+}
+
+/* Close Button */
+.lightbox__close {
+  position: absolute;
+  top: 20px;
+  right: 30px;
+  font-size: 3rem;
+  color: white;
+  background: none;
+  border: none;
+  cursor: pointer;
+  z-index: 5002;
+  transition: transform 0.2s;
+  line-height: 1;
+}
+
+.lightbox__close:hover {
+  transform: scale(1.2);
+}
+
+/* Glassmorphism Navigation Buttons */
+.lightbox__nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 2.8rem;
+  color: #fff;
+  background: rgba(0,0,0,0.5);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 2px solid rgba(255,255,255,0.3);
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 5001;
+  transition: all 0.3s;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+  line-height: 1;
+}
+
+.lightbox__nav:hover {
+  background: rgba(0,0,0,0.7);
+  border-color: #fff;
+  transform: translateY(-50%) scale(1.1);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.5);
+}
+
+.lightbox__prev { left: 20px; }
+.lightbox__next { right: 20px; }
+
+/* Counter Capsule */
+.lightbox__counter {
+  position: absolute;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: rgba(255,255,255,0.8);
+  background: rgba(0,0,0,0.5);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  padding: 6px 18px;
+  border-radius: 20px;
+  font-size: 0.95rem;
+  z-index: 5001;
+  font-family: 'Vazirmatn', sans-serif;
+}
+
+@media (max-width: 500px) {
+  .lightbox__nav { width: 50px; height: 50px; font-size: 2.2rem; }
+  .lightbox__prev { left: 10px; }
+  .lightbox__next { right: 10px; }
+  .lightbox__close { top: 10px; right: 15px; font-size: 2.5rem; }
+}
+
 /* Responsive Specification for KishPedia Banner (Mobile Layout) */
 @media screen and (max-width: 992px) {
   .kishpedia-banner-container {
