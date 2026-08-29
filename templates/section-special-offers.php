@@ -96,10 +96,10 @@ $special_query = new WP_Query( array(
 							<h3 class="offer-product-title"><?php the_title(); ?></h3>
 
 							<div class="price-block">
-								<?php if ( ! empty( $regular_price ) && $regular_price > $sale_price ) : ?>
-									<span class="old-price"><?php echo number_format( $regular_price ); ?> تومان</span>
+								<?php if ( ! empty( $regular_price ) && is_numeric( $regular_price ) && floatval( $regular_price ) > floatval( $sale_price ) ) : ?>
+									<span class="old-price"><?php echo number_format( floatval( $regular_price ) ); ?> تومان</span>
 								<?php endif; ?>
-								<span class="new-price"><?php echo number_format( $sale_price ); ?> تومان</span>
+								<span class="new-price"><?php echo is_numeric( $sale_price ) ? number_format( floatval( $sale_price ) ) : '0'; ?> تومان</span>
 							</div>
 
 							<?php if ( ! empty( $discount ) ) : ?>
