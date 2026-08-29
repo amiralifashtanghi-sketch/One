@@ -105,10 +105,6 @@ get_header();
 							</div>
 						<?php endif; ?>
 
-						<div class="product-description" style="margin: 15px 0; line-height: 1.8; color: #475569;">
-							<?php the_content(); ?>
-						</div>
-
 						<div class="product-meta-taxonomies" style="margin-top: 20px; padding-top: 15px; border-top: 1px dashed #e2e8f0; font-size: 0.9rem; color: #64748b;">
 							<div style="margin-bottom: 6px;"><?php echo get_the_term_list( $product_id, 'product_cat', '📁 <strong>دسته‌بندی‌ها:</strong> ', '، ' ); ?></div>
 							<div><?php echo get_the_term_list( $product_id, 'product_tag', '🏷️ <strong>برچسب‌ها:</strong> ', '، ' ); ?></div>
@@ -118,7 +114,7 @@ get_header();
 					<?php if ( $product ) : ?>
 						<div class="product-price-wrapper" style="margin-bottom: 15px; padding: 15px 20px; background: #fff; border-radius: 14px; border: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 4px 15px rgba(0,0,0,0.03);">
 							<span style="font-weight: bold; color: #475569; font-size: 1.05rem;">💰 قیمت:</span>
-							<div style="font-size: 1.8rem; color: var(--kh-orange, #FF8A00); font-weight: 800;">
+							<div id="productPriceDisplay" style="font-size: 1.8rem; color: var(--kh-orange, #FF8A00); font-weight: 800;">
 								<?php echo $product->get_price_html(); ?>
 							</div>
 						</div>
@@ -158,6 +154,8 @@ get_header();
 									const selectors = document.querySelectorAll('.variation-selector');
 									const descBox = document.getElementById('variationDescription');
 									const varIdInput = document.getElementById('variation_id');
+									const priceDisplayContainer = document.getElementById('productPriceDisplay');
+									const defaultPriceHtml = priceDisplayContainer ? priceDisplayContainer.innerHTML : '';
 
 									function matchVariation() {
 										let selected = {};
@@ -172,6 +170,7 @@ get_header();
 										if (!allChosen) {
 											if (descBox) descBox.style.display = 'none';
 											if (varIdInput) varIdInput.value = '0';
+											if (priceDisplayContainer) priceDisplayContainer.innerHTML = defaultPriceHtml;
 											return;
 										}
 
@@ -184,6 +183,9 @@ get_header();
 
 										if (matched) {
 											if (varIdInput) varIdInput.value = matched.variation_id;
+											if (priceDisplayContainer && matched.price_html) {
+												priceDisplayContainer.innerHTML = matched.price_html;
+											}
 											if (descBox) {
 												if (matched.variation_description) {
 													descBox.innerHTML = matched.variation_description;
@@ -192,6 +194,8 @@ get_header();
 													descBox.style.display = 'none';
 												}
 											}
+										} else {
+											if (priceDisplayContainer) priceDisplayContainer.innerHTML = defaultPriceHtml;
 										}
 									}
 
@@ -301,6 +305,28 @@ get_header();
 						</script>
 					</div>
 				</div>
+			</div>
+
+			<!-- Full-width Product Description Section -->
+			<div class="product-full-description-wrapper" style="margin-top: 40px; background: #fff; border-radius: 20px; padding: 35px; box-shadow: 0 10px 30px rgba(0,0,0,0.06);">
+				<h2 style="font-size: 1.5rem; color: var(--kh-primary-blue, #0B63D8); font-weight: 800; margin-top: 0; margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
+					<span>📝 توضیحات کامل محصول</span>
+				</h2>
+				<div class="product-description-content" style="line-height: 2; color: #334155; font-size: 1.05rem;">
+					<?php the_content(); ?>
+				</div>
+			</div>
+
+			<!-- Product Reviews & Comments Section -->
+			<div class="product-reviews-wrapper" style="margin-top: 50px; background: #fff; border-radius: 20px; padding: 35px; box-shadow: 0 10px 30px rgba(0,0,0,0.06);">
+				<h2 style="font-size: 1.5rem; color: var(--kh-primary-blue, #0B63D8); font-weight: 800; margin-top: 0; margin-bottom: 25px; display: flex; align-items: center; gap: 10px;">
+					<span>💬 نظرات و تجربیات مشتریان</span>
+				</h2>
+				<?php
+				if ( comments_open() || get_comments_number() ) {
+					comments_template();
+				}
+				?>
 			</div>
 
 			<!-- Related Products Section -->
