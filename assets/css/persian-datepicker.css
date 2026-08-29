@@ -1,0 +1,101 @@
+/* Persian Jalali Datepicker Styles */
+.pdp-container {
+    position: absolute;
+    z-index: 999999;
+    background: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 10px 35px rgba(0, 0, 0, 0.15);
+    border: 1px solid #e2e8f0;
+    padding: 16px;
+    width: 290px;
+    font-family: 'Vazirmatn', sans-serif;
+    direction: rtl;
+    text-align: right;
+    user-select: none;
+    display: none;
+}
+.pdp-container.active {
+    display: block;
+    animation: pdpFadeIn 0.2s ease-out;
+}
+@keyframes pdpFadeIn {
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+.pdp-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #f1f5f9;
+}
+.pdp-title {
+    font-weight: 800;
+    font-size: 1.05rem;
+    color: var(--kh-primary-blue, #0B63D8);
+}
+.pdp-nav-btn {
+    background: #f1f5f9;
+    border: none;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    color: #475569;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+}
+.pdp-nav-btn:hover {
+    background: var(--kh-primary-blue, #0B63D8);
+    color: #ffffff;
+}
+.pdp-weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    text-align: center;
+    font-weight: bold;
+    font-size: 0.82rem;
+    color: #94a3b8;
+    margin-bottom: 8px;
+}
+.pdp-days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+}
+.pdp-day {
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    color: #1e293b;
+    font-weight: 500;
+    transition: all 0.15s ease;
+}
+.pdp-day:hover:not(.empty):not(.disabled) {
+    background: #e0f2fe;
+    color: var(--kh-primary-blue, #0B63D8);
+}
+.pdp-day.selected {
+    background: var(--kh-orange, #FF8A00) !important;
+    color: #ffffff !important;
+    font-weight: bold;
+}
+.pdp-day.today {
+    border: 2px solid var(--kh-primary-blue, #0B63D8);
+}
+.pdp-day.disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+    background: #f8fafc;
+}
+.pdp-day.empty {
+    cursor: default;
+}

@@ -84,6 +84,14 @@ function kish_harmony_scripts() {
 		wp_enqueue_style( 'kish-harmony-main', KISH_HARMONY_URI . '/assets/css/main.css', array(), KISH_HARMONY_VERSION );
 	}
 
+	// Persian Datepicker CSS & JS
+	if ( file_exists( KISH_HARMONY_DIR . '/assets/css/persian-datepicker.css' ) ) {
+		wp_enqueue_style( 'persian-datepicker', KISH_HARMONY_URI . '/assets/css/persian-datepicker.css', array(), KISH_HARMONY_VERSION );
+	}
+	if ( file_exists( KISH_HARMONY_DIR . '/assets/js/persian-datepicker.js' ) ) {
+		wp_enqueue_script( 'persian-datepicker', KISH_HARMONY_URI . '/assets/js/persian-datepicker.js', array(), KISH_HARMONY_VERSION, array( 'in_footer' => true ) );
+	}
+
 	// Dynamic Corporate Color Injection
 	$general_options = get_option( 'kish_harmony_general_options', array() );
 	$primary_color   = ! empty( $general_options['primary_color'] ) ? $general_options['primary_color'] : '#0B63D8';

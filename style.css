@@ -53,3 +53,156 @@ img {
   margin: 0 auto;
   padding: 0 1rem;
 }
+
+/* WooCommerce Category & Search Grid Layout */
+.archive-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 25px;
+}
+
+.archive-product-card {
+  background: #fff;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.archive-product-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 15px 35px rgba(0,0,0,0.08);
+}
+
+.product-card-img {
+  width: 100%;
+  height: 190px;
+  object-fit: cover;
+}
+
+.product-badge-discount {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: var(--kh-orange, #FF8A00);
+  color: #fff;
+  font-weight: bold;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  z-index: 2;
+}
+
+.card-content-wrapper {
+  padding: 16px;
+}
+
+.product-categories-meta {
+  font-size: 0.75rem;
+  color: #94a3b8;
+  margin-bottom: 6px;
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.cat-tag {
+  background: #f1f5f9;
+  padding: 2px 8px;
+  border-radius: 4px;
+  border: 1px solid #e2e8f0;
+}
+
+.product-card-title {
+  font-size: 1.15rem;
+  margin: 0 0 8px 0;
+  color: #1e293b;
+  font-weight: 800;
+  line-height: 1.4;
+}
+
+.product-card-price {
+  font-weight: 800;
+  font-size: 1.15rem;
+  color: var(--kh-orange, #FF8A00);
+}
+
+.card-action-wrapper {
+  padding: 0 16px 16px 16px;
+}
+
+.product-card-btn {
+  display: block;
+  width: 100%;
+  text-align: center;
+  background: var(--kh-primary-blue, #0B63D8);
+  color: #fff;
+  text-decoration: none;
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-weight: bold;
+  font-size: 0.95rem;
+  transition: background 0.2s ease;
+}
+
+.product-card-btn:hover {
+  background: #0952b6;
+}
+
+/* Mobile 2-Column Grid Layout (< 768px) */
+@media (max-width: 767px) {
+  .archive-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 12px !important;
+  }
+
+  .archive-product-card {
+    border-radius: 12px;
+  }
+
+  .product-card-img {
+    height: 130px !important;
+  }
+
+  .card-content-wrapper {
+    padding: 10px !important;
+  }
+
+  .product-badge-discount {
+    top: 6px;
+    right: 6px;
+    padding: 2px 6px;
+    font-size: 0.72rem;
+  }
+
+  .cat-tag {
+    font-size: 0.7rem;
+    padding: 1px 5px;
+  }
+
+  .product-card-title {
+    font-size: 0.92rem !important;
+    margin: 4px 0 !important;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .product-card-price {
+    font-size: 0.95rem !important;
+  }
+
+  .card-action-wrapper {
+    padding: 0 10px 10px 10px !important;
+  }
+
+  .product-card-btn {
+    padding: 8px 6px !important;
+    font-size: 0.82rem !important;
+    border-radius: 8px;
+  }
+}
