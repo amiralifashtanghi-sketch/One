@@ -167,6 +167,21 @@ function kish_harmony_variable_price_format( $price, $product ) {
 }
 add_filter( 'woocommerce_variable_price_html', 'kish_harmony_variable_price_format', 10, 2 );
 
+/**
+ * Server-side add to cart validation for recreation products requiring date selection
+ */
+function kish_harmony_validate_recreation_date( $passed, $product_id, $quantity ) {
+	$is_recreation = get_post_meta( $product_id, '_is_recreation', true );
+	if ( '1' === $is_recreation ) {
+		if ( empty( $_POST['recreation_date'] ) ) {
+			wc_add_notice( __( 'لطفاً تاریخ حضور و استفاده از تفریح را انتخاب کنید.', 'kish-harmony' ), 'error' );
+			return false;
+		}
+	}
+	return $passed;
+}
+add_filter( 'woocommerce_add_to_cart_validation', 'kish_harmony_validate_recreation_date', 10, 3 );
+
 // Require Includes
 require_once KISH_HARMONY_DIR . '/inc/admin-options.php';
 require_once KISH_HARMONY_DIR . '/inc/admin-header.php';

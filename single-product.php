@@ -309,9 +309,6 @@ get_header();
 
 			<!-- Full-width Product Description Section -->
 			<div class="product-full-description-wrapper" style="margin-top: 40px; background: #fff; border-radius: 20px; padding: 35px; box-shadow: 0 10px 30px rgba(0,0,0,0.06);">
-				<h2 style="font-size: 1.5rem; color: var(--kh-primary-blue, #0B63D8); font-weight: 800; margin-top: 0; margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
-					<span>📝 توضیحات کامل محصول</span>
-				</h2>
 				<div class="product-description-content" style="line-height: 2; color: #334155; font-size: 1.05rem;">
 					<?php the_content(); ?>
 				</div>
