@@ -153,6 +153,20 @@ function kish_harmony_flush_transients() {
 add_action( 'save_post', 'kish_harmony_flush_transients' );
 add_action( 'woocommerce_update_product', 'kish_harmony_flush_transients' );
 
+/**
+ * Format variable product price display to "شروع قیمت از [حداقل قیمت]"
+ */
+function kish_harmony_variable_price_format( $price, $product ) {
+	if ( $product->is_type( 'variable' ) ) {
+		$min_price = $product->get_variation_price( 'min', true );
+		if ( $min_price ) {
+			return 'شروع قیمت از ' . wc_price( $min_price );
+		}
+	}
+	return $price;
+}
+add_filter( 'woocommerce_variable_price_html', 'kish_harmony_variable_price_format', 10, 2 );
+
 // Require Includes
 require_once KISH_HARMONY_DIR . '/inc/admin-options.php';
 require_once KISH_HARMONY_DIR . '/inc/admin-header.php';

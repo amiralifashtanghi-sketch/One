@@ -100,18 +100,12 @@ get_header();
 						}
 						if ( ! empty( $short_desc ) ) :
 						?>
-							<div class="product-short-description" style="background: #f8fafc; border-right: 4px solid var(--kh-primary-blue, #0B63D8); padding: 16px 20px; border-radius: 12px; margin: 20px 0; line-height: 1.8; color: #334155; box-shadow: 0 2px 10px rgba(0,0,0,0.02);">
-								<h3 style="font-size: 1.1rem; margin-top: 0; margin-bottom: 8px; color: var(--kh-primary-blue, #0B63D8); font-weight: 800; display: flex; align-items: center; gap: 8px;">
-									<span>📌 خلاصه و توضیحات کوتاه:</span>
-								</h3>
-								<div class="short-desc-content" style="font-size: 0.98rem; color: #475569;">
-									<?php echo wp_kses_post( $short_desc ); ?>
-								</div>
+							<div class="product-short-description" style="margin: 15px 0; line-height: 1.8; color: #475569; font-size: 0.98rem;">
+								<?php echo wp_kses_post( $short_desc ); ?>
 							</div>
 						<?php endif; ?>
 
-						<div class="product-description" style="margin: 20px 0; line-height: 1.8; color: #475569;">
-							<h3 style="font-size: 1.2rem; color: var(--kh-primary-blue, #0B63D8); font-weight: 800; margin-bottom: 12px;">📝 توضیحات کامل محصول:</h3>
+						<div class="product-description" style="margin: 15px 0; line-height: 1.8; color: #475569;">
 							<?php the_content(); ?>
 						</div>
 
@@ -123,7 +117,7 @@ get_header();
 
 					<?php if ( $product ) : ?>
 						<div class="product-price-wrapper" style="margin-bottom: 15px; padding: 15px 20px; background: #fff; border-radius: 14px; border: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 4px 15px rgba(0,0,0,0.03);">
-							<span style="font-weight: bold; color: #475569; font-size: 1.05rem;">💰 قیمت محصول:</span>
+							<span style="font-weight: bold; color: #475569; font-size: 1.05rem;">💰 قیمت:</span>
 							<div style="font-size: 1.8rem; color: var(--kh-orange, #FF8A00); font-weight: 800;">
 								<?php echo $product->get_price_html(); ?>
 							</div>
@@ -207,8 +201,8 @@ get_header();
 							<?php endif; ?>
 							<?php if ( '1' === $is_recreation ) : ?>
 								<div style="background: #eef2ff; padding: 15px; border-radius: 12px; border: 1px solid #c7d2fe;">
-									<label style="font-weight: bold; display: block; margin-bottom: 6px; color: #1e1b4b;">📅 تاریخ حضور و استفاده از تفریح (شمسی):</label>
-									<input type="text" name="recreation_date" class="persian-datepicker" placeholder="انتخاب تاریخ شمسی..." required min="<?php echo date( 'Y-m-d' ); ?>" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #cbd5e1; font-size: 1rem;">
+									<label style="font-weight: bold; display: block; margin-bottom: 6px; color: #1e1b4b;">📅 تاریخ حضور و استفاده از تفریح:</label>
+									<input type="text" name="recreation_date" class="persian-datepicker" placeholder="انتخاب تاریخ..." required min="<?php echo date( 'Y-m-d' ); ?>" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #cbd5e1; font-size: 1rem;">
 								</div>
 							<?php endif; ?>
 
