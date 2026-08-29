@@ -1,0 +1,74 @@
+
+/* Categories Box Grid (card-soft square cards) */
+.grid-soft {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 20px;
+}
+
+.card-soft {
+  aspect-ratio: 1 / 1;
+  border-radius: 24px;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: flex-end;
+  cursor: pointer;
+  box-shadow: 0 12px 28px rgba(0,0,0,0.08);
+  transition: all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1);
+  text-decoration: none;
+  background-size: cover;
+  background-position: center;
+}
+
+.card-soft::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(0deg, rgba(0,0,0,0.6) 10%, rgba(0,0,0,0.1) 60%);
+  transition: background 0.4s ease;
+  z-index: 0;
+}
+
+.card-soft:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 25px 45px rgba(0,0,0,0.18);
+}
+
+.card-soft:hover::before {
+  background: linear-gradient(0deg, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.25) 70%);
+}
+
+.card-soft i {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 36px;
+  color: rgba(255,255,255,0.9);
+  z-index: 1;
+  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
+}
+
+.card-label {
+  position: relative;
+  z-index: 1;
+  color: white;
+  font-weight: 700;
+  font-size: 15px;
+  padding: 12px 10px;
+  width: 100%;
+  text-align: center;
+  text-shadow: 0 2px 6px rgba(0,0,0,0.5);
+  background: rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  border-bottom-left-radius: 24px;
+  border-bottom-right-radius: 24px;
+}
+
+@media (max-width: 500px) {
+  .grid-soft {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

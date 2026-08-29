@@ -1,0 +1,130 @@
+
+/* Search Component Styling */
+.search-section-wrapper {
+  margin: 40px 0;
+  text-align: center;
+}
+
+.search-header-text h2 {
+  font-size: 1.8rem;
+  color: #0a2540;
+  margin-bottom: 0.5rem;
+}
+
+.search-header-text p {
+  color: #5a6f80;
+  margin-bottom: 1.5rem;
+}
+
+.ajax-search-box-container {
+  position: relative;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.ajax-search-form {
+  display: flex;
+  background: #ffffff;
+  border-radius: 40px;
+  padding: 6px 8px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  border: 2px solid #e2e8f0;
+  transition: border-color 0.3s ease;
+}
+
+.ajax-search-form:focus-within {
+  border-color: var(--kh-primary-blue);
+}
+
+.ajax-search-form input[type="text"] {
+  flex: 1;
+  border: none;
+  outline: none;
+  padding: 0.8rem 1.5rem;
+  font-size: 1rem;
+  font-family: inherit;
+  border-radius: 40px;
+}
+
+.search-submit-btn {
+  background: var(--kh-primary-blue);
+  color: #ffffff;
+  border: none;
+  padding: 0.8rem 1.8rem;
+  border-radius: 30px;
+  font-weight: bold;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.search-submit-btn:hover {
+  background: #094eb0;
+}
+
+.ajax-search-results-wrapper {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+  margin-top: 10px;
+  z-index: 500;
+  max-height: 400px;
+  overflow-y: auto;
+  display: none;
+}
+
+.ajax-search-results-wrapper.active {
+  display: block;
+}
+
+.ajax-search-results-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.ajax-search-item a {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 12px 20px;
+  border-bottom: 1px solid #f1f5f9;
+  text-align: right;
+  transition: background 0.2s ease;
+}
+
+.ajax-search-item a:hover {
+  background: #f8fafc;
+}
+
+.ajax-search-item img {
+  width: 50px;
+  height: 50px;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.search-item-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.search-item-title {
+  font-weight: bold;
+  color: #1e293b;
+}
+
+.search-item-price {
+  font-size: 0.85rem;
+  color: var(--kh-orange);
+  margin-top: 4px;
+}
+
+.ajax-search-no-results {
+  padding: 20px;
+  color: #64748b;
+}

@@ -1,0 +1,27 @@
+/* Smart Logo Responsiveness & Width Constraints */
+.floating-logo, .header-logo {
+  max-width: 45vw;
+  overflow: hidden;
+}
+
+.logo-text {
+  font-weight: 800;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  font-size: clamp(1rem, 2vw + 0.8rem, 2.2rem);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 250px;
+}
+
+@media screen and (max-width: 768px) {
+  .logo-text {
+    max-width: 160px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .logo-text {
+    max-width: 120px;
+  }
+}

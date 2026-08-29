@@ -1,0 +1,64 @@
+
+/* Special Offers Horizontal Container & Section Header */
+.special-offers-wrapper {
+  margin: 60px 0;
+}
+
+.special-section-header {
+  margin-bottom: 2rem;
+  position: relative;
+}
+
+.special-title {
+  font-size: 1.9rem;
+  font-weight: 800;
+  color: #1a1a2e;
+  display: inline-block;
+  position: relative;
+}
+
+.special-title .fire-emoji {
+  font-size: 2.2rem;
+  margin-left: 6px;
+}
+
+.special-title::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  right: 0;
+  width: 50%;
+  height: 4px;
+  background: linear-gradient(to left, #e91e63, #ff6f61);
+  border-radius: 4px;
+}
+
+.special-subtitle {
+  color: #5a6f80;
+  margin-top: 0.8rem;
+}
+
+.special-offers-scroll-container {
+  display: flex;
+  gap: 1.5rem;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  height: 500px;
+  padding-bottom: 1.8rem;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Custom Scrollbar for Special Offers */
+.special-offers-scroll-container::-webkit-scrollbar {
+  height: 6px;
+}
+
+.special-offers-scroll-container::-webkit-scrollbar-track {
+  background: #e0e0e0;
+  border-radius: 10px;
+}
+
+.special-offers-scroll-container::-webkit-scrollbar-thumb {
+  background: #c0c0c0;
+  border-radius: 10px;
+}
