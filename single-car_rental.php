@@ -96,12 +96,12 @@ get_header();
 					<h3 style="margin-top:0; font-size:1.1rem; color:#1e293b;">📅 تقویم رزرو و تحویل خودرو</h3>
 					<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
 						<div>
-							<label style="font-weight: bold; display: block; margin-bottom: 6px;">از تاریخ (تحویل):</label>
-							<input type="date" name="start_date" required min="<?php echo date( 'Y-m-d' ); ?>" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #cbd5e1;">
+							<label style="font-weight: bold; display: block; margin-bottom: 6px;">از تاریخ (تحویل شمسی):</label>
+							<input type="text" name="start_date" class="persian-datepicker" placeholder="انتخاب تاریخ..." required min="<?php echo date( 'Y-m-d' ); ?>" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #cbd5e1;">
 						</div>
 						<div>
-							<label style="font-weight: bold; display: block; margin-bottom: 6px;">تا تاریخ (عودت):</label>
-							<input type="date" name="end_date" required min="<?php echo date( 'Y-m-d' ); ?>" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #cbd5e1;">
+							<label style="font-weight: bold; display: block; margin-bottom: 6px;">تا تاریخ (عودت شمسی):</label>
+							<input type="text" name="end_date" class="persian-datepicker" placeholder="انتخاب تاریخ..." required min="<?php echo date( 'Y-m-d' ); ?>" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #cbd5e1;">
 						</div>
 					</div>
 

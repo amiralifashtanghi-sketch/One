@@ -22,16 +22,64 @@ get_header();
 		?>
 			<div style="background: #fff; border-radius: 20px; padding: 35px; box-shadow: 0 10px 30px rgba(0,0,0,0.06); display: flex; flex-wrap: wrap; gap: 40px;">
 				<div style="flex: 1 1 450px; position: relative;">
-					<?php if ( has_post_thumbnail() ) : ?>
-						<img src="<?php the_post_thumbnail_url( 'large' ); ?>" alt="<?php the_title_attribute(); ?>" style="width: 100%; border-radius: 16px; object-fit: cover;">
-					<?php else : ?>
-						<img src="https://via.placeholder.com/600x400?text=Kish+Product" alt="Product Image" style="width: 100%; border-radius: 16px;">
-					<?php endif; ?>
+					<div class="product-main-image-wrapper" style="position: relative;">
+						<?php
+						$main_img_url = has_post_thumbnail() ? get_the_post_thumbnail_url( $product_id, 'large' ) : 'https://via.placeholder.com/600x400?text=Kish+Product';
+						?>
+						<img id="mainProductImage" src="<?php echo esc_url( $main_img_url ); ?>" alt="<?php the_title_attribute(); ?>" style="width: 100%; height: 380px; border-radius: 16px; object-fit: cover; transition: opacity 0.3s ease;">
 
-					<?php if ( ! empty( $discount ) ) : ?>
-						<div style="position: absolute; top: 15px; right: 15px; background: var(--kh-orange, #FF8A00); color: #fff; font-weight: bold; padding: 8px 16px; border-radius: 50px; font-size: 1.1rem;">
-							🔥 <?php echo esc_html( $discount ); ?>٪ تخفیف ویژه
+						<?php if ( ! empty( $discount ) ) : ?>
+							<div style="position: absolute; top: 15px; right: 15px; background: var(--kh-orange, #FF8A00); color: #fff; font-weight: bold; padding: 8px 16px; border-radius: 50px; font-size: 1.1rem; z-index: 2;">
+								🔥 <?php echo esc_html( $discount ); ?>٪ تخفیف ویژه
+							</div>
+						<?php endif; ?>
+					</div>
+
+					<?php
+					$attachment_ids = $product ? $product->get_gallery_image_ids() : array();
+					if ( has_post_thumbnail() ) {
+						array_unshift( $attachment_ids, get_post_thumbnail_id( $product_id ) );
+						$attachment_ids = array_unique( $attachment_ids );
+					}
+					if ( ! empty( $attachment_ids ) && count( $attachment_ids ) > 1 ) :
+					?>
+						<div class="product-gallery-thumbnails" style="display: flex; gap: 12px; margin-top: 15px; overflow-x: auto; padding-bottom: 5px;">
+							<?php foreach ( $attachment_ids as $index => $attachment_id ) :
+								$thumb_src = wp_get_attachment_image_url( $attachment_id, 'thumbnail' );
+								$full_src  = wp_get_attachment_image_url( $attachment_id, 'large' );
+								if ( ! $thumb_src ) continue;
+							?>
+								<img class="gallery-thumb-item <?php echo 0 === $index ? 'active' : ''; ?>" src="<?php echo esc_url( $thumb_src ); ?>" data-full="<?php echo esc_url( $full_src ); ?>" alt="Gallery Image <?php echo esc_attr( $index + 1 ); ?>" style="width: 75px; height: 75px; border-radius: 12px; object-fit: cover; cursor: pointer; border: 2px solid <?php echo 0 === $index ? 'var(--kh-primary-blue, #0B63D8)' : '#e2e8f0'; ?>; transition: all 0.2s ease;">
+							<?php endforeach; ?>
 						</div>
+
+						<script>
+						document.addEventListener('DOMContentLoaded', function() {
+							const mainImg = document.getElementById('mainProductImage');
+							const thumbs = document.querySelectorAll('.gallery-thumb-item');
+
+							thumbs.forEach(thumb => {
+								thumb.addEventListener('click', function() {
+									const fullUrl = this.getAttribute('data-full');
+									if (!fullUrl || !mainImg) return;
+
+									thumbs.forEach(t => {
+										t.style.borderColor = '#e2e8f0';
+										t.classList.remove('active');
+									});
+
+									this.style.borderColor = 'var(--kh-primary-blue, #0B63D8)';
+									this.classList.add('active');
+
+									mainImg.style.opacity = '0.3';
+									setTimeout(() => {
+										mainImg.src = fullUrl;
+										mainImg.style.opacity = '1';
+									}, 150);
+								});
+							});
+						});
+						</script>
 					<?php endif; ?>
 				</div>
 
@@ -45,9 +93,17 @@ get_header();
 							</div>
 						<?php endif; ?>
 
-						<div class="product-description" style="margin: 20px 0; line-height: 1.8; color: #475569;">
-							<?php the_content(); ?>
-						</div>
+						<?php
+						$short_desc = $product ? $product->get_short_description() : '';
+						if ( empty( $short_desc ) && has_excerpt() ) {
+							$short_desc = get_the_excerpt();
+						}
+						if ( ! empty( $short_desc ) ) :
+						?>
+							<div class="product-short-description" style="margin: 15px 0; line-height: 1.8; color: #475569; font-size: 0.98rem;">
+								<?php echo wp_kses_post( $short_desc ); ?>
+							</div>
+						<?php endif; ?>
 
 						<div class="product-meta-taxonomies" style="margin-top: 20px; padding-top: 15px; border-top: 1px dashed #e2e8f0; font-size: 0.9rem; color: #64748b;">
 							<div style="margin-bottom: 6px;"><?php echo get_the_term_list( $product_id, 'product_cat', '📁 <strong>دسته‌بندی‌ها:</strong> ', '، ' ); ?></div>
@@ -55,17 +111,23 @@ get_header();
 						</div>
 					</div>
 
-					<div style="background: #f8fafc; padding: 25px; border-radius: 16px; border: 1px solid #e2e8f0;">
-						<div style="margin-bottom: 20px;">
-							<?php if ( $product ) : ?>
-								<div style="font-size: 1.8rem; color: var(--kh-orange, #FF8A00); font-weight: 800;">
-									<?php echo $product->get_price_html(); ?>
-								</div>
-							<?php endif; ?>
+					<?php if ( $product ) : ?>
+						<div class="product-price-wrapper" style="margin-bottom: 15px; padding: 15px 20px; background: #fff; border-radius: 14px; border: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: space-between; gap: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); flex-wrap: wrap;">
+							<span style="font-weight: bold; color: #475569; font-size: 1.05rem; white-space: nowrap;">💰 قیمت:</span>
+							<div id="productPriceDisplay" class="product-price-display" style="font-size: clamp(1.1rem, 3.8vw, 1.6rem); color: var(--kh-orange, #FF8A00); font-weight: 800; text-align: left; word-break: break-word; line-height: 1.35;">
+								<?php echo $product->get_price_html(); ?>
+							</div>
 						</div>
+					<?php endif; ?>
 
+					<div style="background: #f8fafc; padding: 25px; border-radius: 16px; border: 1px solid #e2e8f0;">
 						<?php
 						$is_recreation = get_post_meta( $product_id, '_is_recreation', true );
+						if ( '1' !== $is_recreation ) {
+							if ( has_term( array( 'recreation', 'tafrih', 'tafrihat', 'تفریح', 'تفریحات', 'رنت-خودرو', 'اجاره-خودرو' ), 'product_cat', $product_id ) || has_term( array( 'تفریح', 'تفریحات', 'رنت', 'خودرو' ), 'product_tag', $product_id ) ) {
+								$is_recreation = '1';
+							}
+						}
 						$rec_terms     = get_post_meta( $product_id, '_recreation_terms', true );
 						$btn_text      = get_option( 'kish_harmony_add_to_cart_btn_text', '🛒 افزودن به سبد خرید' );
 						?>
@@ -97,6 +159,8 @@ get_header();
 									const selectors = document.querySelectorAll('.variation-selector');
 									const descBox = document.getElementById('variationDescription');
 									const varIdInput = document.getElementById('variation_id');
+									const priceDisplayContainer = document.getElementById('productPriceDisplay');
+									const defaultPriceHtml = priceDisplayContainer ? priceDisplayContainer.innerHTML : '';
 
 									function matchVariation() {
 										let selected = {};
@@ -111,6 +175,7 @@ get_header();
 										if (!allChosen) {
 											if (descBox) descBox.style.display = 'none';
 											if (varIdInput) varIdInput.value = '0';
+											if (priceDisplayContainer) priceDisplayContainer.innerHTML = defaultPriceHtml;
 											return;
 										}
 
@@ -123,6 +188,9 @@ get_header();
 
 										if (matched) {
 											if (varIdInput) varIdInput.value = matched.variation_id;
+											if (priceDisplayContainer && matched.price_html) {
+												priceDisplayContainer.innerHTML = matched.price_html;
+											}
 											if (descBox) {
 												if (matched.variation_description) {
 													descBox.innerHTML = matched.variation_description;
@@ -131,6 +199,8 @@ get_header();
 													descBox.style.display = 'none';
 												}
 											}
+										} else {
+											if (priceDisplayContainer) priceDisplayContainer.innerHTML = defaultPriceHtml;
 										}
 									}
 
@@ -140,8 +210,9 @@ get_header();
 							<?php endif; ?>
 							<?php if ( '1' === $is_recreation ) : ?>
 								<div style="background: #eef2ff; padding: 15px; border-radius: 12px; border: 1px solid #c7d2fe;">
-									<label style="font-weight: bold; display: block; margin-bottom: 6px; color: #1e1b4b;">📅 تاریخ حضور و استفاده از تفریح:</label>
-									<input type="date" name="recreation_date" required min="<?php echo date( 'Y-m-d' ); ?>" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #cbd5e1; font-size: 1rem;">
+									<label style="font-weight: bold; display: block; margin-bottom: 6px; color: #1e1b4b;">📅 تاریخ حضور و استفاده از تفریح <span style="color:#dc2626;">(اجباری)</span>:</label>
+									<input type="text" name="recreation_date" id="recreation_date_input" class="persian-datepicker" placeholder="لطفاً تاریخ را انتخاب کنید..." required style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #cbd5e1; font-size: 1rem;">
+									<div id="dateNoticeAlert" style="display: none; color: #dc2626; font-size: 0.88rem; font-weight: bold; margin-top: 6px;">⚠️ انتخاب تاریخ الزامی است!</div>
 								</div>
 							<?php endif; ?>
 
@@ -184,9 +255,40 @@ get_header();
 								const confirmBtn = document.getElementById('confirmAddToCartBtn');
 								const closeBtn = document.getElementById('closeTermsModal');
 								const form = document.getElementById('productCartForm');
+								const dateInput = document.getElementById('recreation_date_input');
+								const dateAlert = document.getElementById('dateNoticeAlert');
+
+								function validateDate() {
+									if (dateInput && !dateInput.value.trim()) {
+										if (dateAlert) dateAlert.style.display = 'block';
+										dateInput.focus();
+										dateInput.style.borderColor = '#dc2626';
+										return false;
+									}
+									if (dateAlert) dateAlert.style.display = 'none';
+									if (dateInput) dateInput.style.borderColor = '#cbd5e1';
+									return true;
+								}
+
+								if (dateInput) {
+									dateInput.addEventListener('change', validateDate);
+								}
+
+								if (form) {
+									form.addEventListener('submit', function(e) {
+										if (!validateDate()) {
+											e.preventDefault();
+											return false;
+										}
+									});
+								}
 
 								if (mainBtn && modal) {
 									mainBtn.addEventListener('click', function(e) {
+										if (!validateDate()) {
+											e.preventDefault();
+											return false;
+										}
 										if (!form.checkValidity()) {
 											form.reportValidity();
 											return;
@@ -240,6 +342,25 @@ get_header();
 						</script>
 					</div>
 				</div>
+			</div>
+
+			<!-- Full-width Product Description Section -->
+			<div class="product-full-description-wrapper" style="margin-top: 40px; background: #fff; border-radius: 20px; padding: 35px; box-shadow: 0 10px 30px rgba(0,0,0,0.06);">
+				<div class="product-description-content" style="line-height: 2; color: #334155; font-size: 1.05rem;">
+					<?php the_content(); ?>
+				</div>
+			</div>
+
+			<!-- Product Reviews & Comments Section -->
+			<div class="product-reviews-wrapper" style="margin-top: 50px; background: #fff; border-radius: 20px; padding: 35px; box-shadow: 0 10px 30px rgba(0,0,0,0.06);">
+				<h2 style="font-size: 1.5rem; color: var(--kh-primary-blue, #0B63D8); font-weight: 800; margin-top: 0; margin-bottom: 25px; display: flex; align-items: center; gap: 10px;">
+					<span>💬 نظرات و تجربیات مشتریان</span>
+				</h2>
+				<?php
+				if ( comments_open() || get_comments_number() ) {
+					comments_template();
+				}
+				?>
 			</div>
 
 			<!-- Related Products Section -->
