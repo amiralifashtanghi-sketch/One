@@ -211,7 +211,7 @@ get_header();
 							<?php if ( '1' === $is_recreation ) : ?>
 								<div style="background: #eef2ff; padding: 15px; border-radius: 12px; border: 1px solid #c7d2fe;">
 									<label style="font-weight: bold; display: block; margin-bottom: 6px; color: #1e1b4b;">📅 تاریخ حضور و استفاده از تفریح <span style="color:#dc2626;">(اجباری)</span>:</label>
-									<input type="text" name="recreation_date" id="recreation_date_input" class="persian-datepicker" placeholder="لطفاً تاریخ را انتخاب کنید..." required style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #cbd5e1; font-size: 1rem;">
+									<input type="text" name="recreation_date" id="recreation_date_input" class="persian-datepicker" placeholder="لطفاً تاریخ را انتخاب کنید..." min="<?php echo esc_attr( date( 'Y-m-d' ) ); ?>" required style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #cbd5e1; font-size: 1rem;">
 									<div id="dateNoticeAlert" style="display: none; color: #dc2626; font-size: 0.88rem; font-weight: bold; margin-top: 6px;">⚠️ انتخاب تاریخ الزامی است!</div>
 								</div>
 							<?php endif; ?>

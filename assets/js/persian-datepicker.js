@@ -79,8 +79,10 @@
         }
 
         init() {
-            // Read min attribute if exists
-            this.minDateG = this.input.getAttribute('min') || null;
+            // Read min attribute if exists, default to today's ISO date string
+            const now = new Date();
+            const todayGStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
+            this.minDateG = this.input.getAttribute('min') || todayGStr;
 
             // Make text input readOnly to force picker
             this.input.setAttribute('readonly', 'readonly');

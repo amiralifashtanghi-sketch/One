@@ -179,8 +179,17 @@ function kish_harmony_validate_recreation_date( $passed, $product_id, $quantity 
 	}
 
 	if ( '1' === $is_recreation ) {
-		if ( empty( $_POST['recreation_date'] ) ) {
+		$selected_date = sanitize_text_field( $_POST['recreation_date'] ?? '' );
+		$iso_date      = sanitize_text_field( $_POST['recreation_date_iso'] ?? '' );
+
+		if ( empty( $selected_date ) ) {
 			wc_add_notice( __( '⚠️ انتخاب تاریخ برای این تفریح / خدمت اجباری می‌باشد. لطفاً ابتدا تاریخ مورد نظر را انتخاب نمایید.', 'kish-harmony' ), 'error' );
+			return false;
+		}
+
+		// Validate if ISO date sent is earlier than today
+		if ( ! empty( $iso_date ) && $iso_date < date( 'Y-m-d' ) ) {
+			wc_add_notice( __( '⚠️ تاریخ انتخابی نمی‌تواند قبل از امروز باشد. لطفاً تاریخی برای امروز یا روزهای آینده انتخاب نمایید.', 'kish-harmony' ), 'error' );
 			return false;
 		}
 	}

@@ -97,11 +97,11 @@ get_header();
 					<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
 						<div>
 							<label style="font-weight: bold; display: block; margin-bottom: 6px;">از تاریخ (تحویل شمسی):</label>
-							<input type="text" name="start_date" class="persian-datepicker" placeholder="انتخاب تاریخ..." required min="<?php echo date( 'Y-m-d' ); ?>" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #cbd5e1;">
+							<input type="text" name="start_date" class="persian-datepicker" placeholder="انتخاب تاریخ..." required min="<?php echo esc_attr( date( 'Y-m-d' ) ); ?>" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #cbd5e1;">
 						</div>
 						<div>
 							<label style="font-weight: bold; display: block; margin-bottom: 6px;">تا تاریخ (عودت شمسی):</label>
-							<input type="text" name="end_date" class="persian-datepicker" placeholder="انتخاب تاریخ..." required min="<?php echo date( 'Y-m-d' ); ?>" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #cbd5e1;">
+							<input type="text" name="end_date" class="persian-datepicker" placeholder="انتخاب تاریخ..." required min="<?php echo esc_attr( date( 'Y-m-d' ) ); ?>" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #cbd5e1;">
 						</div>
 					</div>
 
