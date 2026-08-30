@@ -112,9 +112,9 @@ get_header();
 					</div>
 
 					<?php if ( $product ) : ?>
-						<div class="product-price-wrapper" style="margin-bottom: 15px; padding: 15px 20px; background: #fff; border-radius: 14px; border: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 4px 15px rgba(0,0,0,0.03);">
-							<span style="font-weight: bold; color: #475569; font-size: 1.05rem;">💰 قیمت:</span>
-							<div id="productPriceDisplay" style="font-size: 1.8rem; color: var(--kh-orange, #FF8A00); font-weight: 800;">
+						<div class="product-price-wrapper" style="margin-bottom: 15px; padding: 15px 20px; background: #fff; border-radius: 14px; border: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: space-between; gap: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); flex-wrap: wrap;">
+							<span style="font-weight: bold; color: #475569; font-size: 1.05rem; white-space: nowrap;">💰 قیمت:</span>
+							<div id="productPriceDisplay" class="product-price-display" style="font-size: clamp(1.1rem, 3.8vw, 1.6rem); color: var(--kh-orange, #FF8A00); font-weight: 800; text-align: left; word-break: break-word; line-height: 1.35;">
 								<?php echo $product->get_price_html(); ?>
 							</div>
 						</div>
@@ -123,6 +123,11 @@ get_header();
 					<div style="background: #f8fafc; padding: 25px; border-radius: 16px; border: 1px solid #e2e8f0;">
 						<?php
 						$is_recreation = get_post_meta( $product_id, '_is_recreation', true );
+						if ( '1' !== $is_recreation ) {
+							if ( has_term( array( 'recreation', 'tafrih', 'tafrihat', 'تفریح', 'تفریحات', 'رنت-خودرو', 'اجاره-خودرو' ), 'product_cat', $product_id ) || has_term( array( 'تفریح', 'تفریحات', 'رنت', 'خودرو' ), 'product_tag', $product_id ) ) {
+								$is_recreation = '1';
+							}
+						}
 						$rec_terms     = get_post_meta( $product_id, '_recreation_terms', true );
 						$btn_text      = get_option( 'kish_harmony_add_to_cart_btn_text', '🛒 افزودن به سبد خرید' );
 						?>
@@ -205,8 +210,9 @@ get_header();
 							<?php endif; ?>
 							<?php if ( '1' === $is_recreation ) : ?>
 								<div style="background: #eef2ff; padding: 15px; border-radius: 12px; border: 1px solid #c7d2fe;">
-									<label style="font-weight: bold; display: block; margin-bottom: 6px; color: #1e1b4b;">📅 تاریخ حضور و استفاده از تفریح:</label>
-									<input type="text" name="recreation_date" class="persian-datepicker" placeholder="انتخاب تاریخ..." required min="<?php echo date( 'Y-m-d' ); ?>" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #cbd5e1; font-size: 1rem;">
+									<label style="font-weight: bold; display: block; margin-bottom: 6px; color: #1e1b4b;">📅 تاریخ حضور و استفاده از تفریح <span style="color:#dc2626;">(اجباری)</span>:</label>
+									<input type="text" name="recreation_date" id="recreation_date_input" class="persian-datepicker" placeholder="لطفاً تاریخ را انتخاب کنید..." required style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #cbd5e1; font-size: 1rem;">
+									<div id="dateNoticeAlert" style="display: none; color: #dc2626; font-size: 0.88rem; font-weight: bold; margin-top: 6px;">⚠️ انتخاب تاریخ الزامی است!</div>
 								</div>
 							<?php endif; ?>
 
@@ -249,9 +255,40 @@ get_header();
 								const confirmBtn = document.getElementById('confirmAddToCartBtn');
 								const closeBtn = document.getElementById('closeTermsModal');
 								const form = document.getElementById('productCartForm');
+								const dateInput = document.getElementById('recreation_date_input');
+								const dateAlert = document.getElementById('dateNoticeAlert');
+
+								function validateDate() {
+									if (dateInput && !dateInput.value.trim()) {
+										if (dateAlert) dateAlert.style.display = 'block';
+										dateInput.focus();
+										dateInput.style.borderColor = '#dc2626';
+										return false;
+									}
+									if (dateAlert) dateAlert.style.display = 'none';
+									if (dateInput) dateInput.style.borderColor = '#cbd5e1';
+									return true;
+								}
+
+								if (dateInput) {
+									dateInput.addEventListener('change', validateDate);
+								}
+
+								if (form) {
+									form.addEventListener('submit', function(e) {
+										if (!validateDate()) {
+											e.preventDefault();
+											return false;
+										}
+									});
+								}
 
 								if (mainBtn && modal) {
 									mainBtn.addEventListener('click', function(e) {
+										if (!validateDate()) {
+											e.preventDefault();
+											return false;
+										}
 										if (!form.checkValidity()) {
 											form.reportValidity();
 											return;

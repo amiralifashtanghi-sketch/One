@@ -172,9 +172,15 @@ add_filter( 'woocommerce_variable_price_html', 'kish_harmony_variable_price_form
  */
 function kish_harmony_validate_recreation_date( $passed, $product_id, $quantity ) {
 	$is_recreation = get_post_meta( $product_id, '_is_recreation', true );
+	if ( '1' !== $is_recreation ) {
+		if ( has_term( array( 'recreation', 'tafrih', 'tafrihat', 'تفریح', 'تفریحات', 'رنت-خودرو', 'اجاره-خودرو' ), 'product_cat', $product_id ) || has_term( array( 'تفریح', 'تفریحات', 'رنت', 'خودرو' ), 'product_tag', $product_id ) ) {
+			$is_recreation = '1';
+		}
+	}
+
 	if ( '1' === $is_recreation ) {
 		if ( empty( $_POST['recreation_date'] ) ) {
-			wc_add_notice( __( 'لطفاً تاریخ حضور و استفاده از تفریح را انتخاب کنید.', 'kish-harmony' ), 'error' );
+			wc_add_notice( __( '⚠️ انتخاب تاریخ برای این تفریح / خدمت اجباری می‌باشد. لطفاً ابتدا تاریخ مورد نظر را انتخاب نمایید.', 'kish-harmony' ), 'error' );
 			return false;
 		}
 	}

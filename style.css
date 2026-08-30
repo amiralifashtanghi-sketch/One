@@ -8,6 +8,22 @@ Text Domain: kish-harmony
 Domain Path: /languages
 */
 
+/* Product Price Responsive Styles for Long/Big Numbers */
+.product-price-wrapper {
+  word-break: break-word;
+}
+.product-price-display,
+.product-price-display .woocommerce-Price-amount {
+  font-size: clamp(1.1rem, 3.8vw, 1.6rem) !important;
+  line-height: 1.35 !important;
+  word-break: break-word !important;
+  display: inline-block;
+}
+.product-price-display .woocommerce-Price-currencySymbol {
+  font-size: 0.85em;
+  margin-right: 4px;
+}
+
 /* Base CSS Reset and Typography */
 :root {
   --kh-primary-blue: #0B63D8;
