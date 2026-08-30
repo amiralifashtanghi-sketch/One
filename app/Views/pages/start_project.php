@@ -68,9 +68,10 @@ document.getElementById('projectForm').addEventListener('submit', async function
     btn.disabled = true;
     btn.innerText = 'در حال ثبت درخواست...';
 
+    const baseUrl = '<?= \App\Core\Security::getBaseUrl() ?>';
     const formData = new FormData(this);
     try {
-        const res = await fetch('/api/start-project', { method: 'POST', body: formData });
+        const res = await fetch(baseUrl + '/api/start-project', { method: 'POST', body: formData });
         const data = await res.json();
 
         if (res.ok && data.success) {

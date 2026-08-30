@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>نصب با موفقیت انجام شد — EAFD</title>
-    <link rel="stylesheet" href="/assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/style.css">
 </head>
 <body style="background: #07090e; display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 2rem;">
     <div style="max-width: 600px; width: 100%; background: var(--color-surface); border: 1px solid var(--color-surface-border); border-radius: var(--radius-xl); padding: 3rem; text-align: center;">
@@ -16,8 +16,8 @@
         </p>
 
         <div style="display: flex; gap: 1rem; justify-content: center;">
-            <a href="/admin/login" class="btn btn-primary" style="flex: 1;">ورود به پنل مدیریت (/admin)</a>
-            <a href="/" class="btn btn-outline" style="flex: 1;">مشاهده وب‌سایت اصلی</a>
+            <a href="../admin/login" class="btn btn-primary" style="flex: 1;">ورود به پنل مدیریت (/admin)</a>
+            <a href="../" class="btn btn-outline" style="flex: 1;">مشاهده وب‌سایت اصلی</a>
         </div>
     </div>
 </body>

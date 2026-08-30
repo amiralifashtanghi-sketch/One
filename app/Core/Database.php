@@ -10,24 +10,30 @@ class Database {
     public static function getInstance(): PDO {
         if (self::$instance === null) {
             $config = require __DIR__ . '/../../config/app.php';
-            $dbConfig = $config['db'];
+            $dbConfig = $config['db'] ?? [];
+
+            $host = $dbConfig['host'] ?? 'localhost';
+            $name = $dbConfig['name'] ?? '';
+            $user = $dbConfig['user'] ?? '';
+            $pass = $dbConfig['pass'] ?? '';
+            $charset = $dbConfig['charset'] ?? 'utf8mb4';
 
             $dsn = sprintf(
                 "mysql:host=%s;dbname=%s;charset=%s",
-                $dbConfig['host'],
-                $dbConfig['name'],
-                $dbConfig['charset']
+                $host,
+                $name,
+                $charset
             );
 
             $options = [
                 PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
                 PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
                 PDO::ATTR_EMULATE_PREPARES => false,
-                PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES " . $dbConfig['charset'] . " COLLATE utf8mb4_unicode_ci"
+                PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES " . $charset . " COLLATE utf8mb4_unicode_ci"
             ];
 
             try {
-                self::$instance = new PDO($dsn, $dbConfig['user'], $dbConfig['pass'], $options);
+                self::$instance = new PDO($dsn, $user, $pass, $options);
             } catch (PDOException $e) {
                 error_log("Database Connection Error: " . $e->getMessage());
                 throw new PDOException("خطا در برقراری ارتباط با پایگاه داده.");

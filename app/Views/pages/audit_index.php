@@ -34,7 +34,6 @@
             </div>
 
             <ul id="auditDetails" style="list-style: none; display: flex; flex-direction: column; gap: 0.75rem; font-size: 0.9rem;">
-                <!-- Filled via JS -->
             </ul>
         </div>
     </div>
@@ -48,9 +47,10 @@ document.getElementById('auditForm').addEventListener('submit', async function(e
     btn.disabled = true;
     btn.innerText = 'در حال تحلیل...';
 
+    const baseUrl = '<?= \App\Core\Security::getBaseUrl() ?>';
     const formData = new FormData(this);
     try {
-        const res = await fetch('/api/audit', { method: 'POST', body: formData });
+        const res = await fetch(baseUrl + '/api/audit', { method: 'POST', body: formData });
         const data = await res.json();
 
         if (res.ok) {

@@ -1,9 +1,12 @@
 <?php
+ob_start();
+
 // Check for Installer lock
 if (file_exists(__DIR__ . '/install') && !file_exists(__DIR__ . '/install/installed.lock')) {
     $uri = $_SERVER['REQUEST_URI'] ?? '';
     if (strpos($uri, '/install') === false) {
-        header('Location: /install/');
+        $baseUrl = (dirname($_SERVER['SCRIPT_NAME'] ?? '/index.php') === '/' || dirname($_SERVER['SCRIPT_NAME'] ?? '/index.php') === '\\') ? '' : rtrim(str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'] ?? '/index.php')), '/');
+        header('Location: ' . $baseUrl . '/install/');
         exit;
     }
 }
@@ -85,3 +88,5 @@ $requestUri = $_SERVER['REQUEST_URI'] ?? '/';
 $requestMethod = $_SERVER['REQUEST_METHOD'] ?? 'GET';
 
 $router->dispatch($requestMethod, $requestUri);
+
+ob_end_flush();

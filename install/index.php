@@ -45,7 +45,7 @@ $reqs = checkServerRequirements();
 <head>
     <meta charset="UTF-8">
     <title>نصب‌کننده اختصاصی EAFD — مرحله ۱</title>
-    <link rel="stylesheet" href="/assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/style.css">
 </head>
 <body style="background: #07090e; display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 2rem;">
     <div style="max-width: 650px; width: 100%; background: var(--color-surface); border: 1px solid var(--color-surface-border); border-radius: var(--radius-xl); padding: 2.5rem;">
@@ -68,7 +68,7 @@ $reqs = checkServerRequirements();
         </div>
 
         <?php if ($reqs['passed']): ?>
-            <a href="/install/setup-db.php" class="btn btn-primary" style="width: 100%; justify-content: center;">تایید و ادامه به مرحله پیکربندی دیتابیس ←</a>
+            <a href="setup-db.php" class="btn btn-primary" style="width: 100%; justify-content: center;">تایید و ادامه به مرحله پیکربندی دیتابیس ←</a>
         <?php endif; ?>
     </div>
 </body>

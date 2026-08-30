@@ -6,7 +6,7 @@ if (file_exists(__DIR__ . '/installed.lock')) {
 
 $dbConfig = $_SESSION['install_db'] ?? null;
 if (!$dbConfig) {
-    header('Location: /install/setup-db.php');
+    header('Location: setup-db.php');
     exit;
 }
 
@@ -30,7 +30,8 @@ if ($requestMethod === 'POST') {
                 PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
             ]);
 
-            $hashedPass = password_hash($password, PASSWORD_ARGON2ID);
+            $algo = defined('PASSWORD_ARGON2ID') ? PASSWORD_ARGON2ID : PASSWORD_DEFAULT;
+            $hashedPass = password_hash($password, $algo);
             $stmt = $pdo->prepare("INSERT INTO `eafd_users` (username, password, email, display_name, role) VALUES (:user, :pass, :email, :name, 'admin')");
             $stmt->execute([
                 'user' => $username,
@@ -78,14 +79,14 @@ if ($requestMethod === 'POST') {
                 'security' => [
                     'session_name' => 'EAFD_SESSID',
                     'session_lifetime' => 7200,
-                    'hash_algo' => PASSWORD_ARGON2ID,
+                    'hash_algo' => $algo,
                 ]
             ], true) . ";\n";
             file_put_contents(__DIR__ . '/../config/app.php', $configContent);
 
             file_put_contents(__DIR__ . '/installed.lock', 'Installed on ' . date('Y-m-d H:i:s'));
 
-            header('Location: /install/complete.php');
+            header('Location: complete.php');
             exit;
         } catch (Exception $e) {
             $error = 'خطا در ثبت نهایی اطلاعات: ' . $e->getMessage();
@@ -98,7 +99,7 @@ if ($requestMethod === 'POST') {
 <head>
     <meta charset="UTF-8">
     <title>نصب‌کننده اختصاصی EAFD — مرحله ۳: ایجاد مدیر و درج داده‌ها</title>
-    <link rel="stylesheet" href="/assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/style.css">
 </head>
 <body style="background: #07090e; display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 2rem;">
     <div style="max-width: 600px; width: 100%; background: var(--color-surface); border: 1px solid var(--color-surface-border); border-radius: var(--radius-xl); padding: 2.5rem;">
@@ -111,7 +112,7 @@ if ($requestMethod === 'POST') {
             </div>
         <?php endif; ?>
 
-        <form method="POST" action="/install/setup-admin.php" style="display: flex; flex-direction: column; gap: 1.25rem;">
+        <form method="POST" action="setup-admin.php" style="display: flex; flex-direction: column; gap: 1.25rem;">
             <div>
                 <label style="display: block; font-size: 0.875rem; color: var(--color-text); margin-bottom: 0.5rem;">نام نمایشی مدیر:</label>
                 <input type="text" name="admin_name" value="مدیر سیستم EAFD" required style="width: 100%; padding: 0.75rem; background: var(--color-bg); border: 1px solid var(--color-surface-border); border-radius: var(--radius-md); color: var(--color-text);">

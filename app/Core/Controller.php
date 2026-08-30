@@ -24,6 +24,9 @@ class Controller {
     }
 
     protected function json(array $data, int $statusCode = 200): void {
+        if (ob_get_length()) {
+            ob_clean();
+        }
         http_response_code($statusCode);
         header('Content-Type: application/json; charset=utf-8');
         echo json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
@@ -31,6 +34,13 @@ class Controller {
     }
 
     protected function redirect(string $url): void {
+        if (ob_get_length()) {
+            ob_clean();
+        }
+        $baseUrl = Security::getBaseUrl();
+        if (strpos($url, 'http') !== 0 && !empty($baseUrl) && strpos($url, $baseUrl) !== 0) {
+            $url = $baseUrl . '/' . ltrim($url, '/');
+        }
         header('Location: ' . $url);
         exit;
     }
