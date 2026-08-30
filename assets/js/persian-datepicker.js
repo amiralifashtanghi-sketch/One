@@ -203,11 +203,15 @@
                 dayEl.className = 'pdp-day';
                 dayEl.textContent = toPersianDigits(d);
 
-                // Compare with min Date
+                // Compare with Jalali today date directly to guarantee zero timezone or algorithm offset issues
+                const isPastJalali = (this.viewYear < this.todayJ[0]) ||
+                                     (this.viewYear === this.todayJ[0] && this.viewMonth < this.todayJ[1]) ||
+                                     (this.viewYear === this.todayJ[0] && this.viewMonth === this.todayJ[1] && d < this.todayJ[2]);
+
                 const curG = j2g(this.viewYear, this.viewMonth, d);
                 const curGStr = `${curG[0]}-${String(curG[1]).padStart(2,'0')}-${String(curG[2]).padStart(2,'0')}`;
 
-                if (this.minDateG && curGStr < this.minDateG) {
+                if (isPastJalali || (this.minDateG && curGStr < this.minDateG)) {
                     dayEl.classList.add('disabled');
                 } else {
                     if (this.todayJ[0] === this.viewYear && this.todayJ[1] === this.viewMonth && this.todayJ[2] === d) {
