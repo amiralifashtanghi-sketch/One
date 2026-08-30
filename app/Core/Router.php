@@ -31,7 +31,14 @@ class Router {
     }
 
     public function dispatch(string $method, string $uri) {
+        $basePath = Security::getBaseUrl();
         $path = parse_url($uri, PHP_URL_PATH) ?? '/';
+
+        // Strip subfolder prefix if hosted under public_html subfolder
+        if (!empty($basePath) && strpos($path, $basePath) === 0) {
+            $path = substr($path, strlen($basePath));
+        }
+
         $path = '/' . trim($path, '/');
         if ($path !== '/') {
             $path = rtrim($path, '/');

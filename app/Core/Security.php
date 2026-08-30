@@ -7,7 +7,7 @@ class Security {
         header('X-Content-Type-Options: nosniff');
         header('X-XSS-Protection: 1; mode=block');
         header('Referrer-Policy: strict-origin-when-cross-origin');
-        header("Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; connect-src 'self';");
+        header("Content-Security-Policy: default-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; connect-src 'self';");
         header('Permissions-Policy: camera=(), microphone=(), geolocation=()');
     }
 
@@ -27,11 +27,8 @@ class Security {
     }
 
     public static function hashPassword(string $password): string {
-        return password_hash($password, PASSWORD_ARGON2ID, [
-            'memory_cost' => 65536,
-            'time_cost' => 4,
-            'threads' => 2
-        ]);
+        $algo = defined('PASSWORD_ARGON2ID') ? PASSWORD_ARGON2ID : PASSWORD_DEFAULT;
+        return password_hash($password, $algo);
     }
 
     public static function verifyPassword(string $password, string $hash): bool {
@@ -78,5 +75,11 @@ class Security {
 
         $_SESSION['rate_limits'][$key][] = $time;
         return true;
+    }
+
+    public static function getBaseUrl(): string {
+        $scriptName = $_SERVER['SCRIPT_NAME'] ?? '/index.php';
+        $baseDir = dirname($scriptName);
+        return ($baseDir === '/' || $baseDir === '\\') ? '' : rtrim(str_replace('\\', '/', $baseDir), '/');
     }
 }

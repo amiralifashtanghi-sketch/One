@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <?php $baseUrl = \App\Core\Security::getBaseUrl(); ?>
     <title><?= \App\Core\Security::escape($pageTitle ?? 'پنل مدیریت اختصاصی EAFD') ?></title>
-    <link rel="stylesheet" href="/assets/css/style.css">
+    <link rel="stylesheet" href="<?= $baseUrl ?>/assets/css/style.css">
 </head>
 <body style="background: #05070a;">
     <div style="display: flex; min-height: 100vh;">
-        <!-- Admin Sidebar -->
         <aside style="width: 260px; background: var(--color-surface); border-left: 1px solid var(--color-surface-border); padding: 1.5rem 1rem; display: flex; flex-direction: column;">
             <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 2rem; padding-bottom: 1rem; border-bottom: 1px solid var(--color-surface-border);">
                 <svg width="28" height="28" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -21,24 +21,23 @@
 
             <nav style="flex: 1;">
                 <ul style="list-style: none; display: flex; flex-direction: column; gap: 0.5rem;">
-                    <li><a href="/admin" style="display: block; padding: 0.6rem 1rem; border-radius: var(--radius-md); color: var(--color-text); font-size: 0.9rem;">داشبورد</a></li>
-                    <li><a href="/admin/pages" style="display: block; padding: 0.6rem 1rem; border-radius: var(--radius-md); color: var(--color-text-muted); font-size: 0.9rem;">مدیریت صفحات</a></li>
-                    <li><a href="/admin/services" style="display: block; padding: 0.6rem 1rem; border-radius: var(--radius-md); color: var(--color-text-muted); font-size: 0.9rem;">مدیریت خدمات</a></li>
-                    <li><a href="/admin/portfolio" style="display: block; padding: 0.6rem 1rem; border-radius: var(--radius-md); color: var(--color-text-muted); font-size: 0.9rem;">نمونه‌کارها</a></li>
-                    <li><a href="/admin/lab" style="display: block; padding: 0.6rem 1rem; border-radius: var(--radius-md); color: var(--color-text-muted); font-size: 0.9rem;">آزمایشگاه (LAB)</a></li>
-                    <li><a href="/admin/leads" style="display: block; padding: 0.6rem 1rem; border-radius: var(--radius-md); color: var(--color-text-muted); font-size: 0.9rem;">درخواست‌های پروژه</a></li>
-                    <li><a href="/admin/faq" style="display: block; padding: 0.6rem 1rem; border-radius: var(--radius-md); color: var(--color-text-muted); font-size: 0.9rem;">سوالات متداول (FAQ)</a></li>
-                    <li><a href="/admin/seo" style="display: block; padding: 0.6rem 1rem; border-radius: var(--radius-md); color: var(--color-text-muted); font-size: 0.9rem;">تنظیمات سئو</a></li>
-                    <li><a href="/admin/health" style="display: block; padding: 0.6rem 1rem; border-radius: var(--radius-md); color: var(--color-text-muted); font-size: 0.9rem;">سلامت سیستم</a></li>
+                    <li><a href="<?= $baseUrl ?>/admin" style="display: block; padding: 0.6rem 1rem; border-radius: var(--radius-md); color: var(--color-text); font-size: 0.9rem;">داشبورد</a></li>
+                    <li><a href="<?= $baseUrl ?>/admin/pages" style="display: block; padding: 0.6rem 1rem; border-radius: var(--radius-md); color: var(--color-text-muted); font-size: 0.9rem;">مدیریت صفحات</a></li>
+                    <li><a href="<?= $baseUrl ?>/admin/services" style="display: block; padding: 0.6rem 1rem; border-radius: var(--radius-md); color: var(--color-text-muted); font-size: 0.9rem;">مدیریت خدمات</a></li>
+                    <li><a href="<?= $baseUrl ?>/admin/portfolio" style="display: block; padding: 0.6rem 1rem; border-radius: var(--radius-md); color: var(--color-text-muted); font-size: 0.9rem;">نمونه‌کارها</a></li>
+                    <li><a href="<?= $baseUrl ?>/admin/lab" style="display: block; padding: 0.6rem 1rem; border-radius: var(--radius-md); color: var(--color-text-muted); font-size: 0.9rem;">آزمایشگاه (LAB)</a></li>
+                    <li><a href="<?= $baseUrl ?>/admin/leads" style="display: block; padding: 0.6rem 1rem; border-radius: var(--radius-md); color: var(--color-text-muted); font-size: 0.9rem;">درخواست‌های پروژه</a></li>
+                    <li><a href="<?= $baseUrl ?>/admin/faq" style="display: block; padding: 0.6rem 1rem; border-radius: var(--radius-md); color: var(--color-text-muted); font-size: 0.9rem;">سوالات متداول (FAQ)</a></li>
+                    <li><a href="<?= $baseUrl ?>/admin/seo" style="display: block; padding: 0.6rem 1rem; border-radius: var(--radius-md); color: var(--color-text-muted); font-size: 0.9rem;">تنظیمات سئو</a></li>
+                    <li><a href="<?= $baseUrl ?>/admin/health" style="display: block; padding: 0.6rem 1rem; border-radius: var(--radius-md); color: var(--color-text-muted); font-size: 0.9rem;">سلامت سیستم</a></li>
                 </ul>
             </nav>
 
             <div style="border-top: 1px solid var(--color-surface-border); padding-top: 1rem; margin-top: 1rem;">
-                <a href="/admin/logout" class="btn btn-outline" style="width: 100%; text-align: center; font-size: 0.85rem;">خروج از پنل</a>
+                <a href="<?= $baseUrl ?>/admin/logout" class="btn btn-outline" style="width: 100%; text-align: center; font-size: 0.85rem;">خروج از پنل</a>
             </div>
         </aside>
 
-        <!-- Admin Main Content -->
         <main style="flex: 1; padding: 2rem; overflow-y: auto;">
             <?= $content ?>
         </main>

@@ -1,6 +1,6 @@
 <?php
 // Check for Installer lock
-if (file_exists(__DIR__ . '/../install') && !file_exists(__DIR__ . '/../install/installed.lock')) {
+if (file_exists(__DIR__ . '/install') && !file_exists(__DIR__ . '/install/installed.lock')) {
     $uri = $_SERVER['REQUEST_URI'] ?? '';
     if (strpos($uri, '/install') === false) {
         header('Location: /install/');
@@ -8,7 +8,7 @@ if (file_exists(__DIR__ . '/../install') && !file_exists(__DIR__ . '/../install/
     }
 }
 
-require_once __DIR__ . '/../app/Core/Autoloader.php';
+require_once __DIR__ . '/app/Core/Autoloader.php';
 \App\Core\Autoloader::register();
 
 // Load Routes & Bootstrap
