@@ -1,0 +1,125 @@
+/* ==========================================
+   EAFD Modern Combined Styles: Glass, Neo & Skeuo
+   ========================================== */
+
+/* Background Blobs Animation */
+.eafd-bg-decoration {
+    position: fixed;
+    pointer-events: none;
+    z-index: 0;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.15;
+    animation: eafdFloatBlob 12s ease-in-out infinite;
+}
+.eafd-bg-decoration:nth-child(1) {
+    width: 500px;
+    height: 500px;
+    background: var(--blue-primary);
+    top: -150px;
+    left: -100px;
+}
+.eafd-bg-decoration:nth-child(2) {
+    width: 400px;
+    height: 400px;
+    background: var(--turquoise);
+    bottom: -100px;
+    right: -80px;
+    animation-delay: -4s;
+}
+.eafd-bg-decoration:nth-child(3) {
+    width: 350px;
+    height: 350px;
+    background: var(--orange);
+    bottom: 30%;
+    left: 20%;
+    animation-delay: -8s;
+}
+
+@keyframes eafdFloatBlob {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    50% { transform: translate(30px, 40px) scale(1.08); }
+}
+
+/* Base Container */
+.eafd-dashboard-container {
+    display: flex;
+    max-width: 1400px;
+    margin: 30px auto;
+    gap: 24px;
+    position: relative;
+    z-index: 1;
+    direction: rtl;
+    font-family: var(--font);
+}
+
+/* Glassmorphic Sidebar & Header */
+.eafd-sidebar {
+    width: 280px;
+    background: var(--glass-bg);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    border-radius: var(--neo-radius);
+    padding: 24px 16px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.06);
+    display: flex;
+    flex-direction: column;
+}
+
+/* Neomorphic Cards */
+.eafd-neo-card {
+    background: var(--neo-bg);
+    border-radius: var(--neo-radius);
+    box-shadow: var(--shadow-neo-out);
+    padding: 22px;
+    transition: all 0.3s ease;
+}
+.eafd-neo-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 8px 8px 20px var(--neo-dark), -6px -6px 18px var(--neo-light);
+}
+
+/* Skeuomorphic & Glossy Buttons */
+.eafd-btn-skeuo {
+    background: linear-gradient(180deg, var(--turquoise) 0%, #16a085 100%);
+    color: #ffffff !important;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    border-radius: 12px;
+    padding: 12px 24px;
+    font-weight: 700;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5), 0 4px 10px rgba(22, 160, 133, 0.3);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    text-decoration: none !important;
+}
+.eafd-btn-skeuo:hover {
+    transform: translateY(-2px);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6), 0 6px 15px rgba(22, 160, 133, 0.4);
+}
+.eafd-btn-skeuo:active {
+    transform: translateY(1px);
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Widgets Grid */
+.eafd-widgets-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    margin-bottom: 24px;
+}
+@media (max-width: 992px) {
+    .eafd-widgets-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+@media (max-width: 576px) {
+    .eafd-widgets-grid {
+        grid-template-columns: 1fr;
+    }
+}

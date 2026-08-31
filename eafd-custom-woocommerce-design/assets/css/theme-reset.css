@@ -1,0 +1,48 @@
+/* ==========================================
+   EAFD WooCommerce Theme Reset Layer
+   Ensures zero layout interference from parent themes
+   ========================================== */
+
+body.woocommerce-page,
+body.woocommerce-account,
+body.woocommerce-cart,
+body.woocommerce-checkout {
+    background-color: #f8fafc !important;
+}
+
+.eafd-wc-container,
+.eafd-wc-container * {
+    box-sizing: border-box !important;
+    font-family: 'Vazirmatn', sans-serif !important;
+}
+
+/* Override Parent Theme Outer Wrappers on WooCommerce Pages */
+.woocommerce-account .woocommerce,
+.woocommerce-cart .woocommerce,
+.woocommerce-checkout .woocommerce {
+    max-width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+/* Clear theme specific table & form overrides */
+.eafd-wc-container table,
+.eafd-wc-container tr,
+.eafd-wc-container td,
+.eafd-wc-container th {
+    border: none !important;
+    background: transparent !important;
+}
+
+.eafd-wc-container input[type="text"],
+.eafd-wc-container input[type="password"],
+.eafd-wc-container input[type="email"],
+.eafd-wc-container input[type="tel"],
+.eafd-wc-container textarea,
+.eafd-wc-container select {
+    outline: none !important;
+    box-shadow: none !important;
+}
