@@ -1,4 +1,5 @@
-<!-- Hero Section (Pure Geometric & Typography) -->
+<?php $baseUrl = \App\Core\Security::getBaseUrl(); ?>
+<!-- Hero Section -->
 <section style="padding: 4rem 0 3rem; text-align: center; position: relative;">
     <div class="container" style="max-width: 900px;">
         <div style="display: inline-flex; align-items: center; gap: 0.5rem; background: rgba(0, 240, 255, 0.08); border: 1px solid rgba(0, 240, 255, 0.2); padding: 0.4rem 1rem; border-radius: 50px; font-size: 0.85rem; color: var(--color-primary); margin-bottom: 1.5rem;">
@@ -15,13 +16,13 @@
         </p>
 
         <div style="display: flex; gap: 1rem; justify-content: center;">
-            <a href="/start-project" class="btn btn-primary" style="padding: 0.875rem 2rem; font-size: 1rem;">شروع پروژه اختصاصی ←</a>
-            <a href="/audit" class="btn btn-outline" style="padding: 0.875rem 2rem; font-size: 1rem;">تحلیل آنلاین سلامت سایت</a>
+            <a href="<?= $baseUrl ?>/start-project" class="btn btn-primary" style="padding: 0.875rem 2rem; font-size: 1rem;">شروع پروژه اختصاصی ←</a>
+            <a href="<?= $baseUrl ?>/audit" class="btn btn-outline" style="padding: 0.875rem 2rem; font-size: 1rem;">تحلیل آنلاین سلامت سایت</a>
         </div>
     </div>
 </section>
 
-<!-- System Pillars (5 Core Standards) -->
+<!-- System Pillars -->
 <section style="padding: 3rem 0; border-top: 1px solid var(--color-surface-border); border-bottom: 1px solid var(--color-surface-border); background: var(--color-surface);">
     <div class="container">
         <h2 style="text-align: center; font-size: 1.5rem; margin-bottom: 2.5rem; color: var(--color-text);">پنج استاندارد قطعی در سیستم EAFD</h2>
@@ -65,7 +66,7 @@
                     <div style="margin-bottom: 1rem;"><?= $srv['icon_svg'] ?></div>
                     <h3 style="font-size: 1.2rem; color: var(--color-text); margin-bottom: 0.75rem;"><?= \App\Core\Security::escape($srv['title']) ?></h3>
                     <p style="font-size: 0.875rem; color: var(--color-text-muted); line-height: 1.7; margin-bottom: 1.5rem;"><?= \App\Core\Security::escape($srv['short_description']) ?></p>
-                    <a href="/services/<?= \App\Core\Security::escape($srv['slug']) ?>" style="font-size: 0.85rem; font-weight: 600; color: var(--color-primary);">مشاهده جزئیات خدمت ←</a>
+                    <a href="<?= $baseUrl ?>/services/<?= \App\Core\Security::escape($srv['slug']) ?>" style="font-size: 0.85rem; font-weight: 600; color: var(--color-primary);">مشاهده جزئیات خدمت ←</a>
                 </div>
             <?php endforeach; ?>
         </div>

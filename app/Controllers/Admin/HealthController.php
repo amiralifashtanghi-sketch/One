@@ -15,6 +15,21 @@ class HealthController extends Controller {
     public function index(): void {
         $this->checkAuth();
 
+        $diskFree = 'نامشخص (محدودیت هاست)';
+        $diskStatus = true;
+
+        if (function_exists('disk_free_space')) {
+            try {
+                $bytes = @\disk_free_space(__DIR__);
+                if ($bytes !== false) {
+                    $diskFree = round($bytes / (1024 * 1024 * 1024), 2) . ' GB آزاد';
+                    $diskStatus = $bytes > (100 * 1024 * 1024);
+                }
+            } catch (\Throwable $e) {
+                $diskFree = 'دسترسی محدود شده است';
+            }
+        }
+
         $healthChecks = [
             'php_version' => [
                 'name' => 'نسخه PHP سرور',
@@ -38,8 +53,8 @@ class HealthController extends Controller {
             ],
             'disk_space' => [
                 'name' => 'فضای آزاد دیسک سرور',
-                'status' => disk_free_space('/') > 100 * 1024 * 1024,
-                'value' => round(disk_free_space('/') / (1024 * 1024 * 1024), 2) . ' GB آزاد',
+                'status' => $diskStatus,
+                'value' => $diskFree,
             ],
         ];
 
