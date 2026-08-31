@@ -46,33 +46,25 @@ class EAFD_Admin_Settings {
             'enable_floating_blobs' => '1',
             'custom_logo_url'       => '',
 
-            // Widgets Customization
+            // Widgets Customization (Real Dynamic Data Titles)
             'widget_1_active'   => '1',
-            'widget_1_title'    => 'رزروهای فعال',
-            'widget_1_value'    => '۳',
-            'widget_1_badge'    => 'در انتظار شما',
-            'widget_1_icon'     => 'fas fa-calendar-alt',
+            'widget_1_title'    => 'تعداد کل سفارش‌ها',
+            'widget_1_icon'     => 'fas fa-shopping-bag',
             'widget_1_image'    => '',
 
             'widget_2_active'   => '1',
-            'widget_2_title'    => 'مجموع رزروها',
-            'widget_2_value'    => '۱۲',
-            'widget_2_badge'    => '↑ ۴ این ماه',
-            'widget_2_icon'     => 'fas fa-ticket-alt',
+            'widget_2_title'    => 'اقلام سبد خرید فعلی',
+            'widget_2_icon'     => 'fas fa-shopping-cart',
             'widget_2_image'    => '',
 
             'widget_3_active'   => '1',
-            'widget_3_title'    => 'امتیاز وفاداری',
-            'widget_3_value'    => '۸۵۰',
-            'widget_3_badge'    => 'سطح طلایی',
-            'widget_3_icon'     => 'fas fa-star',
+            'widget_3_title'    => 'مجموع خریدهای موفق',
+            'widget_3_icon'     => 'fas fa-money-bill-wave',
             'widget_3_image'    => '',
 
             'widget_4_active'   => '1',
-            'widget_4_title'    => 'موجودی کیف پول (تومان)',
-            'widget_4_value'    => '۲,۴۵۰,۰۰۰',
-            'widget_4_badge'    => '↑ ۱۵٪',
-            'widget_4_icon'     => 'fas fa-wallet',
+            'widget_4_title'    => 'نام کاربری شما',
+            'widget_4_icon'     => 'fas fa-id-card',
             'widget_4_image'    => '',
 
             // Mobile & Theme Reset
@@ -89,8 +81,8 @@ class EAFD_Admin_Settings {
 
     public function add_admin_menu() {
         add_menu_page(
-            __('طراحی اختصاصی ووکامرس', 'eafd-custom-wc'),
-            __('طراحی ووکامرس', 'eafd-custom-wc'),
+            __('طراحی ظاهری ووکامرس', 'eafd-custom-wc'),
+            __('طراحی ظاهری ووکامرس', 'eafd-custom-wc'),
             'manage_options',
             'eafd-wc-design',
             array($this, 'render_admin_page'),
@@ -120,13 +112,13 @@ class EAFD_Admin_Settings {
         ?>
         <div class="wrap eafd-admin-wrap" style="direction: rtl; font-family: 'Vazirmatn', sans-serif;">
             <h1 style="font-weight: 800; color: #1a5276;">
-                <i class="fas fa-paint-brush"></i> طراحی اختصاصی ووکامرس <span style="font-size: 14px; font-weight: 400; color: #7f8c8d;">(ساخته شده توسط eafd.ir)</span>
+                <i class="fas fa-paint-brush"></i> طراحی ظاهری ووکامرس <span style="font-size: 14px; font-weight: 400; color: #7f8c8d;">(ساخته شده توسط eafd.ir)</span>
             </h1>
             <h2 class="nav-tab-wrapper">
                 <a href="?page=eafd-wc-design&tab=colors" class="nav-tab <?php echo $active_tab === 'colors' ? 'nav-tab-active' : ''; ?>">رنگ‌بندی ۶۰-۳۰-۱۰</a>
                 <a href="?page=eafd-wc-design&tab=glass_neo" class="nav-tab <?php echo $active_tab === 'glass_neo' ? 'nav-tab-active' : ''; ?>">افکت‌های گلاس و نیومورفیسم</a>
                 <a href="?page=eafd-wc-design&tab=visuals" class="nav-tab <?php echo $active_tab === 'visuals' ? 'nav-tab-active' : ''; ?>">لوگو و پس‌زمینه</a>
-                <a href="?page=eafd-wc-design&tab=widgets" class="nav-tab <?php echo $active_tab === 'widgets' ? 'nav-tab-active' : ''; ?>">مدیریت ویجت‌های داشبورد</a>
+                <a href="?page=eafd-wc-design&tab=widgets" class="nav-tab <?php echo $active_tab === 'widgets' ? 'nav-tab-active' : ''; ?>">مدیریت ویجت‌های آمار داشبورد</a>
                 <a href="?page=eafd-wc-design&tab=mobile_reset" class="nav-tab <?php echo $active_tab === 'mobile_reset' ? 'nav-tab-active' : ''; ?>">تنظیمات موبایل و خنثی‌سازی قالب</a>
             </h2>
 
@@ -178,21 +170,18 @@ class EAFD_Admin_Settings {
                 <th scope="row">رنگ اصلی (۶۰٪):</th>
                 <td>
                     <input type="text" name="<?php echo $this->option_name; ?>[color_primary]" value="<?php echo esc_attr($options['color_primary']); ?>" class="eafd-color-picker" />
-                    <p class="description">برای رنگ پس‌زمینه هدر، عنوان‌ها و کادر اصلی (پوشش ۶۰ درصدی).</p>
                 </td>
             </tr>
             <tr>
                 <th scope="row">رنگ مکمل / ثانویه (۳۰٪):</th>
                 <td>
                     <input type="text" name="<?php echo $this->option_name; ?>[color_secondary]" value="<?php echo esc_attr($options['color_secondary']); ?>" class="eafd-color-picker" />
-                    <p class="description">برای دکمه‌های ثانویه، آیکون‌های فعال و حاشیه‌های شیشه‌ای (پوشش ۳۰ درصدی).</p>
                 </td>
             </tr>
             <tr>
                 <th scope="row">رنگ تأکیدی / آکسان (۱۰٪):</th>
                 <td>
                     <input type="text" name="<?php echo $this->option_name; ?>[color_accent]" value="<?php echo esc_attr($options['color_accent']); ?>" class="eafd-color-picker" />
-                    <p class="description">برای بج‌ها، اعلان‌ها و دکمه‌های فراخوان عمل (پوشش ۱۰ درصدی).</p>
                 </td>
             </tr>
         </table>
@@ -251,14 +240,14 @@ class EAFD_Admin_Settings {
 
     private function render_widgets_tab($options) {
         ?>
-        <h3>مدیریت ویجت‌های کارت‌های داشبورد حساب کاربری</h3>
-        <p>شما می‌توانید هر ویجت را فعال یا غیرفعال کنید، متن و آیکون آن را تغییر دهید یا تصویر سفارشی برای آن آپلود کنید.</p>
+        <h3>مدیریت کارت‌های آمار واقعی داشبورد حساب کاربری</h3>
+        <p>مقادیر این کارت‌ها به صورت کاملاً زنده و واقعی از ووکامرس (تعداد سفارشات، اقلام سبد خرید، مجموع خرید و نام کاربری) دریافت می‌شود.</p>
         <?php for ($i = 1; $i <= 4; $i++): ?>
             <div style="background: #f8fafc; border: 1px solid #e2e8f0; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
-                <h4 style="margin-top:0;">ویجت شماره <?php echo $i; ?></h4>
+                <h4 style="margin-top:0;">کارت شماره <?php echo $i; ?></h4>
                 <table class="form-table">
                     <tr>
-                        <th scope="row">وضعیت ویجت:</th>
+                        <th scope="row">وضعیت کارت:</th>
                         <td>
                             <label>
                                 <input type="checkbox" name="<?php echo $this->option_name; ?>[widget_<?php echo $i; ?>_active]" value="1" <?php checked(!empty($options['widget_' . $i . '_active']), '1'); ?> />
@@ -267,20 +256,12 @@ class EAFD_Admin_Settings {
                         </td>
                     </tr>
                     <tr>
-                        <th scope="row">عنوان:</th>
+                        <th scope="row">عنوان کارت:</th>
                         <td><input type="text" name="<?php echo $this->option_name; ?>[widget_<?php echo $i; ?>_title]" value="<?php echo esc_attr($options['widget_' . $i . '_title']); ?>" class="regular-text" /></td>
                     </tr>
                     <tr>
-                        <th scope="row">مقدار:</th>
-                        <td><input type="text" name="<?php echo $this->option_name; ?>[widget_<?php echo $i; ?>_value]" value="<?php echo esc_attr($options['widget_' . $i . '_value']); ?>" class="regular-text" /></td>
-                    </tr>
-                    <tr>
-                        <th scope="row">بج (Badge) توضیحات:</th>
-                        <td><input type="text" name="<?php echo $this->option_name; ?>[widget_<?php echo $i; ?>_badge]" value="<?php echo esc_attr($options['widget_' . $i . '_badge']); ?>" class="regular-text" /></td>
-                    </tr>
-                    <tr>
                         <th scope="row">کلاس آیکون FontAwesome:</th>
-                        <td><input type="text" name="<?php echo $this->option_name; ?>[widget_<?php echo $i; ?>_icon]" value="<?php echo esc_attr($options['widget_' . $i . '_icon']); ?>" class="regular-text" placeholder="fas fa-calendar-alt" /></td>
+                        <td><input type="text" name="<?php echo $this->option_name; ?>[widget_<?php echo $i; ?>_icon]" value="<?php echo esc_attr($options['widget_' . $i . '_icon']); ?>" class="regular-text" /></td>
                     </tr>
                     <tr>
                         <th scope="row">تصویر سفارشی (جایگزین آیکون):</th>
@@ -303,7 +284,7 @@ class EAFD_Admin_Settings {
                 <td>
                     <label>
                         <input type="checkbox" name="<?php echo $this->option_name; ?>[enable_theme_reset]" value="1" <?php checked(!empty($options['enable_theme_reset']), '1'); ?> />
-                        غیرفعال‌سازی و خنثی‌سازی کامل استایل‌های قالب فعلی روی صفحات ووکامرس جهت جلوگیری از تداخل
+                        غیرفعال‌سازی و خنثی‌سازی کامل استایل‌های قالب فعلی روی صفحات ووکامرس
                     </label>
                 </td>
             </tr>

@@ -25,7 +25,7 @@ class EAFD_WC_Design {
         }
 
         $this->includes();
-        $this->hooks();
+        $this->init_classes();
     }
 
     public function woocommerce_missing_notice() {
@@ -42,7 +42,11 @@ class EAFD_WC_Design {
         require_once EAFD_WC_DESIGN_PATH . 'inc/class-eafd-woocommerce-templates.php';
     }
 
-    private function hooks() {
-        // Core initialization hooks will be added here
+    private function init_classes() {
+        if (is_admin()) {
+            EAFD_Admin_Settings::get_instance();
+        }
+        EAFD_Frontend_Assets::get_instance();
+        EAFD_WooCommerce_Templates::get_instance();
     }
 }
