@@ -18,6 +18,30 @@ class EAFD_WooCommerce_Templates {
         add_filter('woocommerce_locate_template', array($this, 'override_woocommerce_templates'), 99, 3);
         add_filter('wc_get_template', array($this, 'override_wc_get_template'), 99, 5);
         add_filter('comments_template', array($this, 'override_product_reviews_template'), 99);
+        add_filter('woocommerce_account_menu_items', array($this, 'filter_account_menu_items'), 99);
+    }
+
+    public function filter_account_menu_items($items) {
+        $options = EAFD_Admin_Settings::get_instance()->get_options();
+        if (!empty($options['menu_dashboard_disable'])) {
+            unset($items['dashboard']);
+        }
+        if (!empty($options['menu_orders_disable'])) {
+            unset($items['orders']);
+        }
+        if (!empty($options['menu_downloads_disable'])) {
+            unset($items['downloads']);
+        }
+        if (!empty($options['menu_edit_address_disable'])) {
+            unset($items['edit-address']);
+        }
+        if (!empty($options['menu_edit_account_disable'])) {
+            unset($items['edit-account']);
+        }
+        if (!empty($options['menu_logout_disable'])) {
+            unset($items['customer-logout']);
+        }
+        return $items;
     }
 
     public function override_woocommerce_templates($template, $template_name, $template_path) {

@@ -50,7 +50,7 @@ class EAFD_Frontend_Assets {
     }
 
     public function render_mobile_side_drawer() {
-        if (!is_woocommerce() && !is_cart() && !is_checkout() && !is_account_page()) {
+        if (!is_account_page() || !is_user_logged_in()) {
             return;
         }
         ?>
@@ -70,7 +70,7 @@ class EAFD_Frontend_Assets {
     }
 
     public function render_mobile_bottom_nav() {
-        if (!is_woocommerce() && !is_cart() && !is_checkout() && !is_account_page()) {
+        if (!is_account_page() || !is_user_logged_in()) {
             return;
         }
         $cart_url = function_exists('wc_get_cart_url') ? wc_get_cart_url() : '#';

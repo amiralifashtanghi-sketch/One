@@ -24,6 +24,13 @@ class EAFD_Admin_Settings {
 
     public static function get_default_options() {
         return array(
+            // Account Sections Control
+            'menu_dashboard_disable' => '0',
+            'menu_orders_disable'    => '0',
+            'menu_downloads_disable' => '0',
+            'menu_edit_address_disable' => '0',
+            'menu_edit_account_disable' => '0',
+            'menu_logout_disable'    => '0',
             // 60-30-10 Color Scheme Defaults
             'color_primary'     => '#1a5276', // 60%
             'color_secondary'   => '#1abc9c', // 30%
@@ -119,6 +126,7 @@ class EAFD_Admin_Settings {
                 <a href="?page=eafd-wc-design&tab=glass_neo" class="nav-tab <?php echo $active_tab === 'glass_neo' ? 'nav-tab-active' : ''; ?>">افکت‌های گلاس و نیومورفیسم</a>
                 <a href="?page=eafd-wc-design&tab=visuals" class="nav-tab <?php echo $active_tab === 'visuals' ? 'nav-tab-active' : ''; ?>">لوگو و پس‌زمینه</a>
                 <a href="?page=eafd-wc-design&tab=widgets" class="nav-tab <?php echo $active_tab === 'widgets' ? 'nav-tab-active' : ''; ?>">مدیریت ویجت‌های آمار داشبورد</a>
+                <a href="?page=eafd-wc-design&tab=account_menu" class="nav-tab <?php echo $active_tab === 'account_menu' ? 'nav-tab-active' : ''; ?>">مدیریت سکشن‌های منوی حساب کاربری</a>
                 <a href="?page=eafd-wc-design&tab=mobile_reset" class="nav-tab <?php echo $active_tab === 'mobile_reset' ? 'nav-tab-active' : ''; ?>">تنظیمات موبایل و خنثی‌سازی قالب</a>
             </h2>
 
@@ -133,6 +141,8 @@ class EAFD_Admin_Settings {
                     $this->render_visuals_tab($options);
                 } elseif ($active_tab === 'widgets') {
                     $this->render_widgets_tab($options);
+                } elseif ($active_tab === 'account_menu') {
+                    $this->render_account_menu_tab($options);
                 } elseif ($active_tab === 'mobile_reset') {
                     $this->render_mobile_reset_tab($options);
                 }
@@ -273,6 +283,69 @@ class EAFD_Admin_Settings {
                 </table>
             </div>
         <?php endfor;
+    }
+
+    private function render_account_menu_tab($options) {
+        ?>
+        <h3>مدیریت و غیرفعال‌سازی سکشن‌های حساب کاربری ووکامرس</h3>
+        <p>در این بخش می‌توانید هر یک از سکشن‌ها و لبه‌های منوی حساب کاربری ووکامرس را که نیاز ندارید غیرفعال کنید.</p>
+        <table class="form-table">
+            <tr>
+                <th scope="row">پیشخوان (Dashboard):</th>
+                <td>
+                    <label>
+                        <input type="checkbox" name="<?php echo $this->option_name; ?>[menu_dashboard_disable]" value="1" <?php checked(!empty($options['menu_dashboard_disable']), '1'); ?> />
+                        مخفی و غیرفعال‌سازی لبه پیشخوان
+                    </label>
+                </td>
+            </tr>
+            <tr>
+                <th scope="row">سفارش‌ها (Orders):</th>
+                <td>
+                    <label>
+                        <input type="checkbox" name="<?php echo $this->option_name; ?>[menu_orders_disable]" value="1" <?php checked(!empty($options['menu_orders_disable']), '1'); ?> />
+                        مخفی و غیرفعال‌سازی لبه سفارش‌ها
+                    </label>
+                </td>
+            </tr>
+            <tr>
+                <th scope="row">دانلودها (Downloads):</th>
+                <td>
+                    <label>
+                        <input type="checkbox" name="<?php echo $this->option_name; ?>[menu_downloads_disable]" value="1" <?php checked(!empty($options['menu_downloads_disable']), '1'); ?> />
+                        مخفی و غیرفعال‌سازی لبه دانلودها
+                    </label>
+                </td>
+            </tr>
+            <tr>
+                <th scope="row">آدرس‌ها (Addresses):</th>
+                <td>
+                    <label>
+                        <input type="checkbox" name="<?php echo $this->option_name; ?>[menu_edit_address_disable]" value="1" <?php checked(!empty($options['menu_edit_address_disable']), '1'); ?> />
+                        مخفی و غیرفعال‌سازی لبه آدرس‌ها
+                    </label>
+                </td>
+            </tr>
+            <tr>
+                <th scope="row">جزئیات حساب (Account Details):</th>
+                <td>
+                    <label>
+                        <input type="checkbox" name="<?php echo $this->option_name; ?>[menu_edit_account_disable]" value="1" <?php checked(!empty($options['menu_edit_account_disable']), '1'); ?> />
+                        مخفی و غیرفعال‌سازی لبه ویرایش مشخصات حساب
+                    </label>
+                </td>
+            </tr>
+            <tr>
+                <th scope="row">خروج (Logout):</th>
+                <td>
+                    <label>
+                        <input type="checkbox" name="<?php echo $this->option_name; ?>[menu_logout_disable]" value="1" <?php checked(!empty($options['menu_logout_disable']), '1'); ?> />
+                        مخفی کردن دکمه خروج
+                    </label>
+                </td>
+            </tr>
+        </table>
+        <?php
     }
 
     private function render_mobile_reset_tab($options) {
