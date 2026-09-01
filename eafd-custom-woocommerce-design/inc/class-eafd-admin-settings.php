@@ -99,7 +99,40 @@ class EAFD_Admin_Settings {
     }
 
     public function register_settings() {
-        register_setting($this->option_group, $this->option_name);
+        register_setting($this->option_group, $this->option_name, array(
+            'sanitize_callback' => array($this, 'sanitize_options'),
+        ));
+    }
+
+    public function sanitize_options($input) {
+        $defaults = self::get_default_options();
+        $output   = array();
+
+        if (!is_array($input)) {
+            return $defaults;
+        }
+
+        foreach ($defaults as $key => $default_val) {
+            if (!isset($input[$key])) {
+                if (strpos($key, 'disable') !== false || strpos($key, 'enable') !== false || strpos($key, 'mobile') !== false || strpos($key, 'active') !== false) {
+                    $output[$key] = '0';
+                } else {
+                    $output[$key] = $default_val;
+                }
+                continue;
+            }
+
+            if (strpos($key, 'color') !== false) {
+                $sanitized_color = sanitize_hex_color($input[$key]);
+                $output[$key] = $sanitized_color ? $sanitized_color : $default_val;
+            } elseif (strpos($key, 'url') !== false || strpos($key, 'image') !== false) {
+                $output[$key] = esc_url_raw($input[$key]);
+            } else {
+                $output[$key] = sanitize_text_field($input[$key]);
+            }
+        }
+
+        return $output;
     }
 
     public function enqueue_admin_assets($hook) {
