@@ -48,7 +48,7 @@ if (!$checkout->is_registration_enabled() && $checkout->is_registration_required
 
         <!-- روش پرداخت کارت بانکی نمادین (اسکئومورفیسم) -->
         <div class="glass-card payment-methods">
-            <h3>پرداخت آنلاین امن ووکامرس</h3>
+            <h3>روش پرداخت</h3>
             <div class="skeuo-card">
                 <div class="card-chip"></div>
                 <div class="card-number">•••• •••• •••• ۶۰۳۷</div>
