@@ -88,6 +88,10 @@ function eafd_sanitize_options( $input ) {
 	$output['hero_banner_url']  = isset( $input['hero_banner_url'] ) ? esc_url_raw( $input['hero_banner_url'] ) : '';
 	$output['hero_location_tag'] = isset( $input['hero_location_tag'] ) ? sanitize_text_field( $input['hero_location_tag'] ) : 'سبزوار - توحید شهر - فرزاندگان ۵';
 
+	// Navigation Menus
+	$output['hamburger_menu_id'] = isset( $input['hamburger_menu_id'] ) ? absint( $input['hamburger_menu_id'] ) : 0;
+	$output['footer_menu_id']    = isset( $input['footer_menu_id'] ) ? absint( $input['footer_menu_id'] ) : 0;
+
 	// Footer
 	$output['footer_about']     = isset( $input['footer_about'] ) ? sanitize_textarea_field( $input['footer_about'] ) : 'فروشگاه محصولات ارگانیک سجاد برزویی آماده ثبت سفارش آنلاین شماست.';
 	$output['footer_phone']     = isset( $input['footer_phone'] ) ? sanitize_text_field( $input['footer_phone'] ) : '۰۵۱ND۴۴۱۴۳۳۵';
@@ -114,7 +118,11 @@ function eafd_render_admin_page() {
 	$logo_url          = eafd_get_option( 'logo_url', '' );
 	$hero_banner_url   = eafd_get_option( 'hero_banner_url', '' );
 	$hero_location_tag = eafd_get_option( 'hero_location_tag', 'سبزوار - توحید شهر - فرزاندگان ۵' );
+	$hamburger_menu_id = eafd_get_option( 'hamburger_menu_id', 0 );
+	$footer_menu_id    = eafd_get_option( 'footer_menu_id', 0 );
 	$footer_about      = eafd_get_option( 'footer_about', 'فروشگاه محصولات ارگانیک سجاد برزویی آماده ثبت سفارش آنلاین شماست.' );
+
+	$nav_menus = wp_get_nav_menus();
 	$footer_phone      = eafd_get_option( 'footer_phone', '۰۵۱ND۴۴۱۴۳۳۵' );
 	$footer_address    = eafd_get_option( 'footer_address', 'سبزوار - توحید شهر - فرزاندگان ۵' );
 	$footer_enamad     = eafd_get_option( 'footer_enamad', '' );
@@ -189,6 +197,45 @@ function eafd_render_admin_page() {
 					<tr>
 						<th scope="row"><label for="hero_location_tag">متن آدرس / برچسب روی بنر</label></th>
 						<td><input type="text" id="hero_location_tag" name="<?php echo esc_attr( EAFD_OPTIONS_KEY ); ?>[hero_location_tag]" value="<?php echo esc_attr( $hero_location_tag ); ?>" class="regular-text" placeholder="مثال: سبزوار - توحید شهر - فرزاندگان ۵" /></td>
+					</tr>
+				</table>
+			</div>
+
+			<!-- MENU SETTINGS -->
+			<div style="margin-bottom: 30px; border-bottom: 2px solid #f0f0f0; padding-bottom: 20px;">
+				<h2 style="font-size: 18px; color: #111; margin-bottom: 15px;">🔗 فهرست‌های وردپرس (منوی همبرگری و فوتر)</h2>
+				<table class="form-table" role="presentation">
+					<tr>
+						<th scope="row"><label for="hamburger_menu_id">فهرست منوی همبرگری</label></th>
+						<td>
+							<select id="hamburger_menu_id" name="<?php echo esc_attr( EAFD_OPTIONS_KEY ); ?>[hamburger_menu_id]">
+								<option value="0">-- انتخاب فهرست وردپرس --</option>
+								<?php if ( ! empty( $nav_menus ) ) : ?>
+									<?php foreach ( $nav_menus as $menu ) : ?>
+										<option value="<?php echo esc_attr( $menu->term_id ); ?>" <?php selected( $hamburger_menu_id, $menu->term_id ); ?>>
+											<?php echo esc_html( $menu->name ); ?>
+										</option>
+									<?php endforeach; ?>
+								<?php endif; ?>
+							</select>
+							<p class="description">فهرستی که در کشوی منوی همبرگری (موبایل و دسکتاپ) نمایش داده می‌شود.</p>
+						</td>
+					</tr>
+					<tr>
+						<th scope="row"><label for="footer_menu_id">فهرست دسترسی سریع فوتر</label></th>
+						<td>
+							<select id="footer_menu_id" name="<?php echo esc_attr( EAFD_OPTIONS_KEY ); ?>[footer_menu_id]">
+								<option value="0">-- انتخاب فهرست وردپرس --</option>
+								<?php if ( ! empty( $nav_menus ) ) : ?>
+									<?php foreach ( $nav_menus as $menu ) : ?>
+										<option value="<?php echo esc_attr( $menu->term_id ); ?>" <?php selected( $footer_menu_id, $menu->term_id ); ?>>
+											<?php echo esc_html( $menu->name ); ?>
+										</option>
+									<?php endforeach; ?>
+								<?php endif; ?>
+							</select>
+							<p class="description">فهرستی که در بخش «دسترسی سریع» فوتر نمایش داده می‌شود.</p>
+						</td>
 					</tr>
 				</table>
 			</div>

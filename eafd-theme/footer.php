@@ -14,8 +14,10 @@ $footer_about     = eafd_get_option( 'footer_about', 'فروشگاه محصول�
 $footer_phone     = eafd_get_option( 'footer_phone', '۰۵۱ND۴۴۱۴۳۳۵' );
 $footer_address   = eafd_get_option( 'footer_address', 'سبزوار - توحید شهر - فرزاندگان ۵' );
 $footer_enamad    = eafd_get_option( 'footer_enamad', '' );
-$footer_copyright = eafd_get_option( 'footer_copyright', 'تمامی حقوق و مسئولیت این سایت متعلق به محصولات ارگانیک سجاد برزویی می باشد.' );
-$cart_count       = class_exists( 'WooCommerce' ) && WC()->cart ? WC()->cart->get_cart_contents_count() : 0;
+$footer_copyright   = eafd_get_option( 'footer_copyright', 'تمامی حقوق و مسئولیت این سایت متعلق به محصولات ارگانیک سجاد برزویی می باشد.' );
+$hamburger_menu_id  = eafd_get_option( 'hamburger_menu_id', 0 );
+$footer_menu_id     = eafd_get_option( 'footer_menu_id', 0 );
+$cart_count         = class_exists( 'WooCommerce' ) && WC()->cart ? WC()->cart->get_cart_contents_count() : 0;
 ?>
 
 	</main><!-- #main -->
@@ -41,7 +43,13 @@ $cart_count       = class_exists( 'WooCommerce' ) && WC()->cart ? WC()->cart->ge
 							دسترسی سریع
 						</h3>
 						<?php
-						if ( has_nav_menu( 'footer' ) ) {
+						if ( $footer_menu_id > 0 && wp_get_nav_menu_object( $footer_menu_id ) ) {
+							wp_nav_menu( array(
+								'menu'       => $footer_menu_id,
+								'menu_class' => 'eafd-footer-nav-list',
+								'container'  => false,
+							) );
+						} elseif ( has_nav_menu( 'footer' ) ) {
 							wp_nav_menu( array(
 								'theme_location' => 'footer',
 								'menu_class'     => 'eafd-footer-nav-list',
@@ -146,7 +154,13 @@ $cart_count       = class_exists( 'WooCommerce' ) && WC()->cart ? WC()->cart->ge
 
 		<nav class="eafd-mobile-nav-wrapper">
 			<?php
-			if ( has_nav_menu( 'primary' ) ) {
+			if ( $hamburger_menu_id > 0 && wp_get_nav_menu_object( $hamburger_menu_id ) ) {
+				wp_nav_menu( array(
+					'menu'       => $hamburger_menu_id,
+					'menu_class' => 'eafd-borzouie-nav-menu',
+					'container'  => false,
+				) );
+			} elseif ( has_nav_menu( 'primary' ) ) {
 				wp_nav_menu( array(
 					'theme_location' => 'primary',
 					'menu_class'     => 'eafd-borzouie-nav-menu',
