@@ -9,6 +9,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+if ( ! class_exists( 'WooCommerce' ) ) {
+	return;
+}
+
 // Query on sale products
 $args = array(
 	'post_type'      => 'product',

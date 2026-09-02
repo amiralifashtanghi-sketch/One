@@ -20,6 +20,9 @@ $shop_products = new WP_Query( $args );
 ?>
 
 <section class="eafd-section eafd-shop-section">
+	<!-- Search Bar above Shop Products (Plan 1) -->
+	<?php get_template_part( 'inc/template-parts/search', 'bar' ); ?>
+
 	<div class="eafd-section-card">
 		<div class="eafd-section-header">
 			<h2 class="eafd-section-title">
