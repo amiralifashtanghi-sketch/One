@@ -17,6 +17,23 @@ class EAFD_Frontend_Assets {
     private function __construct() {
         add_action('wp_enqueue_scripts', array($this, 'enqueue_frontend_assets'));
         add_action('wp_head', array($this, 'inject_dynamic_css'), 99);
+        add_action('wp_head', array($this, 'inject_font_preload'), 1);
+        add_filter('script_loader_tag', array($this, 'add_defer_attribute'), 10, 2);
+    }
+
+    public function add_defer_attribute($tag, $handle) {
+        if ('eafd-wc-script' === $handle) {
+            return str_replace(' src=', ' defer="defer" src=', $tag);
+        }
+        return $tag;
+    }
+
+    public function inject_font_preload() {
+        if (!is_woocommerce() && !is_cart() && !is_checkout() && !is_account_page()) {
+            return;
+        }
+        $font_url = EAFD_WC_DESIGN_URL . 'assets/fonts/Vazirmatn-Regular.woff2';
+        echo '<link rel="preload" href="' . esc_url($font_url) . '" as="font" type="font/woff2" crossorigin="anonymous">' . "\n";
     }
 
     public function enqueue_frontend_assets() {

@@ -1,5 +1,6 @@
 /* ==========================================
    EAFD Modern Combined Styles: Glass, Neo & Skeuo
+   High Performance GPU Accelerated CSS
    ========================================== */
 
 /* Background Blobs Animation */
@@ -10,6 +11,8 @@
     border-radius: 50%;
     filter: blur(80px);
     opacity: 0.15;
+    transform: translateZ(0);
+    will-change: transform;
     animation: eafdFloatBlob 12s ease-in-out infinite;
 }
 .eafd-bg-decoration:nth-child(1) {
@@ -37,8 +40,8 @@
 }
 
 @keyframes eafdFloatBlob {
-    0%, 100% { transform: translate(0, 0) scale(1); }
-    50% { transform: translate(30px, 40px) scale(1.08); }
+    0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+    50% { transform: translate3d(30px, 40px, 0) scale(1.08); }
 }
 
 /* Base Container */
@@ -51,6 +54,7 @@
     z-index: 1;
     direction: rtl;
     font-family: var(--font);
+    contain: layout style;
 }
 
 /* Glassmorphic Sidebar & Header */
@@ -65,6 +69,7 @@
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.06);
     display: flex;
     flex-direction: column;
+    transform: translateZ(0);
 }
 
 /* Neomorphic Cards */
@@ -73,42 +78,45 @@
     border-radius: var(--neo-radius);
     box-shadow: var(--shadow-neo-out);
     padding: 22px;
-    transition: all 0.3s ease;
+    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    transform: translateZ(0);
+    will-change: transform, box-shadow;
+    contain: layout style;
 }
 .eafd-neo-card:hover {
-    transform: translateY(-3px);
+    transform: translate3d(0, -3px, 0);
     box-shadow: 8px 8px 20px var(--neo-dark), -6px -6px 18px var(--neo-light);
 }
 
 /* Skeuomorphic & Glossy Buttons */
 .eafd-btn-skeuo {
-    background: linear-gradient(180deg, var(--turquoise) 0%, #16a085 100%);
+    background: linear-gradient(180deg, var(--turquoise) 0%, #117864 100%);
     color: #ffffff !important;
-    border: 1px solid rgba(255, 255, 255, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.5);
     border-radius: 12px;
     padding: 12px 24px;
     font-weight: 700;
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5), 0 4px 10px rgba(22, 160, 133, 0.3);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6), 0 4px 10px rgba(17, 120, 100, 0.35);
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 8px;
     text-decoration: none !important;
+    transform: translateZ(0);
+    will-change: transform;
 }
 .eafd-btn-skeuo:hover {
-    transform: translateY(-2px);
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6), 0 6px 15px rgba(22, 160, 133, 0.4);
+    transform: translate3d(0, -2px, 0);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7), 0 6px 15px rgba(17, 120, 100, 0.45);
 }
 .eafd-btn-skeuo:active {
-    transform: translateY(1px);
-    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+    transform: translate3d(0, 1px, 0);
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
-/* ==========================================
-   User Custom Checkout Three-Style Integration
-   ========================================== */
+/* Checkout Container Integration */
 .checkout-container {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -117,15 +125,16 @@
     width: 100% !important;
     margin: 20px auto;
     padding: 2rem;
-    background: rgba(255, 255, 255, 0.15);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
     border-radius: 30px;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
     direction: rtl;
     font-family: var(--font, 'Vazirmatn', sans-serif);
     box-sizing: border-box;
+    transform: translateZ(0);
 }
 
 .woocommerce-checkout {
@@ -133,30 +142,32 @@
     max-width: 100% !important;
 }
 
-/* Glassmorphism */
+/* Glassmorphism Card */
 .glass-card {
-    background: rgba(255, 255, 255, 0.25);
+    background: rgba(255, 255, 255, 0.35);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.5);
     border-radius: 20px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
     padding: 1.8rem;
-    transition: all 0.3s ease;
+    transition: transform 0.25s ease, background 0.25s ease, box-shadow 0.25s ease;
+    transform: translateZ(0);
+    will-change: transform, background, box-shadow;
 }
 
 .glass-card:hover {
-    background: rgba(255, 255, 255, 0.3);
-    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+    background: rgba(255, 255, 255, 0.45);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
 }
 
-/* Neomorphism */
+/* Neomorphism Inputs & Elements */
 .neumor-card {
     background: #e0e5ec;
     border-radius: 25px;
-    box-shadow: 9px 9px 16px #a3b1c6,
-                -9px -9px 16px #ffffff;
+    box-shadow: 9px 9px 16px #a3b1c6, -9px -9px 16px #ffffff;
     padding: 2rem;
+    transform: translateZ(0);
 }
 
 .neumor-input-group {
@@ -166,8 +177,8 @@
 .neumor-input-group label {
     display: block;
     margin-bottom: 0.5rem;
-    font-weight: 500;
-    color: #2c3e50;
+    font-weight: 600;
+    color: #1a202c;
 }
 
 .neumor-input,
@@ -181,19 +192,17 @@
     border: none !important;
     border-radius: 50px !important;
     background: #e0e5ec !important;
-    box-shadow: inset 5px 5px 10px #a3b1c6,
-                inset -5px -5px 10px #ffffff !important;
+    box-shadow: inset 5px 5px 10px #a3b1c6, inset -5px -5px 10px #ffffff !important;
     font-size: 1rem;
     font-family: inherit;
     outline: none;
-    transition: box-shadow 0.3s, background 0.3s;
-    color: #2c3e50;
+    transition: box-shadow 0.25s, background 0.25s;
+    color: #1a202c;
 }
 
 .neumor-input:focus,
 .checkout-container input:focus {
-    box-shadow: inset 3px 3px 6px #a3b1c6,
-                inset -3px -3px 6px #ffffff !important;
+    box-shadow: inset 3px 3px 6px #a3b1c6, inset -3px -3px 6px #ffffff !important;
     background: #e8edf5 !important;
 }
 
@@ -202,18 +211,19 @@
     border: none;
     border-radius: 50px;
     padding: 14px 30px;
-    font-weight: bold;
+    font-weight: 800;
     font-size: 1rem;
     font-family: inherit;
-    color: #2c3e50;
-    box-shadow: 7px 7px 14px #a3b1c6,
-                -7px -7px 14px #ffffff;
+    color: #0d1b2a;
+    box-shadow: 7px 7px 14px #a3b1c6, -7px -7px 14px #ffffff;
     cursor: pointer;
-    transition: all 0.3s;
+    transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
     width: 100%;
     margin-top: 10px;
     display: inline-block;
     text-align: center;
+    transform: translateZ(0);
+    will-change: transform;
 }
 
 .neumor-btn:hover {
@@ -221,69 +231,14 @@
 }
 
 .neumor-btn:active {
-    box-shadow: inset 4px 4px 8px #a3b1c6,
-                inset -4px -4px 8px #ffffff;
-}
-
-/* Skeuomorphic (کارت بانکی) */
-.skeuo-card {
-    width: 100%;
-    max-width: 320px;
-    height: 180px;
-    background: linear-gradient(145deg, #2c3e50, #1a252f);
-    border-radius: 16px;
-    padding: 20px;
-    color: white;
-    box-shadow: 0 15px 30px rgba(0,0,0,0.4), inset 0 0 10px rgba(255,255,255,0.1);
-    position: relative;
-    margin: 20px auto;
-    transition: transform 0.3s;
-}
-
-.skeuo-card:hover {
-    transform: translateY(-5px);
-}
-
-.card-chip {
-    width: 40px;
-    height: 30px;
-    background: linear-gradient(135deg, #f1c40f, #e67e22);
-    border-radius: 6px;
-    margin-bottom: 20px;
-    box-shadow: inset 0 0 5px rgba(0,0,0,0.3);
-}
-
-.card-number {
-    font-size: 1.4rem;
-    letter-spacing: 3px;
-    margin-bottom: 15px;
-    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
-    direction: ltr;
-    text-align: right;
-}
-
-.card-holder {
-    font-size: 0.9rem;
-    opacity: 0.8;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-}
-
-.card-brand {
-    position: absolute;
-    bottom: 20px;
-    right: 20px;
-    font-style: italic;
-    font-weight: bold;
-    font-size: 1.2rem;
-    opacity: 0.9;
+    box-shadow: inset 4px 4px 8px #a3b1c6, inset -4px -4px 8px #ffffff;
 }
 
 .checkout-container h2,
 .checkout-container h3 {
     margin-bottom: 1.2rem;
-    color: #1a252f;
-    font-weight: 700;
+    color: #0d1b2a;
+    font-weight: 800;
 }
 
 .order-summary ul {
@@ -297,31 +252,21 @@
     padding: 0.8rem 0;
     border-bottom: 1px solid rgba(0,0,0,0.1);
     font-size: 0.95rem;
+    color: #2d3748;
 }
 
 .order-summary .total {
     margin-top: 1rem;
     text-align: left;
     font-size: 1.2rem;
-    font-weight: bold;
-    color: #1a252f;
-}
-
-.payment-methods {
-    grid-column: 1 / -1;
-    text-align: center;
+    font-weight: 800;
+    color: #0d1b2a;
 }
 
 @media (max-width: 768px) {
     .checkout-container {
         grid-template-columns: 1fr;
         padding: 1.2rem;
-    }
-    .payment-methods {
-        grid-column: auto;
-    }
-    .skeuo-card {
-        max-width: 100%;
     }
 }
 
@@ -346,9 +291,11 @@
 /* Cart Page Styling Overrides */
 .car-card {
     transition: transform 0.25s ease, box-shadow 0.25s ease;
+    transform: translateZ(0);
+    will-change: transform, box-shadow;
 }
 .car-card:hover {
-    transform: translateY(-2px);
+    transform: translate3d(0, -2px, 0);
     box-shadow: 8px 8px 20px rgba(0, 0, 0, 0.08), -8px -8px 20px rgba(255, 255, 255, 1) !important;
 }
 
@@ -357,7 +304,7 @@
     text-align: center;
     border: none !important;
     background: transparent !important;
-    font-weight: bold;
+    font-weight: 800;
     color: var(--blue-primary, #0d1b2a);
     font-size: 14px;
     padding: 0 !important;
@@ -376,7 +323,7 @@
 .cart-summary .shop_table td {
     padding: 12px 0;
     font-size: 14px;
-    color: var(--text-primary, #2c3e50);
+    color: #2d3748;
 }
 
 .cart-summary .shop_table th {
@@ -386,7 +333,7 @@
 
 .cart-summary .shop_table td {
     text-align: left;
-    font-weight: 700;
+    font-weight: 800;
 }
 
 .cart-summary .order-total th,

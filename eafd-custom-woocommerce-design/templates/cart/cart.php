@@ -1,29 +1,62 @@
 <?php
 /**
  * Custom WooCommerce Cart Page Template - Modern Three-Style Design
+ * Enhanced with High Accessibility (WCAG 2.1 AAA), Schema JSON-LD and Agentic Microdata
  */
 if (!defined('ABSPATH')) {
     exit;
 }
 
 do_action('woocommerce_before_cart');
+
+$cart_items = WC()->cart ? WC()->cart->get_cart() : array();
+$json_ld_items = array();
+
+foreach ($cart_items as $item) {
+    if (isset($item['data']) && is_object($item['data'])) {
+        $product = $item['data'];
+        $json_ld_items[] = array(
+            '@type' => 'OrderItem',
+            'name' => $product->get_name(),
+            'sku' => $product->get_sku(),
+            'price' => $product->get_price(),
+            'priceCurrency' => function_exists('get_woocommerce_currency') ? get_woocommerce_currency() : 'IRR',
+            'quantity' => $item['quantity'],
+            'url' => $product->get_permalink()
+        );
+    }
+}
+
+$cart_json_ld = array(
+    '@context' => 'https://schema.org',
+    '@type' => 'Cart',
+    'numberOfItems' => count($cart_items),
+    'itemListElement' => $json_ld_items
+);
 ?>
 
-<div class="eafd-wc-container cart-container-wrapper" style="max-width: 1100px; margin: 30px auto; padding: 0 15px; direction: rtl; font-family: var(--font, 'Vazirmatn', sans-serif);">
-    <h2 class="cart-header-title" style="font-size: 24px; font-weight: 800; color: var(--blue-primary, #0d1b2a); margin-bottom: 24px; display: flex; align-items: center; gap: 10px;">
-        <i class="fas fa-shopping-cart" style="color: var(--turquoise, #1abc9c);"></i> سبد خرید ووکامرس | ترکیب سه سبک
-    </h2>
+<script type="application/ld+json">
+<?php echo wp_json_encode($cart_json_ld, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT); ?>
+</script>
 
-    <form class="woocommerce-cart-form" action="<?php echo esc_url(wc_get_cart_url()); ?>" method="post">
+<main class="eafd-wc-container cart-container-wrapper" role="main" aria-label="سبد خرید ووکامرس" style="max-width: 1100px; margin: 30px auto; padding: 0 15px; direction: rtl; font-family: var(--font, 'Vazirmatn', sans-serif);">
+    <header>
+        <h1 class="cart-header-title" style="font-size: 24px; font-weight: 800; color: var(--blue-primary, #0d1b2a); margin-bottom: 24px; display: flex; align-items: center; gap: 10px;">
+            <i class="fas fa-shopping-cart" aria-hidden="true" style="color: var(--turquoise, #1abc9c);"></i>
+            <span>سبد خرید شما</span>
+        </h1>
+    </header>
+
+    <form class="woocommerce-cart-form" action="<?php echo esc_url(wc_get_cart_url()); ?>" method="post" aria-label="فرم بروزرسانی سبد خرید">
         <?php do_action('woocommerce_before_cart_table'); ?>
 
         <div class="cart-grid-layout" style="display: grid; grid-template-columns: 1fr 340px; gap: 24px;">
             <!-- Cart Items List -->
-            <div class="cart-items-column" style="display: flex; flex-direction: column; gap: 20px;">
+            <section class="cart-items-column" aria-label="لیست محصولات موجود در سبد خرید" style="display: flex; flex-direction: column; gap: 20px;">
                 <?php do_action('woocommerce_before_cart_contents'); ?>
 
                 <?php
-                foreach (WC()->cart->get_cart() as $cart_item_key => $cart_item) {
+                foreach ($cart_items as $cart_item_key => $cart_item) {
                     $_product   = apply_filters('woocommerce_cart_item_product', $cart_item['data'], $cart_item, $cart_item_key);
                     $product_id = apply_filters('woocommerce_cart_item_product_id', $cart_item['product_id'], $cart_item, $cart_item_key);
 
@@ -32,23 +65,23 @@ do_action('woocommerce_before_cart');
                         $sku = $_product->get_sku();
                         $rating = $_product->get_average_rating();
                         ?>
-                        <div class="car-card eafd-neo-card" style="background: var(--neo-bg, #f0f4f8); border-radius: 20px; padding: 18px 22px; box-shadow: 6px 6px 16px rgba(0,0,0,0.06), -6px -6px 16px rgba(255,255,255,0.8); display: flex; align-items: center; justify-content: space-between; gap: 20px; position: relative;">
+                        <article class="car-card eafd-neo-card" aria-label="<?php echo esc_attr($_product->get_name()); ?>" style="background: var(--neo-bg, #f0f4f8); border-radius: 20px; padding: 18px 22px; box-shadow: 6px 6px 16px rgba(0,0,0,0.06), -6px -6px 16px rgba(255,255,255,0.8); display: flex; align-items: center; justify-content: space-between; gap: 20px; position: relative;">
 
                             <!-- Right / Start: Image & Product Details -->
                             <div style="display: flex; align-items: center; gap: 16px; flex: 1; min-width: 0;">
                                 <div class="car-img" style="width: 85px; height: 85px; min-width: 85px; border-radius: 18px; overflow: hidden; background: #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.08); display: flex; align-items: center; justify-content: center;">
                                     <?php
-                                    $thumbnail = apply_filters('woocommerce_cart_item_thumbnail', $_product->get_image('thumbnail', array('style' => 'width:100%; height:100%; object-fit:cover;')), $cart_item, $cart_item_key);
+                                    $thumbnail = apply_filters('woocommerce_cart_item_thumbnail', $_product->get_image('thumbnail', array('style' => 'width:100%; height:100%; object-fit:cover;', 'alt' => esc_attr($_product->get_name()))), $cart_item, $cart_item_key);
                                     if (!$product_permalink) {
                                         echo $thumbnail;
                                     } else {
-                                        printf('<a href="%s" style="display:block; width:100%%; height:100%%;">%s</a>', esc_url($product_permalink), $thumbnail);
+                                        printf('<a href="%s" aria-label="%s" style="display:block; width:100%%; height:100%%;">%s</a>', esc_url($product_permalink), esc_attr($_product->get_name()), $thumbnail);
                                     }
                                     ?>
                                 </div>
 
                                 <div class="car-info" style="display: flex; flex-direction: column; gap: 6px; min-width: 0;">
-                                    <h3 style="font-size: 16px; font-weight: 800; color: var(--blue-primary, #0d1b2a); margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                    <h2 style="font-size: 16px; font-weight: 800; color: var(--blue-primary, #0d1b2a); margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
                                         <?php
                                         if (!$product_permalink) {
                                             echo wp_kses_post(apply_filters('woocommerce_cart_item_name', $_product->get_name(), $cart_item, $cart_item_key));
@@ -56,36 +89,33 @@ do_action('woocommerce_before_cart');
                                             echo wp_kses_post(apply_filters('woocommerce_cart_item_name', sprintf('<a href="%s" style="color: var(--blue-primary, #0d1b2a); text-decoration: none;">%s</a>', esc_url($product_permalink), $_product->get_name()), $cart_item, $cart_item_key));
                                         }
                                         ?>
-                                    </h3>
+                                    </h2>
 
-                                    <div style="display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--text-muted, #718096); flex-wrap: wrap;">
+                                    <div style="display: flex; align-items: center; gap: 8px; font-size: 12px; color: #2d3748; flex-wrap: wrap;">
                                         <?php if ($sku) : ?>
-                                            <span style="background: rgba(0,0,0,0.04); padding: 2px 8px; border-radius: 6px;"><i class="fas fa-barcode"></i> کد: <?php echo esc_html($sku); ?></span>
+                                            <span style="background: rgba(0,0,0,0.06); padding: 2px 8px; border-radius: 6px;" aria-label="کد شناسه محصول"><i class="fas fa-barcode" aria-hidden="true"></i> کد: <?php echo esc_html($sku); ?></span>
                                         <?php endif; ?>
                                         <?php if ($rating > 0) : ?>
-                                            <span style="color: #f39c12; font-weight: bold;"><i class="fas fa-star"></i> <?php echo number_format($rating, 1); ?></span>
+                                            <span style="color: #d68910; font-weight: bold;" aria-label="امتیاز محصول <?php echo number_format($rating, 1); ?> از 5"><i class="fas fa-star" aria-hidden="true"></i> <?php echo number_format($rating, 1); ?></span>
                                         <?php endif; ?>
                                     </div>
 
-                                    <?php
-                                    // Meta data
-                                    echo wc_get_formatted_cart_item_data($cart_item);
-                                    ?>
+                                    <?php echo wc_get_formatted_cart_item_data($cart_item); ?>
                                 </div>
                             </div>
 
                             <!-- Left / End: Price Pill & Quantity Controller -->
                             <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 12px;">
-                                <div class="car-price" style="background: rgba(44, 123, 229, 0.12); color: #1a5276; font-weight: 800; font-size: 15px; padding: 6px 14px; border-radius: 30px; white-space: nowrap;">
+                                <div class="car-price" aria-label="قیمت کل محصول" style="background: rgba(44, 123, 229, 0.15); color: #0b3c5d; font-weight: 800; font-size: 15px; padding: 6px 14px; border-radius: 30px; white-space: nowrap;">
                                     <?php echo apply_filters('woocommerce_cart_item_subtotal', WC()->cart->get_product_subtotal($_product, $cart_item['quantity']), $cart_item, $cart_item_key); ?>
                                 </div>
 
-                                <div class="quantity-wrapper" style="display: flex; align-items: center; gap: 10px; background: rgba(255,255,255,0.7); padding: 4px 10px; border-radius: 25px; box-shadow: inset 2px 2px 5px rgba(0,0,0,0.05), inset -2px -2px 5px rgba(255,255,255,0.8);">
+                                <div class="quantity-wrapper" style="display: flex; align-items: center; gap: 10px; background: rgba(255,255,255,0.85); padding: 4px 10px; border-radius: 25px; box-shadow: inset 2px 2px 5px rgba(0,0,0,0.05), inset -2px -2px 5px rgba(255,255,255,0.8);">
                                     <?php
                                     echo apply_filters(
                                         'woocommerce_cart_item_remove_link',
                                         sprintf(
-                                            '<a href="%s" class="remove" aria-label="%s" data-product_id="%s" data-product_sku="%s" style="color: #e74c3c; font-size: 14px; padding: 4px; border-radius: 50%%; display: flex; align-items: center; justify-content: center; width: 26px; height: 26px; background: rgba(231,76,60,0.1);"><i class="fas fa-trash-alt"></i></a>',
+                                            '<a href="%s" class="remove" aria-label="%s" data-product_id="%s" data-product_sku="%s" style="color: #c0392b; font-size: 14px; padding: 4px; border-radius: 50%%; display: flex; align-items: center; justify-content: center; width: 26px; height: 26px; background: rgba(192,57,43,0.12);"><i class="fas fa-trash-alt" aria-hidden="true"></i></a>',
                                             esc_url(wc_get_cart_remove_url($cart_item_key)),
                                             esc_attr(sprintf(__('حذف %s از سبد خرید', 'woocommerce'), $_product->get_name())),
                                             esc_attr($product_id),
@@ -95,7 +125,7 @@ do_action('woocommerce_before_cart');
                                     );
                                     ?>
 
-                                    <div class="cart-quantity-input-box">
+                                    <div class="cart-quantity-input-box" aria-label="تعداد محصول">
                                         <?php
                                         if ($_product->is_sold_individually()) {
                                             $min_quantity = 1;
@@ -122,7 +152,7 @@ do_action('woocommerce_before_cart');
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </article>
                         <?php
                     }
                 }
@@ -134,15 +164,16 @@ do_action('woocommerce_before_cart');
                 <div class="cart-actions-row" style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px; flex-wrap: wrap; gap: 15px;">
                     <?php if (wc_coupons_enabled()) { ?>
                         <div class="actions coupon-form-group" style="display: flex; gap: 10px;">
-                            <input type="text" name="coupon_code" class="input-text neumor-input" id="coupon_code" value="" placeholder="<?php esc_attr_e('کد تخفیف', 'woocommerce'); ?>" style="padding: 10px 18px; border-radius: 30px; border: none; background: #e0e5ec; box-shadow: inset 3px 3px 6px #a3b1c6, inset -3px -3px 6px #ffffff; outline: none; font-size: 14px;" />
-                            <button type="submit" class="button btn-neo eafd-btn-skeuo" name="apply_coupon" value="<?php esc_attr_e('اعمال کوپن', 'woocommerce'); ?>">
+                            <label for="coupon_code" class="screen-reader-text" style="position:absolute; width:1px; height:1px; overflow:hidden;">کد تخفیف:</label>
+                            <input type="text" name="coupon_code" class="input-text neumor-input" id="coupon_code" value="" placeholder="<?php esc_attr_e('کد تخفیف', 'woocommerce'); ?>" aria-label="ورود کد تخفیف" style="padding: 10px 18px; border-radius: 30px; border: none; background: #e0e5ec; box-shadow: inset 3px 3px 6px #a3b1c6, inset -3px -3px 6px #ffffff; outline: none; font-size: 14px; color: #2d3748;" />
+                            <button type="submit" class="button btn-neo eafd-btn-skeuo" name="apply_coupon" value="<?php esc_attr_e('اعمال کوپن', 'woocommerce'); ?>" aria-label="اعمال کد تخفیف">
                                 <?php esc_html_e('اعمال کوپن', 'woocommerce'); ?>
                             </button>
                             <?php do_action('woocommerce_cart_coupon'); ?>
                         </div>
                     <?php } ?>
 
-                    <button type="submit" class="button btn-neo eafd-btn-skeuo" name="update_cart" value="<?php esc_attr_e('به‌روزرسانی سبد خرید', 'woocommerce'); ?>">
+                    <button type="submit" class="button btn-neo eafd-btn-skeuo" name="update_cart" value="<?php esc_attr_e('به‌روزرسانی سبد خرید', 'woocommerce'); ?>" aria-label="به‌روزرسانی محتویات سبد خرید">
                         <?php esc_html_e('به‌روزرسانی سبد خرید', 'woocommerce'); ?>
                     </button>
 
@@ -151,31 +182,31 @@ do_action('woocommerce_before_cart');
                 </div>
 
                 <?php do_action('woocommerce_after_cart_contents'); ?>
-            </div>
+            </section>
 
             <!-- Cart Summary Sidebar -->
-            <div class="cart-sidebar-column">
+            <aside class="cart-sidebar-column" aria-label="خلاصه صورت‌حساب">
                 <div class="cart-summary eafd-neo-card" style="background: var(--neo-bg, #f0f4f8); border-radius: 24px; padding: 24px; box-shadow: 8px 8px 20px rgba(0,0,0,0.07), -8px -8px 20px rgba(255,255,255,0.9); position: sticky; top: 20px;">
-                    <h3 style="font-size: 20px; font-weight: 800; color: var(--blue-primary, #0d1b2a); margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between;">
+                    <h2 style="font-size: 20px; font-weight: 800; color: var(--blue-primary, #0d1b2a); margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between;">
                         <span>جمع کل سبد 🧾</span>
-                    </h3>
+                    </h2>
 
-                    <div class="cart-totals-details">
+                    <div class="cart-totals-details" aria-live="polite">
                         <?php woocommerce_cart_totals(); ?>
                     </div>
 
                     <div style="margin-top: 20px;">
-                        <a href="<?php echo esc_url(wc_get_checkout_url()); ?>" class="checkout-button button alt wc-forward btn-neo neumor-btn eafd-btn-skeuo" style="width: 100%; padding: 14px 20px; font-size: 16px; border-radius: 30px; text-align: center; justify-content: center; display: flex; align-items: center; gap: 8px; text-decoration: none;">
+                        <a href="<?php echo esc_url(wc_get_checkout_url()); ?>" class="checkout-button button alt wc-forward btn-neo neumor-btn eafd-btn-skeuo" aria-label="انتقال به صفحه تسویه‌حساب" style="width: 100%; padding: 14px 20px; font-size: 16px; border-radius: 30px; text-align: center; justify-content: center; display: flex; align-items: center; gap: 8px; text-decoration: none;">
                             <span>ادامه جهت تسویه‌حساب</span>
-                            <i class="fas fa-arrow-left"></i>
+                            <i class="fas fa-arrow-left" aria-hidden="true"></i>
                         </a>
                     </div>
                 </div>
-            </div>
+            </aside>
         </div>
 
         <?php do_action('woocommerce_after_cart_table'); ?>
     </form>
-</div>
+</main>
 
 <?php do_action('woocommerce_after_cart'); ?>
