@@ -15,10 +15,18 @@ class EAFD_WooCommerce_Templates {
     }
 
     private function __construct() {
-        add_filter('woocommerce_locate_template', array($this, 'override_woocommerce_templates'), 99, 3);
-        add_filter('wc_get_template', array($this, 'override_wc_get_template'), 99, 5);
-        add_filter('comments_template', array($this, 'override_product_reviews_template'), 99);
-        add_filter('woocommerce_account_menu_items', array($this, 'filter_account_menu_items'), 99);
+        // High priority template overrides
+        add_filter('woocommerce_locate_template', array($this, 'override_woocommerce_templates'), 9999, 3);
+        add_filter('wc_get_template', array($this, 'override_wc_get_template'), 9999, 5);
+        add_filter('comments_template', array($this, 'override_product_reviews_template'), 9999);
+        add_filter('woocommerce_account_menu_items', array($this, 'filter_account_menu_items'), 9999);
+
+        // Shortcode fallbacks
+        add_shortcode('eafd_cart', array($this, 'render_cart_shortcode'));
+        add_shortcode('eafd_checkout', array($this, 'render_checkout_shortcode'));
+
+        // High priority content filter override for pages using blocks or custom page templates
+        add_filter('the_content', array($this, 'override_page_content_templates'), 9999);
     }
 
     public function filter_account_menu_items($items) {
@@ -68,5 +76,46 @@ class EAFD_WooCommerce_Templates {
             }
         }
         return $comment_template;
+    }
+
+    public function override_page_content_templates($content) {
+        if (is_admin() || !function_exists('is_cart') || !function_exists('is_checkout')) {
+            return $content;
+        }
+
+        if (is_cart() && !is_wc_endpoint_url('order-received')) {
+            if (WC()->cart->is_empty()) {
+                return $this->get_template_html('cart/cart-empty.php');
+            }
+            return $this->get_template_html('cart/cart.php');
+        }
+
+        if (is_checkout() && !is_wc_endpoint_url('order-received')) {
+            return $this->get_template_html('checkout/form-checkout.php');
+        }
+
+        return $content;
+    }
+
+    public function render_cart_shortcode() {
+        if (WC()->cart->is_empty()) {
+            return $this->get_template_html('cart/cart-empty.php');
+        }
+        return $this->get_template_html('cart/cart.php');
+    }
+
+    public function render_checkout_shortcode() {
+        return $this->get_template_html('checkout/form-checkout.php');
+    }
+
+    private function get_template_html($template_name) {
+        $file = EAFD_WC_DESIGN_PATH . 'templates/' . $template_name;
+        if (!file_exists($file)) {
+            return '';
+        }
+        ob_start();
+        $checkout = WC()->checkout();
+        include $file;
+        return ob_get_clean();
     }
 }
