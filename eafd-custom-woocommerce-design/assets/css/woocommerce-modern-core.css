@@ -1,0 +1,364 @@
+/* ==========================================
+   EAFD Modern Combined Styles: Glass, Neo & Skeuo
+   High Performance GPU Accelerated CSS with Mobile Perfection
+   ========================================== */
+
+/* Universal Mobile Prevent Horizontal Overflow */
+html, body {
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+}
+
+*, *::before, *::after {
+    box-sizing: border-box !important;
+}
+
+/* Background Blobs Animation */
+.eafd-bg-decoration {
+    position: fixed;
+    pointer-events: none;
+    z-index: 0;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.12;
+    transform: translateZ(0);
+    will-change: transform;
+    animation: eafdFloatBlob 12s ease-in-out infinite;
+}
+.eafd-bg-decoration:nth-child(1) {
+    width: 350px;
+    height: 350px;
+    background: var(--blue-primary);
+    top: -100px;
+    left: -50px;
+}
+.eafd-bg-decoration:nth-child(2) {
+    width: 300px;
+    height: 300px;
+    background: var(--turquoise);
+    bottom: -80px;
+    right: -50px;
+    animation-delay: -4s;
+}
+.eafd-bg-decoration:nth-child(3) {
+    width: 250px;
+    height: 250px;
+    background: var(--orange);
+    bottom: 30%;
+    left: 10%;
+    animation-delay: -8s;
+}
+
+@keyframes eafdFloatBlob {
+    0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+    50% { transform: translate3d(20px, 30px, 0) scale(1.05); }
+}
+
+/* Base Container */
+.eafd-dashboard-container {
+    display: flex;
+    max-width: 1400px;
+    margin: 20px auto;
+    gap: 24px;
+    position: relative;
+    z-index: 1;
+    direction: rtl;
+    font-family: var(--font);
+    contain: layout style;
+    width: 100%;
+}
+
+/* Glassmorphic Sidebar & Header */
+.eafd-sidebar {
+    width: 280px;
+    background: var(--glass-bg);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    border-radius: var(--neo-radius);
+    padding: 20px 16px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.06);
+    display: flex;
+    flex-direction: column;
+    transform: translateZ(0);
+}
+
+/* Neomorphic Cards */
+.eafd-neo-card {
+    background: var(--neo-bg);
+    border-radius: var(--neo-radius);
+    box-shadow: var(--shadow-neo-out);
+    padding: 20px;
+    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    transform: translateZ(0);
+    will-change: transform, box-shadow;
+    contain: layout style;
+    max-width: 100%;
+}
+.eafd-neo-card:hover {
+    transform: translate3d(0, -3px, 0);
+    box-shadow: 8px 8px 20px var(--neo-dark), -6px -6px 18px var(--neo-light);
+}
+
+/* Skeuomorphic & Glossy Buttons */
+.eafd-btn-skeuo {
+    background: linear-gradient(180deg, var(--turquoise) 0%, #117864 100%);
+    color: #ffffff !important;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 12px;
+    padding: 12px 20px;
+    font-weight: 700;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6), 0 4px 10px rgba(17, 120, 100, 0.35);
+    cursor: pointer;
+    transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    text-decoration: none !important;
+    transform: translateZ(0);
+    will-change: transform;
+    max-width: 100%;
+}
+.eafd-btn-skeuo:hover {
+    transform: translate3d(0, -2px, 0);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7), 0 6px 15px rgba(17, 120, 100, 0.45);
+}
+
+/* Checkout Container Integration */
+.checkout-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    max-width: 100% !important;
+    width: 100% !important;
+    margin: 15px auto;
+    padding: 1.5rem;
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-radius: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+    direction: rtl;
+    font-family: var(--font, 'Vazirmatn', sans-serif);
+    box-sizing: border-box;
+    transform: translateZ(0);
+}
+
+.woocommerce-checkout {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+}
+
+/* Glassmorphism Card */
+.glass-card {
+    background: rgba(255, 255, 255, 0.35);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 20px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+    padding: 1.5rem;
+    transition: transform 0.25s ease, background 0.25s ease, box-shadow 0.25s ease;
+    transform: translateZ(0);
+    will-change: transform, background, box-shadow;
+    max-width: 100%;
+}
+
+/* Neomorphism Inputs & Elements */
+.neumor-card {
+    background: #e0e5ec;
+    border-radius: 20px;
+    box-shadow: 7px 7px 14px #a3b1c6, -7px -7px 14px #ffffff;
+    padding: 1.5rem;
+    transform: translateZ(0);
+    max-width: 100%;
+}
+
+/* Form Row Responsive Fixes for WooCommerce */
+.form-row,
+.form-row-first,
+.form-row-last,
+.form-row-wide {
+    width: 100% !important;
+    float: none !important;
+    margin-right: 0 !important;
+    margin-left: 0 !important;
+    box-sizing: border-box !important;
+    clear: both !important;
+}
+
+.woocommerce-billing-fields__field-wrapper,
+.woocommerce-shipping-fields__field-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.select2-container,
+.select2-container--default {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+}
+
+.select2-selection--single {
+    height: 46px !important;
+    padding: 8px 12px !important;
+    border-radius: 10px !important;
+    border: 1px solid #cbd5e1 !important;
+    display: flex !important;
+    align-items: center !important;
+}
+
+/* Neomorphic & Glass Inputs */
+.neumor-input,
+.checkout-container input[type="text"],
+.checkout-container input[type="tel"],
+.checkout-container input[type="email"],
+.checkout-container textarea,
+.checkout-container select {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 12px 15px !important;
+    border: 1px solid #cbd5e1 !important;
+    border-radius: 12px !important;
+    background: #ffffff !important;
+    font-size: 14px !important;
+    font-family: inherit !important;
+    outline: none;
+    color: #1a202c !important;
+    box-sizing: border-box !important;
+}
+
+.checkout-container h1,
+.checkout-container h2,
+.checkout-container h3 {
+    margin-bottom: 1rem;
+    color: #0d1b2a;
+    font-weight: 800;
+    font-size: 18px;
+}
+
+/* Order Review Table Fixes */
+.shop_table {
+    width: 100% !important;
+    max-width: 100% !important;
+    table-layout: fixed !important;
+    border-collapse: collapse !important;
+    word-break: break-word !important;
+}
+
+.shop_table th, .shop_table td {
+    padding: 10px 8px !important;
+    font-size: 13px !important;
+    word-wrap: break-word !important;
+    overflow-wrap: anywhere !important;
+}
+
+/* Cart Page Responsive Overrides */
+.car-card {
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    transform: translateZ(0);
+    will-change: transform, box-shadow;
+    max-width: 100% !important;
+}
+
+.cart-quantity-input-box input.qty {
+    width: 40px !important;
+    text-align: center;
+    border: none !important;
+    background: transparent !important;
+    font-weight: 800;
+    color: var(--blue-primary, #0d1b2a);
+    font-size: 14px;
+    padding: 0 !important;
+}
+
+/* Responsive Mobile Layouts (< 768px) */
+@media (max-width: 768px) {
+    .checkout-container {
+        grid-template-columns: 1fr !important;
+        padding: 10px !important;
+        gap: 16px !important;
+        border-radius: 16px !important;
+    }
+
+    .glass-card,
+    .neumor-card {
+        padding: 12px !important;
+        border-radius: 16px !important;
+    }
+
+    .cart-grid-layout {
+        grid-template-columns: 1fr !important;
+        gap: 16px !important;
+    }
+
+    .car-card {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        padding: 14px !important;
+        gap: 12px !important;
+    }
+
+    .car-card > div {
+        width: 100% !important;
+    }
+
+    .car-card .car-info h2 {
+        white-space: normal !important;
+        font-size: 14px !important;
+    }
+
+    .car-card > div:last-child {
+        flex-direction: row !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+    }
+
+    .cart-actions-row {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 10px !important;
+    }
+
+    .coupon-form-group {
+        width: 100% !important;
+        flex-direction: column !important;
+    }
+
+    .coupon-form-group input,
+    .coupon-form-group button {
+        width: 100% !important;
+    }
+
+    .eafd-dashboard-container {
+        flex-direction: column !important;
+        padding: 0 10px !important;
+    }
+
+    .eafd-sidebar {
+        width: 100% !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .cart-header-title,
+    .checkout-container h1,
+    .checkout-container h2 {
+        font-size: 16px !important;
+    }
+
+    .car-price {
+        font-size: 13px !important;
+        padding: 4px 10px !important;
+    }
+
+    .button, .btn-neo, .eafd-btn-skeuo {
+        padding: 10px 16px !important;
+        font-size: 13px !important;
+    }
+}
