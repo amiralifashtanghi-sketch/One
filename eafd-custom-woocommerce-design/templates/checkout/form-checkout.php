@@ -46,20 +46,6 @@ if (!$checkout->is_registration_enabled() && $checkout->is_registration_required
             <?php do_action('woocommerce_checkout_after_order_review'); ?>
         </div>
 
-        <!-- روش پرداخت کارت بانکی نمادین (اسکئومورفیسم) -->
-        <div class="glass-card payment-methods">
-            <h3>روش پرداخت</h3>
-            <div class="skeuo-card">
-                <div class="card-chip"></div>
-                <div class="card-number">•••• •••• •••• ۶۰۳۷</div>
-                <div class="card-holder">درگاه اتصال مستقیم شتاب</div>
-                <div class="card-brand">SHETAB</div>
-            </div>
-            <p style="font-size: 13px; color: var(--text-secondary, #5d6d7e); margin-top: 10px;">
-                <i class="fas fa-lock" style="color: var(--turquoise, #1abc9c);"></i> تمامی تراکنش‌های مالی با پروتکل‌های امن SSL و استانداردهای شاپرک رمزنگاری می‌شوند.
-            </p>
-        </div>
-
     </div>
 </form>
 

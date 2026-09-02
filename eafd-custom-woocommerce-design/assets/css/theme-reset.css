@@ -9,16 +9,37 @@ body.woocommerce-checkout {
     background-color: #f8fafc !important;
 }
 
-/* Force Reset Parent Theme Wrappers */
+/* Force Reset Parent Theme Wrappers & Containers for Custom Themes */
+body.woocommerce-checkout .container,
+body.woocommerce-checkout .site-main,
+body.woocommerce-checkout #primary,
+body.woocommerce-checkout .entry-content,
+body.woocommerce-checkout .site-content,
+body.woocommerce-cart .container,
+body.woocommerce-cart .site-main,
+body.woocommerce-cart #primary,
+body.woocommerce-cart .entry-content,
+body.woocommerce-cart .site-content {
+    max-width: 100% !important;
+    width: 100% !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    box-sizing: border-box !important;
+}
+
 .woocommerce-cart .woocommerce,
 .woocommerce-checkout .woocommerce,
 .woocommerce-account .woocommerce {
-    max-width: 1200px !important;
-    margin: 30px auto !important;
+    max-width: 100% !important;
+    width: 100% !important;
+    margin: 20px auto !important;
     padding: 0 15px !important;
     background: transparent !important;
     border: none !important;
     box-shadow: none !important;
+    box-sizing: border-box !important;
 }
 
 .woocommerce-cart table.shop_table,
