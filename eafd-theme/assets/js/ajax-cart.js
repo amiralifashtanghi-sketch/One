@@ -128,4 +128,52 @@ document.addEventListener('DOMContentLoaded', function () {
 			});
 		});
 	}
+
+	// Custom Quantity Selector (+ / - buttons)
+	function initCustomQuantitySelectors() {
+		const qtyBoxes = document.querySelectorAll('.quantity:not(.eafd-qty-initialized)');
+		qtyBoxes.forEach(function (box) {
+			const input = box.querySelector('input.qty');
+			if (!input) return;
+
+			box.classList.add('eafd-qty-initialized');
+
+			const minusBtn = document.createElement('button');
+			minusBtn.type = 'button';
+			minusBtn.className = 'eafd-qty-btn eafd-qty-minus';
+			minusBtn.textContent = '-';
+
+			const plusBtn = document.createElement('button');
+			plusBtn.type = 'button';
+			plusBtn.className = 'eafd-qty-btn eafd-qty-plus';
+			plusBtn.textContent = '+';
+
+			box.insertBefore(minusBtn, input);
+			box.appendChild(plusBtn);
+
+			minusBtn.addEventListener('click', function (e) {
+				e.preventDefault();
+				let val = parseFloat(input.value) || 1;
+				let min = parseFloat(input.getAttribute('min')) || 1;
+				let step = parseFloat(input.getAttribute('step')) || 1;
+				if (val > min) {
+					input.value = val - step;
+					input.dispatchEvent(new Event('change', { bubbles: true }));
+				}
+			});
+
+			plusBtn.addEventListener('click', function (e) {
+				e.preventDefault();
+				let val = parseFloat(input.value) || 0;
+				let max = parseFloat(input.getAttribute('max')) || 999999;
+				let step = parseFloat(input.getAttribute('step')) || 1;
+				if (val < max) {
+					input.value = val + step;
+					input.dispatchEvent(new Event('change', { bubbles: true }));
+				}
+			});
+		});
+	}
+
+	initCustomQuantitySelectors();
 });
