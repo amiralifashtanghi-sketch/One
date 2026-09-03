@@ -300,6 +300,18 @@ img {
 	box-shadow: 0 6px 16px rgba(0,0,0,0.08);
 }
 
+.eafd-cat-item.active .eafd-cat-thumb {
+	border-color: var(--eafd-primary);
+	background: var(--eafd-primary);
+	color: #fff;
+	box-shadow: 0 4px 12px rgba(255, 138, 0, 0.3);
+}
+
+.eafd-cat-item.active .eafd-cat-name {
+	color: var(--eafd-primary);
+	font-weight: 700;
+}
+
 .eafd-cat-thumb img {
 	width: 100%;
 	height: 100%;
@@ -354,6 +366,94 @@ img {
 .eafd-product-card:hover {
 	transform: translateY(-3px);
 	box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+}
+
+/* HORIZONTAL BLOG ARTICLES GRID */
+.eafd-articles-grid {
+	display: flex;
+	flex-wrap: nowrap;
+	overflow-x: auto;
+	gap: 16px;
+	padding-bottom: 12px;
+	scrollbar-width: thin;
+	scrollbar-color: var(--eafd-primary) transparent;
+	-webkit-overflow-scrolling: touch;
+}
+
+.eafd-articles-grid::-webkit-scrollbar {
+	height: 6px;
+}
+
+.eafd-articles-grid::-webkit-scrollbar-thumb {
+	background: var(--eafd-primary);
+	border-radius: 10px;
+}
+
+.eafd-article-card {
+	flex: 0 0 260px;
+	width: 260px;
+	background: #fff;
+	border-radius: 14px;
+	overflow: hidden;
+	border: 1px solid #edf2f7;
+	display: flex;
+	flex-direction: column;
+	transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.eafd-article-card:hover {
+	transform: translateY(-3px);
+	box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+}
+
+.eafd-article-thumb-link, .eafd-article-thumb-placeholder {
+	width: 100%;
+	height: 140px;
+	background: #f8fafc;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	overflow: hidden;
+}
+
+.eafd-article-thumb {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+.eafd-article-content {
+	padding: 12px;
+	display: flex;
+	flex-direction: column;
+	flex: 1;
+	justify-content: space-between;
+}
+
+.eafd-article-date {
+	font-size: 11px;
+	color: #a0aec0;
+	margin-bottom: 6px;
+	display: block;
+}
+
+.eafd-article-title {
+	font-size: 14px;
+	font-weight: 700;
+	color: #2d3748;
+	margin-bottom: 12px;
+	line-height: 1.4;
+	height: 40px;
+	overflow: hidden;
+}
+
+.eafd-article-readmore {
+	font-size: 12px;
+	font-weight: 700;
+	color: var(--eafd-primary);
+	display: inline-flex;
+	align-items: center;
+	gap: 4px;
 }
 
 .eafd-discount-badge {

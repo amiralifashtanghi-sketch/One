@@ -25,6 +25,9 @@ get_header();
 
 	// 4. Shop Products Grid Component
 	get_template_part( 'inc/template-parts/shop-grid' );
+
+	// 5. Blog Articles Component (Horizontal Scroll)
+	get_template_part( 'inc/template-parts/blog-articles' );
 	?>
 </div>
 

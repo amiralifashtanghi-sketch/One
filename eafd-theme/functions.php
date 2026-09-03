@@ -180,3 +180,84 @@ function eafd_ajax_get_cart_drawer() {
 }
 add_action( 'wp_ajax_eafd_get_cart_drawer', 'eafd_ajax_get_cart_drawer' );
 add_action( 'wp_ajax_nopriv_eafd_get_cart_drawer', 'eafd_ajax_get_cart_drawer' );
+
+/**
+ * Ajax Handler for Front Page Category Filter
+ */
+function eafd_ajax_filter_products() {
+	check_ajax_referer( 'eafd_cart_nonce', 'nonce' );
+
+	$category_slug = isset( $_POST['category_slug'] ) ? sanitize_title( $_POST['category_slug'] ) : '';
+
+	$args = array(
+		'post_type'      => 'product',
+		'posts_per_page' => 12,
+		'post_status'    => 'publish',
+	);
+
+	if ( ! empty( $category_slug ) ) {
+		$args['tax_query'] = array(
+			array(
+				'taxonomy' => 'product_cat',
+				'field'    => 'slug',
+				'terms'    => $category_slug,
+			),
+		);
+	}
+
+	$shop_products = new WP_Query( $args );
+
+	ob_start();
+
+	if ( $shop_products->have_posts() ) {
+		while ( $shop_products->have_posts() ) {
+			$shop_products->the_post();
+			global $product;
+			if ( ! $product ) continue;
+
+			$regular_price = (float) $product->get_regular_price();
+			$sale_price    = (float) $product->get_sale_price();
+			$discount_pct  = 0;
+
+			if ( $regular_price > 0 && $sale_price > 0 ) {
+				$discount_pct = round( ( ( $regular_price - $sale_price ) / $regular_price ) * 100 );
+			}
+			?>
+			<div class="eafd-product-card">
+				<?php if ( $discount_pct > 0 ) : ?>
+					<div class="eafd-discount-badge">%<?php echo esc_html( eafd_convert_to_persian_digits( $discount_pct ) ); ?></div>
+				<?php endif; ?>
+
+				<a href="<?php the_permalink(); ?>" class="eafd-product-thumb-link">
+					<?php if ( has_post_thumbnail() ) : ?>
+						<?php the_post_thumbnail( 'woocommerce_thumbnail', array( 'class' => 'eafd-product-thumb', 'loading' => 'lazy' ) ); ?>
+					<?php else : ?>
+						<img src="<?php echo esc_url( function_exists('wc_placeholder_img_src') ? wc_placeholder_img_src() : '' ); ?>" alt="<?php the_title_attribute(); ?>" class="eafd-product-thumb" />
+					<?php endif; ?>
+				</a>
+
+				<h3 class="eafd-product-title">
+					<a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
+				</h3>
+
+				<div class="eafd-product-price-box">
+					<?php if ( $regular_price > 0 && $sale_price > 0 ) : ?>
+						<del class="eafd-regular-price"><?php echo esc_html( eafd_convert_to_persian_digits( number_format( $regular_price ) ) ); ?> تومان</del>
+						<ins class="eafd-sale-price"><?php echo esc_html( eafd_convert_to_persian_digits( number_format( $sale_price ) ) ); ?> تومان</ins>
+					<?php else : ?>
+						<span class="eafd-sale-price"><?php echo $product->get_price_html(); ?></span>
+					<?php endif; ?>
+				</div>
+			</div>
+			<?php
+		}
+		wp_reset_postdata();
+	} else {
+		echo '<p class="eafd-no-products" style="grid-column: 1 / -1; text-align: center; padding: 30px; color: #718096;">هیچ محصولی در این دسته‌بندی یافت نشد.</p>';
+	}
+
+	$html = ob_get_clean();
+	wp_send_json_success( array( 'html' => $html ) );
+}
+add_action( 'wp_ajax_eafd_filter_products', 'eafd_ajax_filter_products' );
+add_action( 'wp_ajax_nopriv_eafd_filter_products', 'eafd_ajax_filter_products' );

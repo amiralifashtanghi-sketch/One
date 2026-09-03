@@ -77,4 +77,55 @@ document.addEventListener('DOMContentLoaded', function () {
 			}
 		});
 	}
+
+	// AJAX Category Filtering
+	const catButtons = document.querySelectorAll('.eafd-cat-ajax-btn');
+	const shopGrid = document.querySelector('.eafd-shop-grid');
+
+	if (catButtons.length > 0 && shopGrid && typeof eafd_cart_params !== 'undefined') {
+		catButtons.forEach(function (btn) {
+			btn.addEventListener('click', function (e) {
+				e.preventDefault();
+
+				// Update active class
+				catButtons.forEach(b => b.classList.remove('active'));
+				btn.classList.add('active');
+
+				const categorySlug = btn.getAttribute('data-category-slug') || '';
+
+				// Add opacity loading state
+				shopGrid.style.opacity = '0.4';
+				shopGrid.style.pointerEvents = 'none';
+
+				const formData = new FormData();
+				formData.append('action', 'eafd_filter_products');
+				formData.append('nonce', eafd_cart_params.nonce);
+				formData.append('category_slug', categorySlug);
+
+				fetch(eafd_cart_params.ajax_url, {
+					method: 'POST',
+					body: formData
+				})
+				.then(response => response.json())
+				.then(data => {
+					shopGrid.style.opacity = '1';
+					shopGrid.style.pointerEvents = '';
+					if (data.success && data.data && data.data.html) {
+						shopGrid.innerHTML = data.data.html;
+
+						// Scroll smoothly down to products section if needed
+						const shopSection = document.querySelector('.eafd-shop-section');
+						if (shopSection) {
+							shopSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+						}
+					}
+				})
+				.catch(err => {
+					shopGrid.style.opacity = '1';
+					shopGrid.style.pointerEvents = '';
+					console.error('AJAX product filter error:', err);
+				});
+			});
+		});
+	}
 });
