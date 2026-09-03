@@ -11,19 +11,28 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 $articles_query = new WP_Query( array(
 	'post_type'      => 'post',
-	'posts_per_page' => 8,
+	'posts_per_page' => 6,
 	'post_status'    => 'publish',
 ) );
 
+$posts_page_id   = get_option( 'page_for_posts' );
+$all_posts_url   = $posts_page_id ? get_permalink( $posts_page_id ) : get_post_type_archive_link( 'post' );
+if ( ! $all_posts_url ) {
+	$all_posts_url = home_url( '/blog' );
+}
 ?>
 
 <section class="eafd-section eafd-articles-section">
 	<div class="eafd-section-card">
-		<div class="eafd-section-header">
+		<div class="eafd-section-header" style="display: flex; align-items: center; justify-content: space-between;">
 			<h2 class="eafd-section-title">
 				<span class="eafd-title-accent"></span>
 				مقالات و نوشته‌ها
 			</h2>
+			<a href="<?php echo esc_url( $all_posts_url ); ?>" class="eafd-view-all-link" style="font-size: 13px; font-weight: 700; color: var(--eafd-primary); display: inline-flex; align-items: center; gap: 4px;">
+				مشاهده همه مقالات
+				<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+			</a>
 		</div>
 
 		<?php if ( $articles_query->have_posts() ) : ?>
