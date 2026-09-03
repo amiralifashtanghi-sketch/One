@@ -368,6 +368,61 @@ img {
 	box-shadow: 0 8px 20px rgba(0,0,0,0.06);
 }
 
+/* BLOG ARCHIVE GRID PAGE */
+.eafd-blog-archive-grid {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	gap: 20px;
+	margin-top: 16px;
+}
+
+@media (max-width: 992px) {
+	.eafd-blog-archive-grid {
+		grid-template-columns: repeat(2, 1fr);
+	}
+}
+
+@media (max-width: 576px) {
+	.eafd-blog-archive-grid {
+		grid-template-columns: 1fr;
+	}
+}
+
+.eafd-blog-archive-card {
+	width: 100% !important;
+	flex: none !important;
+}
+
+.eafd-pagination-wrapper ul.page-numbers {
+	display: inline-flex;
+	list-style: none;
+	gap: 8px;
+	padding: 0;
+	margin: 0;
+}
+
+.eafd-pagination-wrapper .page-numbers li a,
+.eafd-pagination-wrapper .page-numbers li span {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	min-width: 36px;
+	height: 36px;
+	padding: 0 12px;
+	border-radius: 8px;
+	background: #ffffff;
+	border: 1px solid #e2e8f0;
+	font-size: 13px;
+	font-weight: 700;
+	color: #2d3748;
+}
+
+.eafd-pagination-wrapper .page-numbers li span.current {
+	background: var(--eafd-primary);
+	color: #ffffff;
+	border-color: var(--eafd-primary);
+}
+
 /* HORIZONTAL BLOG ARTICLES GRID */
 .eafd-articles-grid {
 	display: flex;
