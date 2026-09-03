@@ -28,10 +28,22 @@ $categories = get_terms( array(
 
 		<?php if ( ! empty( $categories ) && ! is_wp_error( $categories ) ) : ?>
 			<div class="eafd-categories-grid">
+				<?php
+				$all_products_img = eafd_get_option( 'all_products_cat_img', '' );
+				?>
 				<!-- All Products item -->
 				<a href="#" class="eafd-cat-item eafd-cat-ajax-btn active" data-category-slug="">
 					<div class="eafd-cat-thumb">
-						<svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v8M8 12h8"/></svg>
+						<?php if ( ! empty( $all_products_img ) ) : ?>
+							<img src="<?php echo esc_url( $all_products_img ); ?>" alt="همه محصولات" width="80" height="80" loading="lazy" />
+						<?php else : ?>
+							<!-- Modern Shopping Bag Icon 🛍️ -->
+							<svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+								<path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+								<line x1="3" y1="6" x2="21" y2="6"></line>
+								<path d="M16 10a4 4 0 0 1-8 0"></path>
+							</svg>
+						<?php endif; ?>
 					</div>
 					<span class="eafd-cat-name">همه محصولات</span>
 				</a>
@@ -54,9 +66,20 @@ $categories = get_terms( array(
 		<?php else : ?>
 			<!-- Fallback categories if WooCommerce has no categories yet -->
 			<div class="eafd-categories-grid">
+				<?php
+				$all_products_img = eafd_get_option( 'all_products_cat_img', '' );
+				?>
 				<a href="#" class="eafd-cat-item eafd-cat-ajax-btn active" data-category-slug="">
 					<div class="eafd-cat-thumb">
-						<svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v8M8 12h8"/></svg>
+						<?php if ( ! empty( $all_products_img ) ) : ?>
+							<img src="<?php echo esc_url( $all_products_img ); ?>" alt="همه محصولات" width="80" height="80" loading="lazy" />
+						<?php else : ?>
+							<svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+								<path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+								<line x1="3" y1="6" x2="21" y2="6"></line>
+								<path d="M16 10a4 4 0 0 1-8 0"></path>
+							</svg>
+						<?php endif; ?>
 					</div>
 					<span class="eafd-cat-name">همه محصولات</span>
 				</a>

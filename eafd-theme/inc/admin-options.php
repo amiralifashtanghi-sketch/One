@@ -83,6 +83,7 @@ function eafd_sanitize_options( $input ) {
 	// Brand / Logo
 	$output['brand_title'] = isset( $input['brand_title'] ) ? sanitize_text_field( $input['brand_title'] ) : 'محصولات ارگانیک سجاد برزویی';
 	$output['logo_url']    = isset( $input['logo_url'] ) ? esc_url_raw( $input['logo_url'] ) : '';
+	$output['all_products_cat_img'] = isset( $input['all_products_cat_img'] ) ? esc_url_raw( $input['all_products_cat_img'] ) : '';
 
 	// Hero Banner
 	$output['hero_banner_url']  = isset( $input['hero_banner_url'] ) ? esc_url_raw( $input['hero_banner_url'] ) : '';
@@ -116,6 +117,7 @@ function eafd_render_admin_page() {
 	$text_color        = eafd_get_option( 'text_color', '#2d3748' );
 	$brand_title       = eafd_get_option( 'brand_title', 'محصولات ارگانیک سجاد برزویی' );
 	$logo_url          = eafd_get_option( 'logo_url', '' );
+	$all_products_cat_img = eafd_get_option( 'all_products_cat_img', '' );
 	$hero_banner_url   = eafd_get_option( 'hero_banner_url', '' );
 	$hero_location_tag = eafd_get_option( 'hero_location_tag', 'سبزوار - توحید شهر - فرزاندگان ۵' );
 	$hamburger_menu_id = eafd_get_option( 'hamburger_menu_id', 0 );
@@ -177,6 +179,15 @@ function eafd_render_admin_page() {
 							<input type="text" id="logo_url" name="<?php echo esc_attr( EAFD_OPTIONS_KEY ); ?>[logo_url]" value="<?php echo esc_attr( $logo_url ); ?>" class="regular-text" />
 							<button type="button" class="button eafd-upload-btn" data-target="#logo_url">انتخاب / آپلود تصویر</button>
 							<div id="logo_preview" style="margin-top: 10px;"><?php if ( $logo_url ) : ?><img src="<?php echo esc_url( $logo_url ); ?>" style="max-height: 60px; border-radius: 8px;" /><?php endif; ?></div>
+						</td>
+					</tr>
+					<tr>
+						<th scope="row"><label for="all_products_cat_img">تصویر آیکون «همه محصولات»</label></th>
+						<td>
+							<input type="text" id="all_products_cat_img" name="<?php echo esc_attr( EAFD_OPTIONS_KEY ); ?>[all_products_cat_img]" value="<?php echo esc_attr( $all_products_cat_img ); ?>" class="regular-text" />
+							<button type="button" class="button eafd-upload-btn" data-target="#all_products_cat_img">انتخاب / آپلود آیکون</button>
+							<p class="description">تصویر دلخواه برای آیتم «همه محصولات» در بخش دسته‌بندی‌ها (در صورت خالی بودن، آیکون 🛍️ نمایش داده می‌شود).</p>
+							<div id="all_products_preview" style="margin-top: 10px;"><?php if ( $all_products_cat_img ) : ?><img src="<?php echo esc_url( $all_products_cat_img ); ?>" style="max-height: 50px; border-radius: 8px;" /><?php endif; ?></div>
 						</td>
 					</tr>
 				</table>

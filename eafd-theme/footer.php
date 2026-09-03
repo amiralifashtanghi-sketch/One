@@ -111,7 +111,7 @@ $cart_count         = class_exists( 'WooCommerce' ) && WC()->cart ? WC()->cart->
 
 				<!-- Copyright Bar -->
 				<div class="eafd-footer-copyright">
-					<p><?php echo esc_html( $footer_copyright ); ?></p>
+					<p><?php echo esc_html( $footer_copyright ); ?> | طراحی و ساخته شده به دست <a href="https://eafd.ir" target="_blank" rel="noopener noreferrer" style="color: var(--eafd-primary); font-weight: bold;">eafd.ir</a></p>
 				</div>
 			</div><!-- .eafd-footer-card -->
 		</div><!-- .eafd-container -->
