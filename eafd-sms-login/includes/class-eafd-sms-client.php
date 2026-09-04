@@ -64,6 +64,15 @@ class EAFD_SMS_Client {
             'parameters' => $api_parameters
         ];
 
+        // Force IPv4 resolution to prevent cURL 10-second IPv6 DNS resolution timeouts
+        $force_ipv4 = function($handle) {
+            if (defined('CURLOPT_IPRESOLVE') && defined('CURL_IPRESOLVE_V4')) {
+                curl_setopt($handle, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
+            }
+        };
+
+        add_action('http_api_curl', $force_ipv4, 10, 1);
+
         $response = wp_remote_post($this->api_url, [
             'headers' => [
                 'X-API-KEY' => $this->api_key,
@@ -71,10 +80,12 @@ class EAFD_SMS_Client {
                 'Accept' => 'application/json'
             ],
             'body' => json_encode($body),
-            'timeout' => 30,
+            'timeout' => 20,
             'sslverify' => false,
             'httpversion' => '1.1'
         ]);
+
+        remove_action('http_api_curl', $force_ipv4, 10);
 
         if (is_wp_error($response)) {
             $error_msg = $response->get_error_message();

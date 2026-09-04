@@ -17,12 +17,81 @@ class EAFD_Checkout {
         // Checkout Validation Hook
         add_action('woocommerce_checkout_process', array($this, 'validate_checkout_phone_verification'));
 
+        // Automatically log in user after order is created / processed
+        add_action('woocommerce_checkout_order_processed', array($this, 'auto_login_customer_after_order'), 10, 3);
+        add_action('woocommerce_thankyou', array($this, 'auto_login_customer_on_thankyou'), 10, 1);
+
         // AJAX Checkout OTP verification
         add_action('wp_ajax_nopriv_eafd_checkout_send_otp', array($this, 'ajax_checkout_send_otp'));
         add_action('wp_ajax_eafd_checkout_send_otp', array($this, 'ajax_checkout_send_otp'));
 
         add_action('wp_ajax_nopriv_eafd_checkout_verify_otp', array($this, 'ajax_checkout_verify_otp'));
         add_action('wp_ajax_eafd_checkout_verify_otp', array($this, 'ajax_checkout_verify_otp'));
+    }
+
+    public function auto_login_customer_after_order($order_id, $posted_data, $order) {
+        if (is_user_logged_in() || !$order) {
+            return;
+        }
+
+        $phone = $order->get_billing_phone();
+        $normalized = EAFD_Phone_Helper::normalize_phone($phone);
+
+        if (!$normalized) {
+            return;
+        }
+
+        $user = EAFD_Phone_Helper::get_user_by_phone($normalized);
+        if (!$user) {
+            $username = $normalized;
+            $email = $order->get_billing_email() ?: ($normalized . '@noemail.eafd.ir');
+            $password = wp_generate_password(12, true);
+
+            $user_id = wp_create_user($username, $password, $email);
+
+            if (!is_wp_error($user_id)) {
+                $first_name = $order->get_billing_first_name();
+                $last_name = $order->get_billing_last_name();
+                wp_update_user([
+                    'ID' => $user_id,
+                    'first_name' => $first_name,
+                    'last_name' => $last_name,
+                    'display_name' => trim($first_name . ' ' . $last_name)
+                ]);
+                EAFD_Phone_Helper::save_user_phone($user_id, $normalized);
+                $user = get_user_by('id', $user_id);
+            }
+        }
+
+        if ($user && !is_wp_error($user)) {
+            $order->set_customer_id($user->ID);
+            $order->save();
+
+            wp_set_current_user($user->ID);
+            wp_set_auth_cookie($user->ID, true, is_ssl());
+        }
+    }
+
+    public function auto_login_customer_on_thankyou($order_id) {
+        if (is_user_logged_in() || !$order_id) {
+            return;
+        }
+
+        $order = wc_get_order($order_id);
+        if (!$order) {
+            return;
+        }
+
+        $phone = $order->get_billing_phone();
+        $normalized = EAFD_Phone_Helper::normalize_phone($phone);
+
+        if ($normalized) {
+            $user = EAFD_Phone_Helper::get_user_by_phone($normalized);
+            if ($user) {
+                wp_set_current_user($user->ID);
+                wp_set_auth_cookie($user->ID, true, is_ssl());
+            }
+        }
     }
 
     public function customize_billing_fields($fields) {

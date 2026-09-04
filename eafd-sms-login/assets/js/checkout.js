@@ -44,7 +44,8 @@ jQuery(document).ready(function($) {
         e.stopPropagation();
 
         var $btn = $(this);
-        $btn.prop('disabled', true);
+        var originalText = $btn.text() || $btn.val();
+        $btn.prop('disabled', true).text('⏳ در حال ارسال کد تایید پیامکی...');
 
         // Trigger SMS OTP to checkout phone
         $.ajax({
@@ -56,7 +57,7 @@ jQuery(document).ready(function($) {
                 nonce: eafd_checkout_obj.nonce
             },
             success: function(res) {
-                $btn.prop('disabled', false);
+                $btn.prop('disabled', false).text(originalText);
                 if (res.success) {
                     clearInlineError();
                     $('#eafd-checkout-target-phone').text(res.data.phone);
@@ -68,7 +69,7 @@ jQuery(document).ready(function($) {
                 }
             },
             error: function() {
-                $btn.prop('disabled', false);
+                $btn.prop('disabled', false).text(originalText);
                 alert('خطا در ارتباط با سرور هنگام ارسال کد تایید.');
             }
         });
