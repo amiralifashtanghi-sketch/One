@@ -60,12 +60,50 @@ final class EAFD_Custom_Admin {
     }
 
     /**
+     * Create or retrieve automatic admin page
+     */
+    public static function create_admin_page() {
+        $page_id = get_option( 'eafd_custom_admin_page_id' );
+
+        if ( $page_id && get_post( $page_id ) ) {
+            return $page_id;
+        }
+
+        // Check by path 'admin'
+        $existing_page = get_page_by_path( 'admin' );
+        if ( $existing_page ) {
+            update_option( 'eafd_custom_admin_page_id', $existing_page->ID );
+            return $existing_page->ID;
+        }
+
+        // Create page
+        $page_data = array(
+            'post_title'     => 'ادمین اختصاصی',
+            'post_name'      => 'admin',
+            'post_content'   => '<!-- eafd_custom_admin_panel -->',
+            'post_status'    => 'publish',
+            'post_type'      => 'page',
+            'comment_status' => 'closed',
+            'ping_status'    => 'closed',
+        );
+
+        $new_page_id = wp_insert_post( $page_data );
+        if ( $new_page_id && ! is_wp_error( $new_page_id ) ) {
+            update_option( 'eafd_custom_admin_page_id', $new_page_id );
+            return $new_page_id;
+        }
+
+        return false;
+    }
+
+    /**
      * On Plugin Activation
      */
     public static function activate() {
         require_once EAFD_CUSTOM_ADMIN_PATH . 'inc/class-roles.php';
         require_once EAFD_CUSTOM_ADMIN_PATH . 'inc/class-rewrite.php';
         EAFD_Custom_Admin_Roles::add_roles();
+        self::create_admin_page();
         EAFD_Custom_Admin_Rewrite::add_rewrite_rules();
         flush_rewrite_rules();
     }
