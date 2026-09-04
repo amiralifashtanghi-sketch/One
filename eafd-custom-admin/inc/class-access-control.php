@@ -31,7 +31,8 @@ class EAFD_Custom_Admin_Access_Control {
         $is_iframe = isset( $_REQUEST['eafd_iframe'] ) && $_REQUEST['eafd_iframe'] == 1;
         $has_referer_iframe = ! empty( $_SERVER['HTTP_REFERER'] ) && strpos( $_SERVER['HTTP_REFERER'], 'eafd_iframe=1' ) !== false;
 
-        if ( ! $is_iframe && ! $has_referer_iframe ) {
+        // If accessed directly outside /admin frame, redirect to /admin with target page parameter
+        if ( ! $is_iframe && ! $has_referer_iframe && is_admin() && strpos( $_SERVER['REQUEST_URI'] ?? '', 'eafd_iframe' ) === false ) {
             wp_redirect( home_url( '/admin' ) );
             exit;
         }
