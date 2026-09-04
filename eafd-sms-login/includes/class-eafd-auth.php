@@ -79,14 +79,14 @@ class EAFD_Auth {
         <div class="eafd-login-box" id="eafd-login-box">
             <div class="eafd-login-header">
                 <h3>ورود / ثبت‌نام در <?php echo esc_html(get_bloginfo('name')); ?></h3>
-                <p>شماره تلفن همراه خود را وارد کنید</p>
+                <p>شماره تلفن همراه، نام کاربری یا ایمیل خود را وارد کنید</p>
             </div>
 
-            <!-- Step 1: Input Phone -->
+            <!-- Step 1: Input Phone / Username / Email -->
             <div class="eafd-step eafd-step-phone" id="eafd-step-phone">
                 <div class="eafd-input-group">
-                    <label for="eafd_phone_input">شماره همراه</label>
-                    <input type="tel" id="eafd_phone_input" placeholder="09123456789" dir="ltr" autocomplete="tel" autofocus />
+                    <label for="eafd_phone_input">شماره همراه، نام کاربری یا ایمیل</label>
+                    <input type="text" id="eafd_phone_input" placeholder="09123456789 یا admin" dir="ltr" autocomplete="username" autofocus />
                 </div>
                 <button type="button" class="eafd-btn eafd-btn-primary" id="eafd-btn-check-phone">ادامه</button>
             </div>
@@ -147,25 +147,23 @@ class EAFD_Auth {
     public function ajax_check_phone() {
         check_ajax_referer('eafd_sms_nonce', 'nonce');
 
-        $phone = isset($_POST['phone']) ? sanitize_text_field($_POST['phone']) : '';
-        $normalized = EAFD_Phone_Helper::normalize_phone($phone);
-
-        if (!$normalized) {
-            wp_send_json_error(['message' => 'شماره همراه وارد شده معتبر نیست.']);
-        }
-
-        $user = EAFD_Phone_Helper::get_user_by_phone($normalized);
+        $identity = isset($_POST['phone']) ? sanitize_text_field($_POST['phone']) : '';
+        $user = EAFD_Phone_Helper::get_user_by_identity($identity);
 
         if ($user) {
-            // Check if user has explicitly defined password
-            $has_custom_pwd = get_user_meta($user->ID, 'eafd_has_custom_password', true);
-            if (!empty($has_custom_pwd)) {
+            // Admin or user with password
+            if (!empty($user->user_pass)) {
                 wp_send_json_success([
                     'has_password' => true,
-                    'phone' => $normalized,
+                    'identity' => $identity,
                     'message' => 'لطفاً کلمه عبور خود را وارد کنید.'
                 ]);
             }
+        }
+
+        $normalized = EAFD_Phone_Helper::normalize_phone($identity);
+        if (!$normalized) {
+            wp_send_json_error(['message' => 'لطفاً شماره تلفن همراه، نام کاربری یا ایمیل معتبر وارد کنید.']);
         }
 
         // Send OTP directly
@@ -185,14 +183,13 @@ class EAFD_Auth {
     public function ajax_login_password() {
         check_ajax_referer('eafd_sms_nonce', 'nonce');
 
-        $phone = isset($_POST['phone']) ? sanitize_text_field($_POST['phone']) : '';
+        $identity = isset($_POST['phone']) ? sanitize_text_field($_POST['phone']) : '';
         $password = isset($_POST['password']) ? $_POST['password'] : '';
 
-        $normalized = EAFD_Phone_Helper::normalize_phone($phone);
-        $user = EAFD_Phone_Helper::get_user_by_phone($normalized);
+        $user = EAFD_Phone_Helper::get_user_by_identity($identity);
 
         if (!$user) {
-            wp_send_json_error(['message' => 'کاربری با این شماره یافت نشد.']);
+            wp_send_json_error(['message' => 'کاربری با این اطلاعات یافت نشد.']);
         }
 
         if (wp_check_password($password, $user->user_pass, $user->ID)) {

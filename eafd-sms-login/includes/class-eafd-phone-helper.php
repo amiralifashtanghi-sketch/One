@@ -48,6 +48,34 @@ class EAFD_Phone_Helper {
     }
 
     /**
+     * Find user by phone number, username, or email address.
+     */
+    public static function get_user_by_identity($identity) {
+        $identity = trim($identity);
+        if (empty($identity)) {
+            return false;
+        }
+
+        // 1. Check if email
+        if (is_email($identity)) {
+            $user = get_user_by('email', $identity);
+            if ($user) return $user;
+        }
+
+        // 2. Check if username
+        $user = get_user_by('login', $identity);
+        if ($user) return $user;
+
+        // 3. Check if phone
+        $normalized = self::normalize_phone($identity);
+        if ($normalized) {
+            return self::get_user_by_phone($normalized);
+        }
+
+        return false;
+    }
+
+    /**
      * Find user by phone number across all meta keys and username formats.
      */
     public static function get_user_by_phone($phone) {

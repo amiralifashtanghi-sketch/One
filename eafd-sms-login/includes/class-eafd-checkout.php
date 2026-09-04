@@ -12,7 +12,7 @@ class EAFD_Checkout {
 
         // Checkout Verify Modal for Guest Users
         add_action('wp_enqueue_scripts', array($this, 'enqueue_checkout_scripts'));
-        add_action('woocommerce_checkout_after_customer_details', array($this, 'render_checkout_verify_modal'));
+        add_action('wp_footer', array($this, 'render_checkout_verify_modal'));
 
         // Checkout Validation Hook
         add_action('woocommerce_checkout_process', array($this, 'validate_checkout_phone_verification'));

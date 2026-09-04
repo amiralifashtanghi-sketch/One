@@ -10,7 +10,8 @@ jQuery(document).ready(function($) {
 
     var isPhoneVerified = false;
 
-    $(document.body).on('checkout_place_order', function() {
+    // Intercept checkout submit button click
+    $(document.body).on('click', '#place_order, form.checkout button[type="submit"]', function(e) {
         if (isPhoneVerified) {
             return true;
         }
@@ -18,8 +19,16 @@ jQuery(document).ready(function($) {
         var phone = $('#billing_phone').val();
         if (!phone) {
             alert('لطفاً شماره تلفن همراه را در فرم تسویه حساب وارد نمایید.');
+            e.preventDefault();
+            e.stopPropagation();
             return false;
         }
+
+        e.preventDefault();
+        e.stopPropagation();
+
+        var $btn = $(this);
+        $btn.prop('disabled', true);
 
         // Trigger SMS OTP to checkout phone
         $.ajax({
@@ -31,19 +40,21 @@ jQuery(document).ready(function($) {
                 nonce: eafd_checkout_obj.nonce
             },
             success: function(res) {
+                $btn.prop('disabled', false);
                 if (res.success) {
                     $('#eafd-checkout-target-phone').text(res.data.phone);
-                    $('#eafd-checkout-modal-overlay').fadeIn();
+                    $('#eafd-checkout-modal-overlay').css('display', 'flex').hide().fadeIn();
                 } else {
                     alert(res.data.message);
                 }
             },
             error: function() {
-                alert('خطا در ارسال کد تایید.');
+                $btn.prop('disabled', false);
+                alert('خطا در ارتباط با سرور هنگام ارسال کد تایید.');
             }
         });
 
-        return false; // Prevent form submit until OTP is verified
+        return false;
     });
 
     // OTP Input Navigation

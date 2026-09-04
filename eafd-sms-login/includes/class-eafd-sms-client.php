@@ -71,15 +71,21 @@ class EAFD_SMS_Client {
                 'Accept' => 'application/json'
             ],
             'body' => json_encode($body),
-            'timeout' => 15
+            'timeout' => 30
         ]);
 
         if (is_wp_error($response)) {
             $error_msg = $response->get_error_message();
             EAFD_SMS_Logger::log('خطا در ارتباط با وب‌سرویس SMS.ir: ' . $error_msg, 'error', ['phone' => $normalized_phone]);
+
+            $user_msg = 'خطا در برقراری ارتباط با وب‌سرویس SMS.ir. لطفاً چند لحظه بعد مجدداً تلاش نمایید.';
+            if (strpos($error_msg, 'timed out') !== false || strpos($error_msg, 'cURL error 28') !== false) {
+                $user_msg = 'اتصال به سامانه پیامک با تایم‌اوت مواجه شد. لطفاً کلید API و اینترنت سرور را بررسی نمایید.';
+            }
+
             return [
                 'success' => false,
-                'message' => 'خطا در ارتباط با سامانه پیامک: ' . $error_msg
+                'message' => $user_msg
             ];
         }
 
