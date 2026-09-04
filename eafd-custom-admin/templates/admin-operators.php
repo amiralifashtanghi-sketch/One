@@ -65,6 +65,20 @@ $operators = get_users( array(
         <div class="notice notice-error is-dismissible"><p><?php echo esc_html( $error ); ?></p></div>
     <?php endif; ?>
 
+    <!-- Shortcode Guide Banner -->
+    <div style="background: linear-gradient(135deg, #0b63d8, #0284c7); color: #fff; padding: 20px; border-radius: 12px; margin-bottom: 25px; box-shadow: 0 4px 15px rgba(11,99,216,0.15);">
+        <h2 style="color: #fff; margin-top: 0; font-size: 18px; margin-bottom: 10px; display: flex; align-items: center; gap: 8px;">
+            <span>🚀</span> نحوه دسترسی و نمایش پنل ادمین اختصاصی
+        </h2>
+        <p style="font-size: 14px; margin-bottom: 15px; opacity: 0.95;">
+            برگهٔ اتوماتیک به آدرس <strong><?php echo esc_url( home_url( '/admin' ) ); ?></strong> در سایت شما ساخته شده است. اگر می‌خواهید پنل ادمین را در هر برگهٔ دلخواه دیگری قرار دهید، کافیست شورت‌کد زیر را داخل آن برگه بگذارید:
+        </p>
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <code style="background: rgba(255,255,255,0.2); color: #fff; padding: 8px 16px; border-radius: 8px; font-size: 16px; font-family: monospace; font-weight: bold; border: 1px solid rgba(255,255,255,0.3);">[eafd_custom_admin]</code>
+            <a href="<?php echo esc_url( home_url( '/admin' ) ); ?>" target="_blank" class="button" style="background: #fff; color: #0b63d8; border: none; font-weight: bold; border-radius: 8px; padding: 6px 16px;">🌐 مشاهده برگه ادمین</a>
+        </div>
+    </div>
+
     <div style="display: flex; gap: 20px; flex-wrap: wrap;">
         <!-- Add Operator Card -->
         <div style="flex: 1; min-width: 300px; background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid #e2e8f0;">

@@ -65,7 +65,13 @@ final class EAFD_Custom_Admin {
     public static function create_admin_page() {
         $page_id = get_option( 'eafd_custom_admin_page_id' );
 
-        if ( $page_id && get_post( $page_id ) ) {
+        if ( $page_id && ( $post = get_post( $page_id ) ) ) {
+            if ( strpos( $post->post_content, '[eafd_custom_admin]' ) === false ) {
+                wp_update_post( array(
+                    'ID'           => $page_id,
+                    'post_content' => '[eafd_custom_admin]'
+                ) );
+            }
             return $page_id;
         }
 
@@ -73,6 +79,12 @@ final class EAFD_Custom_Admin {
         $existing_page = get_page_by_path( 'admin' );
         if ( $existing_page ) {
             update_option( 'eafd_custom_admin_page_id', $existing_page->ID );
+            if ( strpos( $existing_page->post_content, '[eafd_custom_admin]' ) === false ) {
+                wp_update_post( array(
+                    'ID'           => $existing_page->ID,
+                    'post_content' => '[eafd_custom_admin]'
+                ) );
+            }
             return $existing_page->ID;
         }
 
@@ -80,7 +92,7 @@ final class EAFD_Custom_Admin {
         $page_data = array(
             'post_title'     => 'ادمین اختصاصی',
             'post_name'      => 'admin',
-            'post_content'   => '<!-- eafd_custom_admin_panel -->',
+            'post_content'   => '[eafd_custom_admin]',
             'post_status'    => 'publish',
             'post_type'      => 'page',
             'comment_status' => 'closed',
