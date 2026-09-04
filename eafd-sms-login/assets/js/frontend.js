@@ -2,6 +2,11 @@ jQuery(document).ready(function($) {
 
     var timerInterval = null;
     var failedAttempts = 0;
+    var isSubmittingOtp = false;
+
+    function showInlineSuccess(msg) {
+        $('#eafd-msg-box').html('<div class="eafd-inline-success" style="background:#dcfce7; border:1px solid #86efac; color:#166534; padding:10px 14px; border-radius:10px; font-size:13px; margin-bottom:16px; text-align:center;">' + msg + '</div>');
+    }
 
     function showInlineError(msg) {
         $('#eafd-msg-box').html('<div class="eafd-inline-error">' + msg + '</div>');
@@ -219,7 +224,7 @@ jQuery(document).ready(function($) {
             code += $(this).val();
         });
 
-        if (code.length === 4) {
+        if (code.length === 4 && !isSubmittingOtp) {
             $('#eafd-btn-verify-otp').click();
         }
     });
@@ -227,6 +232,8 @@ jQuery(document).ready(function($) {
     // Verify OTP Handler
     $('#eafd-btn-verify-otp').on('click', function(e) {
         e.preventDefault();
+        if (isSubmittingOtp) return;
+
         clearInlineError();
         var phone = $('#eafd_phone_input').val();
         var code = '';
@@ -239,6 +246,7 @@ jQuery(document).ready(function($) {
             return;
         }
 
+        isSubmittingOtp = true;
         var $btn = $(this);
         $btn.prop('disabled', true).text('در حال بررسی...');
 
@@ -252,22 +260,29 @@ jQuery(document).ready(function($) {
                 nonce: eafd_sms_obj.nonce
             },
             success: function(res) {
-                $btn.prop('disabled', false).text('تایید کد و ورود');
                 if (res.success) {
                     if (res.data.is_new) {
+                        isSubmittingOtp = false;
+                        $btn.prop('disabled', false).text('تایید کد و ورود');
                         $('#eafd_reg_token').val(res.data.token);
                         $('#eafd-step-otp').hide();
                         $('#eafd-step-name').show();
                     } else {
-                        window.location.href = res.data.redirect || window.location.href;
+                        showInlineSuccess('ورود با موفقیت انجام شد. در حال انتقال...');
+                        setTimeout(function() {
+                            window.location.href = res.data.redirect || window.location.href;
+                        }, 500);
                     }
                 } else {
+                    isSubmittingOtp = false;
+                    $btn.prop('disabled', false).text('تایید کد و ورود');
                     $('.eafd-otp-digit').val('');
                     $('.eafd-otp-digit[data-idx="1"]').focus();
                     showInlineError(res.data.message);
                 }
             },
             error: function() {
+                isSubmittingOtp = false;
                 $btn.prop('disabled', false).text('تایید کد و ورود');
                 showInlineError('خطا در بررسی کد.');
             }

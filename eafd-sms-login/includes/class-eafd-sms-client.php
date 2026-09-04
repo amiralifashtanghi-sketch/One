@@ -34,18 +34,18 @@ class EAFD_SMS_Client {
         }
 
         if (empty($this->api_key)) {
-            EAFD_SMS_Logger::log('ارسال پیامک ناموفق: کلید API تنظیم نشده است.', 'error');
+            EAFD_SMS_Logger::log('ارسال پیامک ناموفق: کلید API در تنظیمات افزونه ثبت نشده است.', 'error');
             return [
                 'success' => false,
-                'message' => 'کلید API پیامک تنظیم نشده است.'
+                'message' => 'کلید API پیامک SMS.ir در تنظیمات افزونه وارد نشده است.'
             ];
         }
 
         if (empty($template_id)) {
-            EAFD_SMS_Logger::log('ارسال پیامک ناموفق: شناسه پترن مشخص نشده است.', 'error');
+            EAFD_SMS_Logger::log('ارسال پیامک ناموفق: شناسه پترن تنظیم نشده است.', 'error');
             return [
                 'success' => false,
-                'message' => 'شناسه پترن تنظیم نشده است.'
+                'message' => 'شناسه پترن پیامک در تنظیمات افزونه ثبت نشده است.'
             ];
         }
 
@@ -71,7 +71,9 @@ class EAFD_SMS_Client {
                 'Accept' => 'application/json'
             ],
             'body' => json_encode($body),
-            'timeout' => 30
+            'timeout' => 30,
+            'sslverify' => false,
+            'httpversion' => '1.1'
         ]);
 
         if (is_wp_error($response)) {

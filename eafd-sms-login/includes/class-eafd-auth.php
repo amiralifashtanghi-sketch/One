@@ -203,7 +203,7 @@ class EAFD_Auth {
 
         if (wp_check_password($password, $user->user_pass, $user->ID)) {
             wp_set_current_user($user->ID);
-            wp_set_auth_cookie($user->ID, true);
+            wp_set_auth_cookie($user->ID, true, true);
             $redirect = user_can($user, 'manage_options') ? admin_url() : home_url();
             wp_send_json_success(['message' => 'ورود با موفقیت انجام شد.', 'redirect' => $redirect]);
         } else {

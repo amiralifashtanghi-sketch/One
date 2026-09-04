@@ -97,11 +97,11 @@ class EAFD_Checkout {
 
                 <div class="eafd-step" id="eafd-checkout-step-otp">
                     <p class="eafd-otp-msg">کد ۴ رقمی ارسال شده به شماره <strong id="eafd-checkout-target-phone"></strong> را وارد کنید:</p>
-                    <div class="eafd-otp-inputs" dir="ltr">
-                        <input type="text" maxlength="1" class="eafd-checkout-otp-digit" data-idx="1" inputmode="numeric" pattern="[0-9]*" autofocus />
-                        <input type="text" maxlength="1" class="eafd-checkout-otp-digit" data-idx="2" inputmode="numeric" pattern="[0-9]*" />
-                        <input type="text" maxlength="1" class="eafd-checkout-otp-digit" data-idx="3" inputmode="numeric" pattern="[0-9]*" />
-                        <input type="text" maxlength="1" class="eafd-checkout-otp-digit" data-idx="4" inputmode="numeric" pattern="[0-9]*" />
+                    <div class="eafd-otp-inputs" dir="ltr" style="display:flex !important; flex-direction:row !important; justify-content:center !important; align-items:center !important; width:100% !important; max-width:100% !important; box-sizing:border-box !important; margin:20px 0 !important; direction:ltr !important;">
+                        <input type="text" maxlength="1" class="eafd-checkout-otp-digit" data-idx="1" inputmode="numeric" pattern="[0-9]*" style="width:50px !important; min-width:50px !important; max-width:50px !important; height:50px !important; display:inline-block !important; margin:0 4px !important; text-align:center !important; font-size:22px !important; font-weight:bold !important; box-sizing:border-box !important; border:2px solid #cbd5e1 !important; border-radius:12px !important; background:#f8fafc !important;" autofocus />
+                        <input type="text" maxlength="1" class="eafd-checkout-otp-digit" data-idx="2" inputmode="numeric" pattern="[0-9]*" style="width:50px !important; min-width:50px !important; max-width:50px !important; height:50px !important; display:inline-block !important; margin:0 4px !important; text-align:center !important; font-size:22px !important; font-weight:bold !important; box-sizing:border-box !important; border:2px solid #cbd5e1 !important; border-radius:12px !important; background:#f8fafc !important;" />
+                        <input type="text" maxlength="1" class="eafd-checkout-otp-digit" data-idx="3" inputmode="numeric" pattern="[0-9]*" style="width:50px !important; min-width:50px !important; max-width:50px !important; height:50px !important; display:inline-block !important; margin:0 4px !important; text-align:center !important; font-size:22px !important; font-weight:bold !important; box-sizing:border-box !important; border:2px solid #cbd5e1 !important; border-radius:12px !important; background:#f8fafc !important;" />
+                        <input type="text" maxlength="1" class="eafd-checkout-otp-digit" data-idx="4" inputmode="numeric" pattern="[0-9]*" style="width:50px !important; min-width:50px !important; max-width:50px !important; height:50px !important; display:inline-block !important; margin:0 4px !important; text-align:center !important; font-size:22px !important; font-weight:bold !important; box-sizing:border-box !important; border:2px solid #cbd5e1 !important; border-radius:12px !important; background:#f8fafc !important;" />
                     </div>
                     <button type="button" class="eafd-btn eafd-btn-primary" id="eafd-btn-checkout-verify-otp">تایید کد و ثبت سفارش</button>
                     <div class="eafd-resend-box">
@@ -202,25 +202,6 @@ class EAFD_Checkout {
         }
 
         set_transient('eafd_verified_phone_' . $normalized, true, 600); // 10 mins
-
-        // Auto Login or Register User so they don't need to re-verify in future
-        $user = EAFD_Phone_Helper::get_user_by_phone($normalized);
-        if (!$user) {
-            $username = $normalized;
-            $email = $normalized . '@noemail.eafd.ir';
-            $password = wp_generate_password(12, true);
-            $user_id = wp_create_user($username, $password, $email);
-
-            if (!is_wp_error($user_id)) {
-                $user = get_user_by('id', $user_id);
-                EAFD_Phone_Helper::save_user_phone($user_id, $normalized);
-            }
-        }
-
-        if ($user) {
-            wp_set_current_user($user->ID);
-            wp_set_auth_cookie($user->ID, true);
-        }
 
         wp_send_json_success(['message' => 'شماره همراه با موفقیت تایید شد.']);
     }
