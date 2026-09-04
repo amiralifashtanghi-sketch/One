@@ -11,10 +11,10 @@
     border: 1px solid rgba(226, 232, 240, 0.8);
     border-radius: 20px;
     padding: 28px;
-    max-width: 440px;
-    width: 90%;
+    max-width: 440px !important;
+    width: 90% !important;
     margin: 40px auto;
-    box-sizing: border-box;
+    box-sizing: border-box !important;
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15), 0 1px 3px rgba(0, 0, 0, 0.05);
     transition: all 0.3s ease;
 }
@@ -115,22 +115,35 @@
     margin-bottom: 16px;
 }
 
+/* High Specificity OTP Box Override */
+#eafd-checkout-modal-overlay .eafd-otp-inputs,
+#eafd-login-box .eafd-otp-inputs,
 .eafd-otp-inputs {
     display: flex !important;
+    flex-direction: row !important;
     justify-content: center !important;
     align-items: center !important;
     gap: 10px !important;
     margin: 20px 0 !important;
     direction: ltr !important;
     width: 100% !important;
+    max-width: 100% !important;
     box-sizing: border-box !important;
 }
 
+#eafd-checkout-modal-overlay .eafd-otp-inputs input,
+#eafd-checkout-modal-overlay .eafd-otp-inputs input[type="text"],
+#eafd-checkout-modal-overlay .eafd-otp-inputs input[type="number"],
+#eafd-login-box .eafd-otp-inputs input,
+#eafd-login-box .eafd-otp-inputs input[type="text"],
 .eafd-otp-digit,
 .eafd-checkout-otp-digit {
-    flex: 1 1 0% !important;
-    max-width: 54px !important;
-    height: 54px !important;
+    flex: 0 0 52px !important;
+    width: 52px !important;
+    max-width: 52px !important;
+    min-width: 52px !important;
+    height: 52px !important;
+    max-height: 52px !important;
     text-align: center !important;
     font-size: 22px !important;
     font-weight: 700 !important;
@@ -139,11 +152,14 @@
     background: #f8fafc !important;
     color: #0f172a !important;
     box-sizing: border-box !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    display: inline-block !important;
     transition: all 0.2s ease !important;
 }
 
-.eafd-otp-digit:focus,
-.eafd-checkout-otp-digit:focus {
+#eafd-checkout-modal-overlay .eafd-otp-inputs input:focus,
+#eafd-login-box .eafd-otp-inputs input:focus {
     border-color: #0b63d8 !important;
     background: #ffffff !important;
     box-shadow: 0 0 0 4px rgba(11, 99, 216, 0.15) !important;

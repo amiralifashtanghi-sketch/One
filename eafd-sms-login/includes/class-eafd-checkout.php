@@ -28,14 +28,16 @@ class EAFD_Checkout {
     public function customize_billing_fields($fields) {
         $settings = get_option('eafd_sms_settings', []);
 
-        // Make phone mandatory
+        // Force phone mandatory
         if (isset($fields['billing_phone'])) {
             $fields['billing_phone']['required'] = true;
+            $fields['billing_phone']['label'] = 'شماره تلفن همراه';
         }
 
         // Make email optional if configured
         if (!empty($settings['disable_email_req']) && isset($fields['billing_email'])) {
             $fields['billing_email']['required'] = false;
+            $fields['billing_email']['label'] = 'آدرس ایمیل (اختیاری)';
         }
 
         return $fields;
@@ -46,10 +48,12 @@ class EAFD_Checkout {
 
         if (isset($fields['billing']['billing_phone'])) {
             $fields['billing']['billing_phone']['required'] = true;
+            $fields['billing']['billing_phone']['label'] = 'شماره تلفن همراه';
         }
 
         if (!empty($settings['disable_email_req']) && isset($fields['billing']['billing_email'])) {
             $fields['billing']['billing_email']['required'] = false;
+            $fields['billing']['billing_email']['label'] = 'آدرس ایمیل (اختیاری)';
         }
 
         return $fields;
@@ -130,8 +134,9 @@ class EAFD_Checkout {
         }
 
         $verified_phone = WC()->session ? WC()->session->get('eafd_verified_checkout_phone') : null;
+        $transient_verified = get_transient('eafd_verified_phone_' . $normalized);
 
-        if ($verified_phone !== $normalized) {
+        if ($verified_phone !== $normalized && !$transient_verified) {
             wc_add_notice('شماره تلفن همراه شما هنوز تایید نشده است. لطفاً کد تایید پیامکی را وارد نمایید.', 'error');
         }
     }
@@ -195,6 +200,8 @@ class EAFD_Checkout {
         if (WC()->session) {
             WC()->session->set('eafd_verified_checkout_phone', $normalized);
         }
+
+        set_transient('eafd_verified_phone_' . $normalized, true, 600); // 10 mins
 
         // Auto Login or Register User so they don't need to re-verify in future
         $user = EAFD_Phone_Helper::get_user_by_phone($normalized);

@@ -116,7 +116,7 @@ jQuery(document).ready(function($) {
             },
             success: function(res) {
                 if (res.success) {
-                    window.location.reload();
+                    window.location.href = res.data.redirect || window.location.href;
                 } else {
                     $btn.prop('disabled', false).text('ورود با کلمه عبور');
                     showInlineError(res.data.message);
@@ -259,7 +259,7 @@ jQuery(document).ready(function($) {
                         $('#eafd-step-otp').hide();
                         $('#eafd-step-name').show();
                     } else {
-                        window.location.reload();
+                        window.location.href = res.data.redirect || window.location.href;
                     }
                 } else {
                     $('.eafd-otp-digit').val('');

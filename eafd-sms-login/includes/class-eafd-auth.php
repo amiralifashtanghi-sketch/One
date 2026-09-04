@@ -165,18 +165,14 @@ class EAFD_Auth {
             }
         }
 
-        if (!$user) {
-            wp_send_json_error(['message' => 'حساب کاربری با این اطلاعات یافت نشد. لطفاً ابتدا ثبت سفارش نمایید.']);
-        }
-
         $normalized = EAFD_Phone_Helper::normalize_phone($identity);
-        if (!$normalized) {
+        if (!$normalized && $user) {
             $normalized = get_user_meta($user->ID, 'billing_phone', true);
             $normalized = EAFD_Phone_Helper::normalize_phone($normalized);
         }
 
         if (!$normalized) {
-            wp_send_json_error(['message' => 'شماره تلفن همراه معتبری برای این حساب کاربری یافت نشد.']);
+            wp_send_json_error(['message' => 'لطفاً یک شماره تلفن همراه معتبر (مثلاً 09123456789) وارد کنید.']);
         }
 
         // Send OTP directly
@@ -185,7 +181,7 @@ class EAFD_Auth {
             wp_send_json_success([
                 'has_password' => false,
                 'phone' => $normalized,
-                'is_new' => false,
+                'is_new' => !$user,
                 'message' => 'کد تایید ۴ رقمی برای شما ارسال شد.'
             ]);
         } else {
@@ -208,7 +204,8 @@ class EAFD_Auth {
         if (wp_check_password($password, $user->user_pass, $user->ID)) {
             wp_set_current_user($user->ID);
             wp_set_auth_cookie($user->ID, true);
-            wp_send_json_success(['message' => 'ورود با موفقیت انجام شد.', 'redirect' => home_url()]);
+            $redirect = user_can($user, 'manage_options') ? admin_url() : home_url();
+            wp_send_json_success(['message' => 'ورود با موفقیت انجام شد.', 'redirect' => $redirect]);
         } else {
             wp_send_json_error(['message' => 'کلمه عبور وارد شده اشتباه است.']);
         }
@@ -315,11 +312,12 @@ class EAFD_Auth {
             // Existing User -> Login
             wp_set_current_user($user->ID);
             wp_set_auth_cookie($user->ID, true);
+            $redirect = user_can($user, 'manage_options') ? admin_url() : home_url();
             wp_send_json_success([
                 'is_new' => false,
                 'token' => $verified_token,
                 'message' => 'ورود با موفقیت انجام شد.',
-                'redirect' => home_url()
+                'redirect' => $redirect
             ]);
         }
     }
