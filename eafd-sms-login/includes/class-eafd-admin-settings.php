@@ -60,6 +60,7 @@ class EAFD_SMS_Admin_Settings {
         $sanitized['api_key'] = sanitize_text_field($input['api_key'] ?? '');
         $sanitized['line_number'] = sanitize_text_field($input['line_number'] ?? '');
         $sanitized['admin_phone'] = EAFD_Phone_Helper::normalize_phone($input['admin_phone'] ?? '') ?: sanitize_text_field($input['admin_phone'] ?? '');
+        $sanitized['support_phone'] = sanitize_text_field($input['support_phone'] ?? '');
 
         $sanitized['otp_template_id'] = sanitize_text_field($input['otp_template_id'] ?? '');
         $sanitized['otp_var_code'] = sanitize_text_field($input['otp_var_code'] ?? 'CODE');
@@ -127,6 +128,13 @@ class EAFD_SMS_Admin_Settings {
                             <td>
                                 <input type="text" name="<?php echo $this->option_key; ?>[admin_phone]" value="<?php echo esc_attr($settings['admin_phone'] ?? ''); ?>" class="regular-text" placeholder="09150591710" />
                                 <p class="description">شماره موبایل مدیر سایت که پیامک «سفارش جدید» به آن ارسال می‌شود.</p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">شماره تماس پشتیبانی</th>
+                            <td>
+                                <input type="text" name="<?php echo $this->option_key; ?>[support_phone]" value="<?php echo esc_attr($settings['support_phone'] ?? ''); ?>" class="regular-text" placeholder="09123456789 یا 02112345678" />
+                                <p class="description">شماره جهت تماس با پشتیبانی در صورت تلاش‌های ناموفق کاربر.</p>
                             </td>
                         </tr>
                     </table>

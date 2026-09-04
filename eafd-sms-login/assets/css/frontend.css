@@ -5,15 +5,17 @@
     direction: rtl;
     text-align: right;
     font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    background: rgba(255, 255, 255, 0.95);
+    background: rgba(255, 255, 255, 0.98);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    border: 1px solid rgba(226, 232, 240, 0.8);
     border-radius: 20px;
-    padding: 32px;
-    max-width: 420px;
+    padding: 28px;
+    max-width: 440px;
+    width: 90%;
     margin: 40px auto;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12), 0 1px 3px rgba(0, 0, 0, 0.05);
+    box-sizing: border-box;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15), 0 1px 3px rgba(0, 0, 0, 0.05);
     transition: all 0.3s ease;
 }
 
@@ -23,6 +25,7 @@
     font-weight: 700;
     color: #0f172a;
     margin: 0 0 6px 0;
+    text-align: center;
 }
 
 .eafd-login-header p,
@@ -30,6 +33,7 @@
     font-size: 13px;
     color: #64748b;
     margin: 0 0 24px 0;
+    text-align: center;
 }
 
 .eafd-input-group {
@@ -74,6 +78,7 @@
     font-weight: 700;
     cursor: pointer;
     transition: all 0.25s ease;
+    box-sizing: border-box;
 }
 
 .eafd-btn-primary {
@@ -103,32 +108,46 @@
     text-align: center;
 }
 
-.eafd-otp-inputs {
-    display: flex;
-    justify-content: space-between;
-    gap: 10px;
-    margin: 20px 0;
-    direction: ltr;
-}
-
-.eafd-otp-digit {
-    width: 60px;
-    height: 60px;
+.eafd-otp-msg {
     text-align: center;
-    font-size: 24px;
-    font-weight: 700;
-    border: 2px solid #cbd5e1;
-    border-radius: 14px;
-    background: #f8fafc;
-    color: #0f172a;
-    transition: all 0.2s ease;
+    font-size: 14px;
+    color: #334155;
+    margin-bottom: 16px;
 }
 
-.eafd-otp-digit:focus {
-    border-color: #0b63d8;
-    background: #ffffff;
-    box-shadow: 0 0 0 4px rgba(11, 99, 216, 0.15);
-    outline: none;
+.eafd-otp-inputs {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    gap: 10px !important;
+    margin: 20px 0 !important;
+    direction: ltr !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+}
+
+.eafd-otp-digit,
+.eafd-checkout-otp-digit {
+    flex: 1 1 0% !important;
+    max-width: 54px !important;
+    height: 54px !important;
+    text-align: center !important;
+    font-size: 22px !important;
+    font-weight: 700 !important;
+    border: 2px solid #cbd5e1 !important;
+    border-radius: 12px !important;
+    background: #f8fafc !important;
+    color: #0f172a !important;
+    box-sizing: border-box !important;
+    transition: all 0.2s ease !important;
+}
+
+.eafd-otp-digit:focus,
+.eafd-checkout-otp-digit:focus {
+    border-color: #0b63d8 !important;
+    background: #ffffff !important;
+    box-shadow: 0 0 0 4px rgba(11, 99, 216, 0.15) !important;
+    outline: none !important;
 }
 
 .eafd-resend-box {
@@ -138,6 +157,32 @@
     margin-top: 16px;
     font-size: 13px;
     color: #64748b;
+}
+
+.eafd-inline-error {
+    background: #fef2f2;
+    border: 1px solid #fca5a5;
+    color: #991b1b;
+    padding: 10px 14px;
+    border-radius: 10px;
+    font-size: 13px;
+    margin-bottom: 16px;
+    text-align: center;
+}
+
+.eafd-support-btn {
+    display: block;
+    width: 100%;
+    margin-top: 12px;
+    padding: 10px;
+    background: #f1f5f9;
+    color: #0f172a;
+    border-radius: 10px;
+    text-align: center;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    box-sizing: border-box;
 }
 
 .eafd-login-footer {
@@ -161,7 +206,7 @@
     color: #94a3b8;
 }
 
-/* Modal Styling */
+/* Modal Overlay Styling */
 .eafd-modal-overlay {
     position: fixed;
     top: 0;
@@ -173,13 +218,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 99999;
-}
-
-.eafd-modal-content {
-    margin: 0 20px;
-    position: relative;
-    width: 100%;
+    z-index: 999999;
 }
 
 .eafd-modal-close {
@@ -188,7 +227,7 @@
     left: 16px;
     background: none;
     border: none;
-    font-size: 20px;
+    font-size: 22px;
     color: #94a3b8;
     cursor: pointer;
 }

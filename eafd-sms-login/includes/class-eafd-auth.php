@@ -40,11 +40,13 @@ class EAFD_Auth {
         wp_enqueue_style('eafd-sms-frontend', EAFD_SMS_URL . 'assets/css/frontend.css', array(), EAFD_SMS_VERSION);
         wp_enqueue_script('eafd-sms-frontend', EAFD_SMS_URL . 'assets/js/frontend.js', array('jquery'), EAFD_SMS_VERSION, true);
 
+        $settings = get_option('eafd_sms_settings', []);
         wp_localize_script('eafd-sms-frontend', 'eafd_sms_obj', array(
             'ajax_url' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('eafd_sms_nonce'),
             'is_user_logged_in' => is_user_logged_in(),
-            'site_title' => get_bloginfo('name')
+            'site_title' => get_bloginfo('name'),
+            'support_phone' => $settings['support_phone'] ?? ''
         ));
     }
 
@@ -82,11 +84,13 @@ class EAFD_Auth {
                 <p>شماره تلفن همراه، نام کاربری یا ایمیل خود را وارد کنید</p>
             </div>
 
+            <div class="eafd-msg-box" id="eafd-msg-box"></div>
+
             <!-- Step 1: Input Phone / Username / Email -->
             <div class="eafd-step eafd-step-phone" id="eafd-step-phone">
                 <div class="eafd-input-group">
                     <label for="eafd_phone_input">شماره همراه، نام کاربری یا ایمیل</label>
-                    <input type="text" id="eafd_phone_input" placeholder="09123456789 یا admin" dir="ltr" autocomplete="username" autofocus />
+                    <input type="text" id="eafd_phone_input" placeholder="09123456789 یا admin" dir="ltr" autocomplete="username" inputmode="text" autofocus />
                 </div>
                 <button type="button" class="eafd-btn eafd-btn-primary" id="eafd-btn-check-phone">ادامه</button>
             </div>
@@ -105,12 +109,12 @@ class EAFD_Auth {
 
             <!-- Step 3: Verify OTP -->
             <div class="eafd-step eafd-step-otp" id="eafd-step-otp" style="display:none;">
-                <p class="eafd-otp-msg">کد ۴ رقمی ارسال شده به شماره <span id="eafd-target-phone"></span> را وارد کنید:</p>
+                <p class="eafd-otp-msg">کد ۴ رقمی ارسال شده به شماره <strong id="eafd-target-phone"></strong> را وارد کنید (<button type="button" class="eafd-btn-link" id="eafd-btn-edit-phone">ویرایش شماره</button>):</p>
                 <div class="eafd-otp-inputs" dir="ltr">
-                    <input type="text" maxlength="1" class="eafd-otp-digit" data-idx="1" autofocus />
-                    <input type="text" maxlength="1" class="eafd-otp-digit" data-idx="2" />
-                    <input type="text" maxlength="1" class="eafd-otp-digit" data-idx="3" />
-                    <input type="text" maxlength="1" class="eafd-otp-digit" data-idx="4" />
+                    <input type="text" maxlength="1" class="eafd-otp-digit" data-idx="1" inputmode="numeric" pattern="[0-9]*" autofocus />
+                    <input type="text" maxlength="1" class="eafd-otp-digit" data-idx="2" inputmode="numeric" pattern="[0-9]*" />
+                    <input type="text" maxlength="1" class="eafd-otp-digit" data-idx="3" inputmode="numeric" pattern="[0-9]*" />
+                    <input type="text" maxlength="1" class="eafd-otp-digit" data-idx="4" inputmode="numeric" pattern="[0-9]*" />
                 </div>
                 <button type="button" class="eafd-btn eafd-btn-primary" id="eafd-btn-verify-otp">تایید کد و ورود</button>
                 <div class="eafd-resend-box">
@@ -161,9 +165,18 @@ class EAFD_Auth {
             }
         }
 
+        if (!$user) {
+            wp_send_json_error(['message' => 'حساب کاربری با این اطلاعات یافت نشد. لطفاً ابتدا ثبت سفارش نمایید.']);
+        }
+
         $normalized = EAFD_Phone_Helper::normalize_phone($identity);
         if (!$normalized) {
-            wp_send_json_error(['message' => 'لطفاً شماره تلفن همراه، نام کاربری یا ایمیل معتبر وارد کنید.']);
+            $normalized = get_user_meta($user->ID, 'billing_phone', true);
+            $normalized = EAFD_Phone_Helper::normalize_phone($normalized);
+        }
+
+        if (!$normalized) {
+            wp_send_json_error(['message' => 'شماره تلفن همراه معتبری برای این حساب کاربری یافت نشد.']);
         }
 
         // Send OTP directly
@@ -172,7 +185,7 @@ class EAFD_Auth {
             wp_send_json_success([
                 'has_password' => false,
                 'phone' => $normalized,
-                'is_new' => !$user,
+                'is_new' => false,
                 'message' => 'کد تایید ۴ رقمی برای شما ارسال شد.'
             ]);
         } else {

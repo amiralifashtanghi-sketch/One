@@ -6,8 +6,8 @@ if (!defined('ABSPATH')) {
 class EAFD_Checkout {
 
     public function __construct() {
-        // Make billing_email optional in WooCommerce checkout
-        add_filter('woocommerce_billing_fields', array($this, 'make_email_optional'), 999);
+        // Enforce required phone field in WooCommerce checkout
+        add_filter('woocommerce_billing_fields', array($this, 'customize_billing_fields'), 999);
         add_filter('woocommerce_checkout_fields', array($this, 'customize_checkout_fields'), 999);
 
         // Checkout Verify Modal for Guest Users
@@ -25,23 +25,33 @@ class EAFD_Checkout {
         add_action('wp_ajax_eafd_checkout_verify_otp', array($this, 'ajax_checkout_verify_otp'));
     }
 
-    public function make_email_optional($fields) {
+    public function customize_billing_fields($fields) {
         $settings = get_option('eafd_sms_settings', []);
-        if (!empty($settings['disable_email_req'])) {
-            if (isset($fields['billing_email'])) {
-                $fields['billing_email']['required'] = false;
-            }
+
+        // Make phone mandatory
+        if (isset($fields['billing_phone'])) {
+            $fields['billing_phone']['required'] = true;
         }
+
+        // Make email optional if configured
+        if (!empty($settings['disable_email_req']) && isset($fields['billing_email'])) {
+            $fields['billing_email']['required'] = false;
+        }
+
         return $fields;
     }
 
     public function customize_checkout_fields($fields) {
         $settings = get_option('eafd_sms_settings', []);
-        if (!empty($settings['disable_email_req'])) {
-            if (isset($fields['billing']['billing_email'])) {
-                $fields['billing']['billing_email']['required'] = false;
-            }
+
+        if (isset($fields['billing']['billing_phone'])) {
+            $fields['billing']['billing_phone']['required'] = true;
         }
+
+        if (!empty($settings['disable_email_req']) && isset($fields['billing']['billing_email'])) {
+            $fields['billing']['billing_email']['required'] = false;
+        }
+
         return $fields;
     }
 
@@ -50,17 +60,19 @@ class EAFD_Checkout {
             wp_enqueue_style('eafd-sms-frontend', EAFD_SMS_URL . 'assets/css/frontend.css', array(), EAFD_SMS_VERSION);
             wp_enqueue_script('eafd-checkout-js', EAFD_SMS_URL . 'assets/js/checkout.js', array('jquery', 'wc-checkout'), EAFD_SMS_VERSION, true);
 
+            $settings = get_option('eafd_sms_settings', []);
             wp_localize_script('eafd-checkout-js', 'eafd_checkout_obj', array(
                 'ajax_url' => admin_url('admin-ajax.php'),
                 'nonce' => wp_create_nonce('eafd_sms_nonce'),
                 'is_user_logged_in' => is_user_logged_in() ? 1 : 0,
-                'checkout_verify_enabled' => get_option('eafd_sms_settings')['enable_wc_checkout_verify'] ?? 1
+                'checkout_verify_enabled' => $settings['enable_wc_checkout_verify'] ?? 1,
+                'support_phone' => $settings['support_phone'] ?? ''
             ));
         }
     }
 
     public function render_checkout_verify_modal() {
-        if (is_user_logged_in()) {
+        if (is_user_logged_in() || !is_checkout()) {
             return;
         }
 
@@ -77,16 +89,21 @@ class EAFD_Checkout {
                     <p>جهت ثبت و پردازش سفارش، شماره همراه خود را تایید نمایید.</p>
                 </div>
 
+                <div class="eafd-msg-box" id="eafd-checkout-msg-box"></div>
+
                 <div class="eafd-step" id="eafd-checkout-step-otp">
                     <p class="eafd-otp-msg">کد ۴ رقمی ارسال شده به شماره <strong id="eafd-checkout-target-phone"></strong> را وارد کنید:</p>
                     <div class="eafd-otp-inputs" dir="ltr">
-                        <input type="text" maxlength="1" class="eafd-checkout-otp-digit" data-idx="1" autofocus />
-                        <input type="text" maxlength="1" class="eafd-checkout-otp-digit" data-idx="2" />
-                        <input type="text" maxlength="1" class="eafd-checkout-otp-digit" data-idx="3" />
-                        <input type="text" maxlength="1" class="eafd-checkout-otp-digit" data-idx="4" />
+                        <input type="text" maxlength="1" class="eafd-checkout-otp-digit" data-idx="1" inputmode="numeric" pattern="[0-9]*" autofocus />
+                        <input type="text" maxlength="1" class="eafd-checkout-otp-digit" data-idx="2" inputmode="numeric" pattern="[0-9]*" />
+                        <input type="text" maxlength="1" class="eafd-checkout-otp-digit" data-idx="3" inputmode="numeric" pattern="[0-9]*" />
+                        <input type="text" maxlength="1" class="eafd-checkout-otp-digit" data-idx="4" inputmode="numeric" pattern="[0-9]*" />
                     </div>
                     <button type="button" class="eafd-btn eafd-btn-primary" id="eafd-btn-checkout-verify-otp">تایید کد و ثبت سفارش</button>
-                    <input type="hidden" id="eafd_checkout_verified_token" name="eafd_checkout_verified_token" value="" />
+                    <div class="eafd-resend-box">
+                        <span id="eafd-checkout-timer">02:00</span>
+                        <button type="button" class="eafd-btn-link" id="eafd-btn-checkout-resend-otp" style="display:none;">ارسال مجدد کد</button>
+                    </div>
                 </div>
                 <div class="eafd-brand-footer">طراحی شده با EAFD.IR</div>
             </div>
@@ -112,7 +129,7 @@ class EAFD_Checkout {
             return;
         }
 
-        $verified_phone = WC()->session->get('eafd_verified_checkout_phone');
+        $verified_phone = WC()->session ? WC()->session->get('eafd_verified_checkout_phone') : null;
 
         if ($verified_phone !== $normalized) {
             wc_add_notice('شماره تلفن همراه شما هنوز تایید نشده است. لطفاً کد تایید پیامکی را وارد نمایید.', 'error');
@@ -177,6 +194,25 @@ class EAFD_Checkout {
 
         if (WC()->session) {
             WC()->session->set('eafd_verified_checkout_phone', $normalized);
+        }
+
+        // Auto Login or Register User so they don't need to re-verify in future
+        $user = EAFD_Phone_Helper::get_user_by_phone($normalized);
+        if (!$user) {
+            $username = $normalized;
+            $email = $normalized . '@noemail.eafd.ir';
+            $password = wp_generate_password(12, true);
+            $user_id = wp_create_user($username, $password, $email);
+
+            if (!is_wp_error($user_id)) {
+                $user = get_user_by('id', $user_id);
+                EAFD_Phone_Helper::save_user_phone($user_id, $normalized);
+            }
+        }
+
+        if ($user) {
+            wp_set_current_user($user->ID);
+            wp_set_auth_cookie($user->ID, true);
         }
 
         wp_send_json_success(['message' => 'شماره همراه با موفقیت تایید شد.']);
