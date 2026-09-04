@@ -1,0 +1,249 @@
+@import url('https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css');
+
+.eafd-login-box,
+.eafd-modal-content {
+    direction: rtl;
+    text-align: right;
+    font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: rgba(255, 255, 255, 0.98);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(226, 232, 240, 0.8);
+    border-radius: 20px;
+    padding: 28px;
+    max-width: 440px !important;
+    width: 90% !important;
+    margin: 40px auto;
+    box-sizing: border-box !important;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15), 0 1px 3px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+}
+
+.eafd-login-header h3,
+.eafd-modal-header h3 {
+    font-size: 20px;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0 0 6px 0;
+    text-align: center;
+}
+
+.eafd-login-header p,
+.eafd-modal-header p {
+    font-size: 13px;
+    color: #64748b;
+    margin: 0 0 24px 0;
+    text-align: center;
+}
+
+.eafd-input-group {
+    margin-bottom: 20px;
+}
+
+.eafd-input-group label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: #334155;
+    margin-bottom: 8px;
+}
+
+.eafd-input-group input[type="text"],
+.eafd-input-group input[type="tel"],
+.eafd-input-group input[type="password"] {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1.5px solid #cbd5e1;
+    border-radius: 12px;
+    font-size: 15px;
+    background: #f8fafc;
+    color: #0f172a;
+    box-sizing: border-box;
+    transition: all 0.2s ease;
+}
+
+.eafd-input-group input:focus {
+    border-color: #0b63d8;
+    background: #ffffff;
+    box-shadow: 0 0 0 4px rgba(11, 99, 216, 0.12);
+    outline: none;
+}
+
+.eafd-btn {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    box-sizing: border-box;
+}
+
+.eafd-btn-primary {
+    background: linear-gradient(135deg, #0b63d8, #18d6d8);
+    color: #ffffff;
+    box-shadow: 0 4px 14px rgba(11, 99, 216, 0.3);
+}
+
+.eafd-btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(11, 99, 216, 0.4);
+}
+
+.eafd-btn-link {
+    background: none;
+    border: none;
+    color: #0b63d8;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 8px 0;
+    text-decoration: underline;
+}
+
+.eafd-alt-action {
+    margin-top: 12px;
+    text-align: center;
+}
+
+.eafd-otp-msg {
+    text-align: center;
+    font-size: 14px;
+    color: #334155;
+    margin-bottom: 16px;
+}
+
+/* High Specificity OTP Box Override */
+#eafd-checkout-modal-overlay .eafd-otp-inputs,
+#eafd-login-box .eafd-otp-inputs,
+.eafd-otp-inputs {
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: center !important;
+    align-items: center !important;
+    gap: 10px !important;
+    margin: 20px 0 !important;
+    direction: ltr !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+}
+
+#eafd-checkout-modal-overlay .eafd-otp-inputs input,
+#eafd-checkout-modal-overlay .eafd-otp-inputs input[type="text"],
+#eafd-checkout-modal-overlay .eafd-otp-inputs input[type="number"],
+#eafd-login-box .eafd-otp-inputs input,
+#eafd-login-box .eafd-otp-inputs input[type="text"],
+.eafd-otp-digit,
+.eafd-checkout-otp-digit {
+    flex: 0 0 52px !important;
+    width: 52px !important;
+    max-width: 52px !important;
+    min-width: 52px !important;
+    height: 52px !important;
+    max-height: 52px !important;
+    text-align: center !important;
+    font-size: 22px !important;
+    font-weight: 700 !important;
+    border: 2px solid #cbd5e1 !important;
+    border-radius: 12px !important;
+    background: #f8fafc !important;
+    color: #0f172a !important;
+    box-sizing: border-box !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    display: inline-block !important;
+    transition: all 0.2s ease !important;
+}
+
+#eafd-checkout-modal-overlay .eafd-otp-inputs input:focus,
+#eafd-login-box .eafd-otp-inputs input:focus {
+    border-color: #0b63d8 !important;
+    background: #ffffff !important;
+    box-shadow: 0 0 0 4px rgba(11, 99, 216, 0.15) !important;
+    outline: none !important;
+}
+
+.eafd-resend-box {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 16px;
+    font-size: 13px;
+    color: #64748b;
+}
+
+.eafd-inline-error {
+    background: #fef2f2;
+    border: 1px solid #fca5a5;
+    color: #991b1b;
+    padding: 10px 14px;
+    border-radius: 10px;
+    font-size: 13px;
+    margin-bottom: 16px;
+    text-align: center;
+}
+
+.eafd-support-btn {
+    display: block;
+    width: 100%;
+    margin-top: 12px;
+    padding: 10px;
+    background: #f1f5f9;
+    color: #0f172a;
+    border-radius: 10px;
+    text-align: center;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    box-sizing: border-box;
+}
+
+.eafd-login-footer {
+    margin-top: 24px;
+    border-top: 1px solid #f1f5f9;
+    padding-top: 16px;
+    text-align: center;
+}
+
+.eafd-login-footer a {
+    color: #64748b;
+    font-size: 13px;
+    text-decoration: none;
+}
+
+.eafd-brand-footer {
+    text-align: center;
+    margin-top: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    color: #94a3b8;
+}
+
+/* Modal Overlay Styling */
+.eafd-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(15, 23, 42, 0.75);
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 999999;
+}
+
+.eafd-modal-close {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    background: none;
+    border: none;
+    font-size: 22px;
+    color: #94a3b8;
+    cursor: pointer;
+}
