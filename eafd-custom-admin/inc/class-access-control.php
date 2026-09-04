@@ -80,15 +80,26 @@ class EAFD_Custom_Admin_Access_Control {
     public static function get_all_registered_menus() {
         global $menu, $submenu;
 
-        // Force loading admin environment to capture third-party plugin menus
+        // Safely load admin environment without breaking frontend execution
         if ( empty( $menu ) || ! is_array( $menu ) || count( $menu ) < 3 ) {
-            if ( ! function_exists( 'get_admin_page_title' ) ) {
-                require_once ABSPATH . 'wp-admin/includes/admin.php';
+            if ( ! function_exists( 'get_admin_page_title' ) && file_exists( ABSPATH . 'wp-admin/includes/admin.php' ) ) {
+                @require_once ABSPATH . 'wp-admin/includes/admin.php';
             }
+
+            // Load WooCommerce admin dependencies safely if present
+            if ( class_exists( 'WooCommerce' ) && defined( 'WC_ABSPATH' ) ) {
+                if ( ! function_exists( 'wc_get_page_screen_id' ) && file_exists( WC_ABSPATH . 'includes/admin/wc-admin-functions.php' ) ) {
+                    @require_once WC_ABSPATH . 'includes/admin/wc-admin-functions.php';
+                }
+            }
+
+            if ( ! function_exists( 'wc_get_page_screen_id' ) ) {
+                function wc_get_page_screen_id() { return ''; }
+            }
+
             if ( file_exists( ABSPATH . 'wp-admin/menu.php' ) ) {
-                require_once ABSPATH . 'wp-admin/menu.php';
+                @include_once ABSPATH . 'wp-admin/menu.php';
             }
-            do_action( 'admin_menu', '' );
         }
 
         $all_menus = array();
@@ -126,6 +137,58 @@ class EAFD_Custom_Admin_Access_Control {
                     'submenus' => $sub_items
                 );
             }
+        }
+
+        // Fallback default menu structure for standard WordPress & WooCommerce if menu array is empty
+        if ( empty( $all_menus ) ) {
+            $all_menus = array(
+                array(
+                    'slug'     => 'edit.php?post_type=product',
+                    'title'    => 'محصولات',
+                    'icon'     => 'dashicons-products',
+                    'submenus' => array(
+                        array( 'slug' => 'edit.php?post_type=product', 'title' => 'همه محصولات' ),
+                        array( 'slug' => 'post-new.php?post_type=product', 'title' => 'افزودن جدید' ),
+                        array( 'slug' => 'edit-tags.php?taxonomy=product_cat&post_type=product', 'title' => 'دسته‌بندی‌ها' ),
+                    )
+                ),
+                array(
+                    'slug'     => 'admin.php?page=wc-orders',
+                    'title'    => 'سفارشات',
+                    'icon'     => 'dashicons-cart',
+                    'submenus' => array(
+                        array( 'slug' => 'admin.php?page=wc-orders', 'title' => 'مشاهده سفارشات' ),
+                    )
+                ),
+                array(
+                    'slug'     => 'edit.php',
+                    'title'    => 'نوشته‌ها',
+                    'icon'     => 'dashicons-admin-post',
+                    'submenus' => array(
+                        array( 'slug' => 'edit.php', 'title' => 'همه نوشته‌ها' ),
+                        array( 'slug' => 'post-new.php', 'title' => 'افزودن نوشته' ),
+                        array( 'slug' => 'edit-tags.php?taxonomy=category', 'title' => 'دسته‌بندی‌ها' ),
+                    )
+                ),
+                array(
+                    'slug'     => 'edit.php?post_type=page',
+                    'title'    => 'برگه‌ها',
+                    'icon'     => 'dashicons-admin-page',
+                    'submenus' => array(
+                        array( 'slug' => 'edit.php?post_type=page', 'title' => 'همه برگه‌ها' ),
+                        array( 'slug' => 'post-new.php?post_type=page', 'title' => 'افزودن برگه' ),
+                    )
+                ),
+                array(
+                    'slug'     => 'upload.php',
+                    'title'    => 'رسانه',
+                    'icon'     => 'dashicons-admin-media',
+                    'submenus' => array(
+                        array( 'slug' => 'upload.php', 'title' => 'کتابخانه رسانه' ),
+                        array( 'slug' => 'media-new.php', 'title' => 'افزودن فایل' ),
+                    )
+                )
+            );
         }
 
         return $all_menus;
