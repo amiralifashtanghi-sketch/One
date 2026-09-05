@@ -15,16 +15,19 @@ if ( $allowed_menus === 'all' ) {
     $panel_menus = $all_registered;
 } else {
     foreach ( $all_registered as $item ) {
-        if ( in_array( $item['slug'], $allowed_menus, true ) ) {
-            $filtered_subs = array();
-            if ( ! empty( $item['submenus'] ) ) {
-                foreach ( $item['submenus'] as $sub ) {
-                    $sub_key = $item['slug'] . '::' . $sub['slug'];
-                    if ( in_array( $sub['slug'], $allowed_menus, true ) || in_array( $sub_key, $allowed_menus, true ) ) {
-                        $filtered_subs[] = $sub;
-                    }
+        $parent_allowed = in_array( $item['slug'], (array) $allowed_menus, true );
+        $filtered_subs = array();
+
+        if ( ! empty( $item['submenus'] ) ) {
+            foreach ( $item['submenus'] as $sub ) {
+                $sub_key = $item['slug'] . '::' . $sub['slug'];
+                if ( $parent_allowed || in_array( $sub['slug'], (array) $allowed_menus, true ) || in_array( $sub_key, (array) $allowed_menus, true ) ) {
+                    $filtered_subs[] = $sub;
                 }
             }
+        }
+
+        if ( $parent_allowed || ! empty( $filtered_subs ) ) {
             $item['submenus'] = $filtered_subs;
             $panel_menus[] = $item;
         }
@@ -248,6 +251,7 @@ if ( $allowed_menus === 'all' ) {
         }
 
         .iframe-wrapper {
+            position: relative;
             width: 100%;
             height: calc(100vh - 150px);
             border: none;
@@ -256,12 +260,18 @@ if ( $allowed_menus === 'all' ) {
             box-shadow: 0 10px 25px rgba(0,0,0,0.04);
             overflow: hidden;
             display: none;
+            transform: translateZ(0);
         }
 
         .iframe-wrapper iframe {
             width: 100%;
             height: 100%;
             border: none;
+        }
+
+        @keyframes eafdSpin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
         /* DASHBOARD CARDS */
@@ -437,7 +447,11 @@ if ( $allowed_menus === 'all' ) {
 
         <!-- IFRAME CONTAINER FOR WORKING PAGES -->
         <div class="iframe-wrapper" id="iframeWrapper">
-            <iframe id="adminIframe" src="about:blank"></iframe>
+            <div id="iframeLoader" style="display:none; position:absolute; top:0; left:0; right:0; bottom:0; background:rgba(255,255,255,0.85); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); z-index:10; align-items:center; justify-content:center; flex-direction:column; gap:12px;">
+                <div style="width:36px; height:36px; border:3px solid #e2e8f0; border-top-color:#2271b1; border-radius:50%; animation:eafdSpin 0.7s linear infinite;"></div>
+                <span style="font-size:13px; font-weight:700; color:#334155;">در حال بارگذاری صفحه...</span>
+            </div>
+            <iframe id="adminIframe" src="about:blank" onload="hideIframeLoader()"></iframe>
         </div>
     </main>
 
@@ -479,8 +493,20 @@ if ( $allowed_menus === 'all' ) {
             document.getElementById('dashboardView').style.display = 'none';
             var wrapper = document.getElementById('iframeWrapper');
             var iframe = document.getElementById('adminIframe');
+            var loader = document.getElementById('iframeLoader');
+
+            if (loader) {
+                loader.style.display = 'flex';
+            }
             wrapper.style.display = 'block';
             iframe.src = iframeUrl;
+        }
+
+        function hideIframeLoader() {
+            var loader = document.getElementById('iframeLoader');
+            if (loader) {
+                loader.style.display = 'none';
+            }
         }
     </script>
 </body>

@@ -8,6 +8,19 @@ class EAFD_Custom_Admin_Meta_Hider {
     public function __construct() {
         add_action( 'admin_head', array( $this, 'inject_iframe_and_meta_styles' ) );
         add_action( 'admin_footer', array( $this, 'inject_iframe_js_persistence' ) );
+        add_filter( 'woocommerce_admin_features', array( $this, 'disable_woocommerce_admin_header' ) );
+    }
+
+    public function disable_woocommerce_admin_header( $features ) {
+        $user_id = get_current_user_id();
+        $user = get_userdata( $user_id );
+        $is_operator = $user && in_array( 'eafd_operator', (array) $user->roles, true );
+        $is_iframe = $is_operator || ( isset( $_REQUEST['eafd_iframe'] ) && $_REQUEST['eafd_iframe'] == 1 );
+
+        if ( $is_iframe ) {
+            return array();
+        }
+        return $features;
     }
 
     public function inject_iframe_and_meta_styles() {
@@ -28,9 +41,13 @@ class EAFD_Custom_Admin_Meta_Hider {
 
         if ( $is_iframe ) {
             $css .= '
-                #adminmenumain, #wpadminbar, #wpfooter, .notice-dismiss, #screen-meta, #screen-meta-links { display: none !important; }
+                #adminmenumain, #wpadminbar, #wpfooter, .notice-dismiss, #screen-meta, #screen-meta-links,
+                #woocommerce-embedded-root, .woocommerce-layout__header, .woocommerce-layout__header-wrapper,
+                .woocommerce-embed-page #wpbody-content .woocommerce-layout,
+                .woocommerce-layout__primary-header { display: none !important; }
                 html.wp-toolbar { padding-top: 0 !important; }
                 #wpcontent, #wpbody-content { margin-right: 0 !important; margin-left: 0 !important; padding: 10px !important; }
+                .woocommerce-embed-page #wpbody-content { padding-top: 0 !important; }
                 body { background: #ffffff !important; overflow-x: hidden !important; }
             ';
         }
