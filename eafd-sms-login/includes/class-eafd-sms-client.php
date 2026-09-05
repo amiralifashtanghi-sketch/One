@@ -91,9 +91,9 @@ class EAFD_SMS_Client {
             $error_msg = $response->get_error_message();
             EAFD_SMS_Logger::log('خطا در ارتباط با وب‌سرویس SMS.ir: ' . $error_msg, 'error', ['phone' => $normalized_phone]);
 
-            $user_msg = 'خطا در برقراری ارتباط با وب‌سرویس SMS.ir. لطفاً چند لحظه بعد مجدداً تلاش نمایید.';
+            $user_msg = 'خطا ۱۰۰۰ لطفاً دوباره تلاش کنید';
             if (strpos($error_msg, 'timed out') !== false || strpos($error_msg, 'cURL error 28') !== false) {
-                $user_msg = 'اتصال به سامانه پیامک با تایم‌اوت مواجه شد. لطفاً کلید API و اینترنت سرور را بررسی نمایید.';
+                $user_msg = 'خطا ۱۰۰۰ لطفاً دوباره تلاش کنید';
             }
 
             return [
