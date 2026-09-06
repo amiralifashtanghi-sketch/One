@@ -128,17 +128,15 @@ class EAFD_Custom_Admin_Access_Control {
             return;
         }
 
-        // Determine post_type if on post.php or post-new.php
+        // Handle editing existing items on post.php and term.php
         $post_id = isset( $_GET['post'] ) ? intval( $_GET['post'] ) : 0;
         $req_post_type = isset( $_GET['post_type'] ) ? sanitize_text_field( $_GET['post_type'] ) : '';
         if ( empty( $req_post_type ) && $post_id > 0 ) {
             $req_post_type = get_post_type( $post_id );
         }
-        if ( empty( $req_post_type ) && in_array( $current_page, array( 'post.php', 'post-new.php', 'edit.php' ), true ) ) {
-            $req_post_type = 'post'; // Default fallback
-        }
 
-        $target_slug = ! empty( $page_arg ) ? self::normalize_slug( $page_arg ) : self::normalize_slug( $current_page );
+        // Determine current URI target
+        $request_uri = $_SERVER['REQUEST_URI'] ?? '';
 
         $is_permitted = false;
         foreach ( $allowed as $allowed_item ) {
@@ -149,22 +147,29 @@ class EAFD_Custom_Admin_Access_Control {
                 $parent = self::normalize_slug( $parent );
                 $child = self::normalize_slug( $child );
 
-                if ( $target_slug === $child || $target_slug === $parent || $current_page === $parent ) {
+                if ( $page_arg && ( $page_arg === $child || $page_arg === $parent ) ) {
+                    $is_permitted = true;
+                    break;
+                }
+                if ( strpos( $request_uri, $child ) !== false || strpos( $request_uri, $parent ) !== false ) {
                     $is_permitted = true;
                     break;
                 }
             } else {
-                if ( $target_slug === $normalized_item || $current_page === $normalized_item ) {
+                if ( $page_arg && $page_arg === $normalized_item ) {
                     $is_permitted = true;
                     break;
                 }
-                // Check post.php and post-new.php against allowed post types
-                if ( in_array( $current_page, array( 'post.php', 'post-new.php', 'edit.php', 'edit-tags.php' ), true ) ) {
+                if ( strpos( $request_uri, $normalized_item ) !== false || $current_page === $normalized_item ) {
+                    $is_permitted = true;
+                    break;
+                }
+                if ( in_array( $current_page, array( 'post.php', 'post-new.php', 'term.php', 'edit-tags.php' ), true ) ) {
                     if ( ! empty( $req_post_type ) && strpos( $normalized_item, 'post_type=' . $req_post_type ) !== false ) {
                         $is_permitted = true;
                         break;
                     }
-                    if ( $req_post_type === 'post' && $normalized_item === 'edit.php' ) {
+                    if ( ( empty( $req_post_type ) || $req_post_type === 'post' ) && $normalized_item === 'edit.php' ) {
                         $is_permitted = true;
                         break;
                     }

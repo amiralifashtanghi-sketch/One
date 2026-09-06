@@ -191,8 +191,12 @@ if ( ! defined( 'ABSPATH' ) ) {
                     alertBox.innerText = data.data.message;
                     alertBox.style.display = 'block';
                     setTimeout(function() {
-                        window.location.href = data.data.redirect_url;
-                    }, 500);
+                        if (data.data.redirect_url) {
+                            window.location.assign(data.data.redirect_url + (data.data.redirect_url.indexOf('?') !== -1 ? '&' : '?') + 't=' + new Date().getTime());
+                        } else {
+                            window.location.reload(true);
+                        }
+                    }, 300);
                 } else {
                     alertBox.className = 'alert-box alert-danger';
                     alertBox.innerText = (data && data.data && data.data.message) ? data.data.message : 'شماره موبایل یا رمز عبور اشتباه است.';
