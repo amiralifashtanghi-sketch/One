@@ -27,6 +27,29 @@ class EAFD_WooCommerce_Templates {
 
         // High priority content filter override for pages using blocks or custom page templates
         add_filter('the_content', array($this, 'override_page_content_templates'), 9999);
+
+        // Customize checkout fields (Email display / Phone required)
+        add_filter('woocommerce_checkout_fields', array($this, 'customize_checkout_fields'), 9999);
+    }
+
+    public function customize_checkout_fields($fields) {
+        $options = EAFD_Admin_Settings::get_instance()->get_options();
+
+        // Email hide
+        if (!empty($options['checkout_hide_email'])) {
+            unset($fields['billing']['billing_email']);
+        }
+
+        // Phone required setting
+        if (isset($fields['billing']['billing_phone'])) {
+            if (!empty($options['checkout_phone_required'])) {
+                $fields['billing']['billing_phone']['required'] = true;
+            } else {
+                $fields['billing']['billing_phone']['required'] = false;
+            }
+        }
+
+        return $fields;
     }
 
     public function filter_account_menu_items($items) {
@@ -84,13 +107,20 @@ class EAFD_WooCommerce_Templates {
         }
 
         if (is_cart() && !is_wc_endpoint_url('order-received')) {
-            if (WC()->cart->is_empty()) {
+            if (function_exists('wp_enqueue_script')) {
+                wp_enqueue_script('wc-cart');
+            }
+            if (WC()->cart && WC()->cart->is_empty()) {
                 return $this->get_template_html('cart/cart-empty.php');
             }
             return $this->get_template_html('cart/cart.php');
         }
 
         if (is_checkout() && !is_wc_endpoint_url('order-received')) {
+            if (function_exists('wp_enqueue_script')) {
+                wp_enqueue_script('wc-checkout');
+                wp_enqueue_script('select2');
+            }
             return $this->get_template_html('checkout/form-checkout.php');
         }
 
@@ -98,7 +128,7 @@ class EAFD_WooCommerce_Templates {
     }
 
     public function render_cart_shortcode() {
-        if (WC()->cart->is_empty()) {
+        if (WC()->cart && WC()->cart->is_empty()) {
             return $this->get_template_html('cart/cart-empty.php');
         }
         return $this->get_template_html('cart/cart.php');

@@ -78,6 +78,10 @@ class EAFD_Admin_Settings {
             'enable_theme_reset'  => '1',
             'mobile_bottom_nav'   => '1',
             'mobile_side_drawer'  => '1',
+
+            // Checkout Page Fields Settings
+            'checkout_hide_email'   => '0',
+            'checkout_phone_required' => '1',
         );
     }
 
@@ -114,7 +118,7 @@ class EAFD_Admin_Settings {
 
         foreach ($defaults as $key => $default_val) {
             if (!isset($input[$key])) {
-                if (strpos($key, 'disable') !== false || strpos($key, 'enable') !== false || strpos($key, 'mobile') !== false || strpos($key, 'active') !== false) {
+                if ($default_val === '0' || $default_val === '1' || strpos($key, 'disable') !== false || strpos($key, 'enable') !== false || strpos($key, 'mobile') !== false || strpos($key, 'active') !== false || strpos($key, 'checkout_') !== false) {
                     $output[$key] = '0';
                 } else {
                     $output[$key] = $default_val;
@@ -159,6 +163,7 @@ class EAFD_Admin_Settings {
                 <a href="?page=eafd-wc-design&tab=glass_neo" class="nav-tab <?php echo $active_tab === 'glass_neo' ? 'nav-tab-active' : ''; ?>">افکت‌های گلاس و نیومورفیسم</a>
                 <a href="?page=eafd-wc-design&tab=visuals" class="nav-tab <?php echo $active_tab === 'visuals' ? 'nav-tab-active' : ''; ?>">لوگو و پس‌زمینه</a>
                 <a href="?page=eafd-wc-design&tab=widgets" class="nav-tab <?php echo $active_tab === 'widgets' ? 'nav-tab-active' : ''; ?>">مدیریت ویجت‌های آمار داشبورد</a>
+                <a href="?page=eafd-wc-design&tab=checkout" class="nav-tab <?php echo $active_tab === 'checkout' ? 'nav-tab-active' : ''; ?>">تنظیمات فرم تسویه‌حساب</a>
                 <a href="?page=eafd-wc-design&tab=account_menu" class="nav-tab <?php echo $active_tab === 'account_menu' ? 'nav-tab-active' : ''; ?>">مدیریت سکشن‌های منوی حساب کاربری</a>
                 <a href="?page=eafd-wc-design&tab=mobile_reset" class="nav-tab <?php echo $active_tab === 'mobile_reset' ? 'nav-tab-active' : ''; ?>">تنظیمات موبایل و خنثی‌سازی قالب</a>
             </h2>
@@ -174,6 +179,8 @@ class EAFD_Admin_Settings {
                     $this->render_visuals_tab($options);
                 } elseif ($active_tab === 'widgets') {
                     $this->render_widgets_tab($options);
+                } elseif ($active_tab === 'checkout') {
+                    $this->render_checkout_tab($options);
                 } elseif ($active_tab === 'account_menu') {
                     $this->render_account_menu_tab($options);
                 } elseif ($active_tab === 'mobile_reset') {
@@ -316,6 +323,33 @@ class EAFD_Admin_Settings {
                 </table>
             </div>
         <?php endfor;
+    }
+
+    private function render_checkout_tab($options) {
+        ?>
+        <h3>تنظیمات فیلدها و سفارشی‌سازی فرم تسویه‌حساب ووکامرس</h3>
+        <p>در این بخش می‌توانید وضعیت فیلدهای ایمیل و شماره تلفن خریدار را در صفحه تسویه‌حساب کنترل کنید.</p>
+        <table class="form-table">
+            <tr>
+                <th scope="row">نمایش فیلد آدرس ایمیل:</th>
+                <td>
+                    <label>
+                        <input type="checkbox" name="<?php echo $this->option_name; ?>[checkout_hide_email]" value="1" <?php checked(!empty($options['checkout_hide_email']), '1'); ?> />
+                        مخفی و حذف فیلد آدرس ایمیل در صفحه تسویه‌حساب
+                    </label>
+                </td>
+            </tr>
+            <tr>
+                <th scope="row">اجباری بودن شماره تلفن:</th>
+                <td>
+                    <label>
+                        <input type="checkbox" name="<?php echo $this->option_name; ?>[checkout_phone_required]" value="1" <?php checked(!empty($options['checkout_phone_required']), '1'); ?> />
+                        شماره تلفن خریدار الزامی و اجباری باشد
+                    </label>
+                </td>
+            </tr>
+        </table>
+        <?php
     }
 
     private function render_account_menu_tab($options) {
