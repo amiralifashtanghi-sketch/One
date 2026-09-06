@@ -1,0 +1,67 @@
+/**
+ * EAFD Design Tokens Engine
+ * Dynamically populated and updated by Design Studio in DB
+ */
+
+:root {
+  /* Brand Colors */
+  --eafd-color-primary: #0B63D8;
+  --eafd-color-primary-hover: #0952B5;
+  --eafd-color-secondary: #18D6D8;
+  --eafd-color-accent: #FF8A00;
+
+  /* Surface & Background Colors */
+  --eafd-color-bg: #090D16;
+  --eafd-color-surface: #121826;
+  --eafd-color-surface-hover: #1A2234;
+  --eafd-color-border: #1E293B;
+  --eafd-color-border-hover: #334155;
+
+  /* Text Colors */
+  --eafd-color-text: #F1F5F9;
+  --eafd-color-text-muted: #94A3B8;
+  --eafd-color-text-inverse: #090D16;
+
+  /* Status Colors */
+  --eafd-color-success: #166534;
+  --eafd-color-success-text: #4ADE80;
+  --eafd-color-danger: #991B1B;
+  --eafd-color-danger-text: #FCA5A5;
+
+  /* Typography Tokens */
+  --eafd-font-family: 'Vazirmatn', Tahoma, 'Segoe UI', sans-serif;
+  --eafd-font-size-base: 16px;
+  --eafd-font-size-sm: 14px;
+  --eafd-font-size-lg: 18px;
+  --eafd-font-size-h1: 2.25rem;
+  --eafd-font-size-h2: 1.75rem;
+  --eafd-font-size-h3: 1.25rem;
+  --eafd-line-height-base: 1.6;
+
+  /* Layout Spacing Tokens */
+  --eafd-spacing-xs: 4px;
+  --eafd-spacing-sm: 8px;
+  --eafd-spacing-md: 16px;
+  --eafd-spacing-lg: 24px;
+  --eafd-spacing-xl: 40px;
+  --eafd-spacing-xxl: 64px;
+
+  /* Radius & Elevation Shadows */
+  --eafd-border-radius-sm: 6px;
+  --eafd-border-radius: 12px;
+  --eafd-border-radius-lg: 20px;
+  --eafd-shadow-card: 0 10px 30px rgba(0, 0, 0, 0.4);
+  --eafd-shadow-glow: 0 0 20px rgba(11, 99, 216, 0.3);
+
+  /* Motion & Animation Engine */
+  --eafd-motion-speed: 0.25s;
+  --eafd-motion-easing: cubic-bezier(0.4, 0, 0.2, 1);
+  --eafd-matrix-enabled: 1;
+}
+
+/* Reduced Motion Compliance */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --eafd-motion-speed: 0s;
+  }
+}

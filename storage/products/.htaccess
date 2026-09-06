@@ -1,0 +1,2 @@
+# Direct Web Access Denied - Files served exclusively through App\Controllers\Shop\DownloadController
+Deny from all

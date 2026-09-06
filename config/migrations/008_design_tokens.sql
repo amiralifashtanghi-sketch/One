@@ -1,0 +1,7 @@
+CREATE TABLE IF NOT EXISTS design_tokens (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    token_key VARCHAR(100) UNIQUE NOT NULL,
+    token_value TEXT NOT NULL,
+    category VARCHAR(50) DEFAULT 'general',
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);

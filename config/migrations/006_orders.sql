@@ -1,0 +1,21 @@
+CREATE TABLE IF NOT EXISTS orders (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    order_number VARCHAR(100) UNIQUE NOT NULL,
+    total_amount INTEGER NOT NULL DEFAULT 0,
+    status VARCHAR(50) DEFAULT 'pending',
+    gateway VARCHAR(50) DEFAULT 'mock',
+    transaction_id VARCHAR(255),
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS order_items (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    order_id INTEGER NOT NULL,
+    product_id INTEGER NOT NULL,
+    product_title VARCHAR(255) NOT NULL,
+    price INTEGER NOT NULL DEFAULT 0,
+    FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE,
+    FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
+);

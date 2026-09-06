@@ -1,0 +1,23 @@
+CREATE TABLE IF NOT EXISTS licenses (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    product_id INTEGER NOT NULL,
+    order_id INTEGER NOT NULL,
+    license_key VARCHAR(100) UNIQUE NOT NULL,
+    max_domains INTEGER DEFAULT 1,
+    status VARCHAR(50) DEFAULT 'active',
+    expires_at DATETIME NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE,
+    FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS license_activations (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    license_id INTEGER NOT NULL,
+    domain VARCHAR(255) NOT NULL,
+    ip_address VARCHAR(50),
+    activated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (license_id) REFERENCES licenses(id) ON DELETE CASCADE
+);

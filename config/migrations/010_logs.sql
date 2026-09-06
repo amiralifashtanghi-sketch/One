@@ -1,0 +1,8 @@
+CREATE TABLE IF NOT EXISTS activity_logs (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER DEFAULT 0,
+    action VARCHAR(255) NOT NULL,
+    context TEXT,
+    ip_address VARCHAR(50),
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
