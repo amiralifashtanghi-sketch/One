@@ -23,17 +23,18 @@ class EAFD_Custom_Admin_Login {
         return trim( $str );
     }
 
-    public function ajax_login() {
-        if ( ! isset( $_POST['security'] ) || ! wp_verify_nonce( $_POST['security'], 'eafd_login_nonce' ) ) {
-            if ( ob_get_length() ) { ob_clean(); }
-            wp_send_json_error( array( 'message' => 'نشست امنیتی منقضی شده است. لطفاً صفحه را رفرش کرده و دوباره وارد شوید.' ) );
+    private function clean_buffers() {
+        while ( ob_get_level() > 0 ) {
+            @ob_end_clean();
         }
+    }
 
+    public function ajax_login() {
         $phone = $this->normalize_phone( sanitize_text_field( $_POST['phone'] ?? '' ) );
         $password = $_POST['password'] ?? ''; // Preserve special characters in passwords
 
         if ( empty( $phone ) || empty( $password ) ) {
-            if ( ob_get_length() ) { ob_clean(); }
+            $this->clean_buffers();
             wp_send_json_error( array( 'message' => 'لطفاً شماره موبایل و رمز عبور را وارد کنید.' ) );
         }
 
@@ -61,17 +62,17 @@ class EAFD_Custom_Admin_Login {
             'remember'      => true,
         );
 
-        $user = wp_signon( $creds, false );
+        $user = wp_signon( $creds, is_ssl() );
 
         // Fallback direct password check if external authenticate filters blocked wp_signon
-        if ( is_wp_error( $user ) && $user_obj && ! empty( $user_obj->user_pass ) ) {
+        if ( ( is_wp_error( $user ) || ! $user ) && $user_obj && ! empty( $user_obj->user_pass ) ) {
             if ( wp_check_password( $password, $user_obj->user_pass, $user_obj->ID ) ) {
                 $user = $user_obj;
             }
         }
 
         if ( is_wp_error( $user ) || ! $user || ! isset( $user->ID ) ) {
-            if ( ob_get_length() ) { ob_clean(); }
+            $this->clean_buffers();
             wp_send_json_error( array( 'message' => 'شماره موبایل یا رمز عبور اشتباه است.' ) );
         }
 
@@ -79,7 +80,7 @@ class EAFD_Custom_Admin_Login {
         wp_set_auth_cookie( $user->ID, true, is_ssl() );
         do_action( 'wp_login', $user->user_login, $user );
 
-        if ( ob_get_length() ) { ob_clean(); }
+        $this->clean_buffers();
         wp_send_json_success( array(
             'message'      => 'ورود با موفقیت انجام شد. در حال انتقال...',
             'redirect_url' => home_url( '/admin' )
