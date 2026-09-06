@@ -15,6 +15,11 @@ class EAFD_Custom_Admin_Access_Control {
      * Dynamically grant essential capabilities for allowed operator menus so WP core/plugin page checks pass
      */
     public function grant_operator_allowed_capabilities( $allcaps, $caps, $args, $user ) {
+        static $in_grant = false;
+        if ( $in_grant ) {
+            return $allcaps;
+        }
+
         if ( empty( $user->ID ) ) {
             return $allcaps;
         }
@@ -27,7 +32,10 @@ class EAFD_Custom_Admin_Access_Control {
             return $allcaps;
         }
 
-        $allowed = self::get_allowed_menus_for_user( $user->ID );
+        $in_grant = true;
+        $allowed = get_user_meta( $user->ID, 'eafd_allowed_menus', true );
+        $in_grant = false;
+
         if ( empty( $allowed ) || ! is_array( $allowed ) ) {
             return $allcaps;
         }
@@ -115,9 +123,19 @@ class EAFD_Custom_Admin_Access_Control {
         $current_page = $pagenow;
         $page_arg = isset( $_GET['page'] ) ? sanitize_text_field( $_GET['page'] ) : '';
 
-        // Allow profile, logout, user editing own profile, and dashboard home
-        if ( in_array( $current_page, array( 'profile.php', 'user-edit.php', 'index.php' ), true ) && empty( $page_arg ) ) {
+        // Allow profile, logout, user editing own profile, media upload processing, and dashboard home
+        if ( in_array( $current_page, array( 'profile.php', 'user-edit.php', 'index.php', 'async-upload.php', 'admin-ajax.php', 'admin-post.php' ), true ) && empty( $page_arg ) ) {
             return;
+        }
+
+        // Determine post_type if on post.php or post-new.php
+        $post_id = isset( $_GET['post'] ) ? intval( $_GET['post'] ) : 0;
+        $req_post_type = isset( $_GET['post_type'] ) ? sanitize_text_field( $_GET['post_type'] ) : '';
+        if ( empty( $req_post_type ) && $post_id > 0 ) {
+            $req_post_type = get_post_type( $post_id );
+        }
+        if ( empty( $req_post_type ) && in_array( $current_page, array( 'post.php', 'post-new.php', 'edit.php' ), true ) ) {
+            $req_post_type = 'post'; // Default fallback
         }
 
         $target_slug = ! empty( $page_arg ) ? self::normalize_slug( $page_arg ) : self::normalize_slug( $current_page );
@@ -136,9 +154,20 @@ class EAFD_Custom_Admin_Access_Control {
                     break;
                 }
             } else {
-                if ( $target_slug === $normalized_item || $current_page === $normalized_item || strpos( $normalized_item, $target_slug ) !== false ) {
+                if ( $target_slug === $normalized_item || $current_page === $normalized_item ) {
                     $is_permitted = true;
                     break;
+                }
+                // Check post.php and post-new.php against allowed post types
+                if ( in_array( $current_page, array( 'post.php', 'post-new.php', 'edit.php', 'edit-tags.php' ), true ) ) {
+                    if ( ! empty( $req_post_type ) && strpos( $normalized_item, 'post_type=' . $req_post_type ) !== false ) {
+                        $is_permitted = true;
+                        break;
+                    }
+                    if ( $req_post_type === 'post' && $normalized_item === 'edit.php' ) {
+                        $is_permitted = true;
+                        break;
+                    }
                 }
             }
         }

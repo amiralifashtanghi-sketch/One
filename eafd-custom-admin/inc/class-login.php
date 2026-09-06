@@ -58,6 +58,9 @@ class EAFD_Custom_Admin_Login {
     }
 
     public function ajax_login() {
+        $this->clean_buffers();
+        @header( 'Content-Type: application/json; charset=UTF-8' );
+
         $phone = $this->normalize_phone( sanitize_text_field( $_POST['phone'] ?? '' ) );
         $password = $_POST['password'] ?? ''; // Preserve special characters in passwords
 
