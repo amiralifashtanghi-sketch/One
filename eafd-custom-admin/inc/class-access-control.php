@@ -115,8 +115,8 @@ class EAFD_Custom_Admin_Access_Control {
         $current_page = $pagenow;
         $page_arg = isset( $_GET['page'] ) ? sanitize_text_field( $_GET['page'] ) : '';
 
-        // Allow profile, logout, dashboard home
-        if ( in_array( $current_page, array( 'profile.php', 'index.php' ), true ) && empty( $page_arg ) ) {
+        // Allow profile, logout, user editing own profile, and dashboard home
+        if ( in_array( $current_page, array( 'profile.php', 'user-edit.php', 'index.php' ), true ) && empty( $page_arg ) ) {
             return;
         }
 
@@ -276,8 +276,8 @@ class EAFD_Custom_Admin_Access_Control {
     public function filter_admin_menus() {
         global $menu, $submenu;
 
-        // Cache full menu structure when admin is logged in
-        if ( is_admin() && current_user_can( 'manage_options' ) && ! empty( $menu ) && is_array( $menu ) ) {
+        // Cache full menu structure when admin is logged in (limited to page loads without doing AJAX)
+        if ( is_admin() && ! wp_doing_ajax() && current_user_can( 'manage_options' ) && ! empty( $menu ) && is_array( $menu ) ) {
             $cache_menus = array();
             foreach ( $menu as $item ) {
                 if ( empty( $item[2] ) || empty( $item[0] ) ) {
@@ -312,7 +312,7 @@ class EAFD_Custom_Admin_Access_Control {
                 );
             }
             if ( ! empty( $cache_menus ) ) {
-                update_option( 'eafd_registered_admin_menus', $cache_menus );
+                update_option( 'eafd_registered_admin_menus', $cache_menus, false );
             }
         }
 

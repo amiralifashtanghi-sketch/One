@@ -172,16 +172,17 @@ if ( ! defined( 'ABSPATH' ) ) {
                 btn.innerText = 'ورود به حساب';
                 var data;
                 try {
-                    var jsonMatch = text.match(/\{[\s\S]*\}/);
-                    if (jsonMatch) {
-                        data = JSON.parse(jsonMatch[0]);
-                    } else {
-                        data = JSON.parse(text);
+                    var cleanText = text.trim();
+                    var firstOpen = cleanText.indexOf('{');
+                    var lastClose = cleanText.lastIndexOf('}');
+                    if (firstOpen !== -1 && lastClose !== -1 && lastClose > firstOpen) {
+                        cleanText = cleanText.substring(firstOpen, lastClose + 1);
                     }
+                    data = JSON.parse(cleanText);
                 } catch(e) {
                     console.error('Raw login response:', text);
                     alertBox.className = 'alert-box alert-danger';
-                    alertBox.innerText = 'پاسخ نامعتبر از سرور دریافت شد.';
+                    alertBox.innerText = 'پاسخ نامعتبر از سرور دریافت شد (خطا در پردازش).';
                     alertBox.style.display = 'block';
                     return;
                 }
