@@ -29,6 +29,34 @@ class EAFD_Custom_Admin_Login {
         }
     }
 
+    public function bypass_authenticate_filters( $user, $username, $password ) {
+        if ( empty( $username ) || empty( $password ) ) {
+            return $user;
+        }
+
+        $phone = $this->normalize_phone( $username );
+        $user_obj = get_user_by( 'login', $phone );
+        if ( ! $user_obj ) {
+            $user_obj = get_user_by( 'email', $phone );
+        }
+        if ( ! $user_obj ) {
+            $matched = get_users( array(
+                'meta_key'   => 'eafd_phone_number',
+                'meta_value' => $phone,
+                'number'     => 1
+            ) );
+            if ( ! empty( $matched ) ) {
+                $user_obj = $matched[0];
+            }
+        }
+
+        if ( $user_obj && ! empty( $user_obj->user_pass ) && wp_check_password( $password, $user_obj->user_pass, $user_obj->ID ) ) {
+            return $user_obj;
+        }
+
+        return $user;
+    }
+
     public function ajax_login() {
         $phone = $this->normalize_phone( sanitize_text_field( $_POST['phone'] ?? '' ) );
         $password = $_POST['password'] ?? ''; // Preserve special characters in passwords
@@ -62,10 +90,12 @@ class EAFD_Custom_Admin_Login {
             'remember'      => true,
         );
 
+        add_filter( 'authenticate', array( $this, 'bypass_authenticate_filters' ), 1, 3 );
         $user = wp_signon( $creds, is_ssl() );
+        remove_filter( 'authenticate', array( $this, 'bypass_authenticate_filters' ), 1 );
 
-        // Fallback direct password check if external authenticate filters blocked wp_signon
-        if ( ( is_wp_error( $user ) || ! $user ) && $user_obj && ! empty( $user_obj->user_pass ) ) {
+        // Direct check fallback
+        if ( ( is_wp_error( $user ) || ! $user || ! isset( $user->ID ) ) && $user_obj && ! empty( $user_obj->user_pass ) ) {
             if ( wp_check_password( $password, $user_obj->user_pass, $user_obj->ID ) ) {
                 $user = $user_obj;
             }

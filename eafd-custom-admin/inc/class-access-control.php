@@ -32,27 +32,39 @@ class EAFD_Custom_Admin_Access_Control {
             return $allcaps;
         }
 
-        $grant_caps = array(
-            'manage_options',
-            'edit_theme_options',
-            'wpseo_manage_options',
-            'wpseo_bulk_editing',
-            'rank_math_site_analysis',
-            'rank_math_general',
-            'manage_woocommerce',
-            'edit_products',
-            'publish_products',
-            'edit_others_products',
-            'edit_pages',
-            'publish_pages',
-            'edit_posts',
-            'publish_posts',
-            'upload_files',
-            'edit_shop_orders'
-        );
+        // Grant base capabilities for content editing
+        $allcaps['read'] = true;
+        $allcaps['upload_files'] = true;
 
-        foreach ( $grant_caps as $cap ) {
-            $allcaps[ $cap ] = true;
+        // Dynamically map allowed menu slugs to specific required capabilities (without granting manage_options)
+        foreach ( $allowed as $menu_item ) {
+            $normalized = self::normalize_slug( $menu_item );
+            if ( strpos( $normalized, 'post_type=product' ) !== false || strpos( $normalized, 'wc-orders' ) !== false ) {
+                $allcaps['manage_woocommerce'] = true;
+                $allcaps['edit_products'] = true;
+                $allcaps['publish_products'] = true;
+                $allcaps['edit_others_products'] = true;
+                $allcaps['edit_published_products'] = true;
+                $allcaps['read_private_products'] = true;
+                $allcaps['edit_shop_orders'] = true;
+                $allcaps['edit_others_shop_orders'] = true;
+                $allcaps['read_private_shop_orders'] = true;
+            }
+            if ( strpos( $normalized, 'post_type=page' ) !== false ) {
+                $allcaps['edit_pages'] = true;
+                $allcaps['publish_pages'] = true;
+                $allcaps['edit_others_pages'] = true;
+                $allcaps['edit_published_pages'] = true;
+            }
+            if ( strpos( $normalized, 'edit.php' ) !== false && strpos( $normalized, 'post_type=' ) === false ) {
+                $allcaps['edit_posts'] = true;
+                $allcaps['publish_posts'] = true;
+                $allcaps['edit_others_posts'] = true;
+                $allcaps['edit_published_posts'] = true;
+            }
+            if ( strpos( $normalized, 'wpseo' ) !== false ) {
+                $allcaps['wpseo_bulk_editing'] = true;
+            }
         }
 
         return $allcaps;

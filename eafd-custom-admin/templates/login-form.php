@@ -161,7 +161,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 
             fetch('<?php echo esc_url( admin_url( 'admin-ajax.php' ) ); ?>', {
                 method: 'POST',
-                body: formData
+                body: formData,
+                credentials: 'same-origin'
             })
             .then(function(res) {
                 return res.text();
@@ -171,8 +172,14 @@ if ( ! defined( 'ABSPATH' ) ) {
                 btn.innerText = 'ورود به حساب';
                 var data;
                 try {
-                    data = JSON.parse(text);
+                    var jsonMatch = text.match(/\{[\s\S]*\}/);
+                    if (jsonMatch) {
+                        data = JSON.parse(jsonMatch[0]);
+                    } else {
+                        data = JSON.parse(text);
+                    }
                 } catch(e) {
+                    console.error('Raw login response:', text);
                     alertBox.className = 'alert-box alert-danger';
                     alertBox.innerText = 'پاسخ نامعتبر از سرور دریافت شد.';
                     alertBox.style.display = 'block';
@@ -184,7 +191,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                     alertBox.style.display = 'block';
                     setTimeout(function() {
                         window.location.href = data.data.redirect_url;
-                    }, 800);
+                    }, 500);
                 } else {
                     alertBox.className = 'alert-box alert-danger';
                     alertBox.innerText = (data && data.data && data.data.message) ? data.data.message : 'شماره موبایل یا رمز عبور اشتباه است.';
