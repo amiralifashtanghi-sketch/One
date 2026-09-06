@@ -1,0 +1,164 @@
+/**
+ * EAFD Master CSS Architecture
+ * Progressive Enhancement, WCAG 2.2 AA Focus Rings & RTL Grid
+ */
+
+@import url('./design-tokens.css');
+@import url('../fonts/vazirmatn.css');
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-family: var(--eafd-font-family);
+  font-size: var(--eafd-font-size-base);
+  line-height: var(--eafd-line-height-base);
+  background-color: var(--eafd-color-bg);
+  color: var(--eafd-color-text);
+  direction: rtl;
+  scroll-behavior: smooth;
+}
+
+body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+}
+
+/* Accessibility: Skip to Content Link */
+.skip-link {
+  position: absolute;
+  top: -100px;
+  right: 20px;
+  background: var(--eafd-color-primary);
+  color: #ffffff;
+  padding: 12px 20px;
+  border-radius: var(--eafd-border-radius-sm);
+  z-index: 9999;
+  text-decoration: none;
+  font-weight: bold;
+  transition: top var(--eafd-motion-speed) var(--eafd-motion-easing);
+}
+
+.skip-link:focus {
+  top: 20px;
+  outline: 3px solid var(--eafd-color-secondary);
+}
+
+/* WCAG 2.2 Focus Rings */
+:focus-visible {
+  outline: 3px solid var(--eafd-color-secondary) !important;
+  outline-offset: 3px !important;
+}
+
+/* Base Headings */
+h1, h2, h3, h4, h5, h6 {
+  color: var(--eafd-color-text);
+  font-weight: 700;
+  line-height: 1.3;
+  margin-bottom: var(--eafd-spacing-md);
+}
+
+h1 { font-size: var(--eafd-font-size-h1); }
+h2 { font-size: var(--eafd-font-size-h2); }
+h3 { font-size: var(--eafd-font-size-h3); }
+
+p {
+  color: var(--eafd-color-text-muted);
+  margin-bottom: var(--eafd-spacing-md);
+}
+
+a {
+  color: var(--eafd-color-secondary);
+  text-decoration: none;
+  transition: color var(--eafd-motion-speed) var(--eafd-motion-easing);
+}
+
+a:hover {
+  color: var(--eafd-color-primary);
+}
+
+/* Container */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--eafd-spacing-md);
+  width: 100%;
+}
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--eafd-spacing-sm);
+  padding: 12px 24px;
+  border-radius: var(--eafd-border-radius);
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: all var(--eafd-motion-speed) var(--eafd-motion-easing);
+  text-decoration: none;
+}
+
+.btn-primary {
+  background: var(--eafd-color-primary);
+  color: #ffffff;
+  border-color: var(--eafd-color-primary);
+}
+
+.btn-primary:hover {
+  background: var(--eafd-color-primary-hover);
+  box-shadow: var(--eafd-shadow-glow);
+}
+
+.btn-secondary {
+  background: var(--eafd-color-surface);
+  color: var(--eafd-color-text);
+  border-color: var(--eafd-color-border);
+}
+
+.btn-secondary:hover {
+  background: var(--eafd-color-surface-hover);
+  border-color: var(--eafd-color-border-hover);
+}
+
+/* Cards & Glassmorphism */
+.card {
+  background: var(--eafd-color-surface);
+  border: 1px solid var(--eafd-color-border);
+  border-radius: var(--eafd-border-radius);
+  padding: var(--eafd-spacing-lg);
+  box-shadow: var(--eafd-shadow-card);
+  transition: transform var(--eafd-motion-speed) var(--eafd-motion-easing),
+              border-color var(--eafd-motion-speed) var(--eafd-motion-easing);
+}
+
+.card:hover {
+  border-color: var(--eafd-color-primary);
+  transform: translateY(-4px);
+}
+
+/* Responsive Grid System */
+.grid {
+  display: grid;
+  gap: var(--eafd-spacing-lg);
+}
+
+.grid-cols-1 { grid-template-columns: repeat(1, 1fr); }
+.grid-cols-2 { grid-template-columns: repeat(2, 1fr); }
+.grid-cols-3 { grid-template-columns: repeat(3, 1fr); }
+.grid-cols-4 { grid-template-columns: repeat(4, 1fr); }
+
+@media (max-width: 992px) {
+  .grid-cols-3, .grid-cols-4 { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 640px) {
+  .grid-cols-2, .grid-cols-3, .grid-cols-4 { grid-template-columns: repeat(1, 1fr); }
+}

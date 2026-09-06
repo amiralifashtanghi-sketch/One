@@ -24,7 +24,6 @@ class DesignStudioController extends Controller
     {
         $tokens = $this->tokenModel->getAllTokens();
 
-        // Calculate WCAG 2.2 AA Contrast Ratio
         $bg = $tokens['--eafd-color-bg'] ?? '#090D16';
         $text = $tokens['--eafd-color-text'] ?? '#F1F5F9';
         $contrastRatio = $this->calculateContrastRatio($bg, $text);
@@ -89,7 +88,8 @@ class DesignStudioController extends Controller
 
         $cssContent .= "}\n";
 
-        file_put_contents(__DIR__ . '/../../../public/assets/css/design-tokens.css', $cssContent, LOCK_EX);
+        $destPath = __DIR__ . '/../../../assets/css/design-tokens.css';
+        file_put_contents($destPath, $cssContent, LOCK_EX);
     }
 
     protected function calculateContrastRatio(string $hex1, string $hex2): float

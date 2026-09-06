@@ -15,7 +15,7 @@
     </div>
     <div class="form-group">
         <label>آدرس سرور دیتابیس (DB Host):</label>
-        <input type="text" name="host" class="form-control" value="127.0.0.1">
+        <input type="text" name="host" class="form-control" value="localhost">
     </div>
     <div class="form-group">
         <label>نام پایگاه داده (DB Name):</label>

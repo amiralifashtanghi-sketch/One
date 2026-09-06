@@ -1,0 +1,41 @@
+/* Local Vazirmatn Font Definitions with local system fallbacks - Zero External Requests */
+
+@font-face {
+  font-family: 'Vazirmatn';
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+  src: local('Vazirmatn Light'), local('Vazirmatn-Light'),
+       url('./Vazirmatn-Light.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Vazirmatn';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Vazirmatn Regular'), local('Vazirmatn-Regular'), local('Vazirmatn'),
+       url('./Vazirmatn-Regular.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Vazirmatn';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: local('Vazirmatn Medium'), local('Vazirmatn-Medium'),
+       url('./Vazirmatn-Medium.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Vazirmatn';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: local('Vazirmatn Bold'), local('Vazirmatn-Bold'),
+       url('./Vazirmatn-Bold.woff2') format('woff2');
+}
+
+:root {
+  --eafd-font-family: 'Vazirmatn', Tahoma, 'Segoe UI', system-ui, -apple-system, sans-serif;
+}

@@ -16,7 +16,7 @@ $step = (int)($_GET['step'] ?? 1);
 if ($step === 3 && $_SERVER['REQUEST_METHOD'] === 'POST') {
     $dbConfig = [
         'driver' => $_POST['driver'] ?? 'sqlite',
-        'host' => $_POST['host'] ?? '127.0.0.1',
+        'host' => $_POST['host'] ?? 'localhost',
         'port' => '3306',
         'dbname' => $_POST['dbname'] ?? 'eafd_db',
         'username' => $_POST['username'] ?? 'root',
@@ -36,6 +36,10 @@ if ($step === 3 && $_SERVER['REQUEST_METHOD'] === 'POST') {
 
 if ($step === 4 && $_SERVER['REQUEST_METHOD'] === 'POST') {
     $migrateSuccess = Installer::runMigrationsAndSeeds();
+    if ($migrateSuccess) {
+        header('Location: index.php?step=5');
+        exit;
+    }
 }
 
 if ($step === 5 && $_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -62,6 +66,7 @@ $permissions = ($step === 2) ? Installer::checkPermissions() : [];
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>نصب‌کننده خودکار پلتفرم EAFD</title>
+    <link rel="stylesheet" href="/assets/fonts/vazirmatn.css">
     <style>
         :root {
             --bg-color: #090d16;
@@ -69,15 +74,17 @@ $permissions = ($step === 2) ? Installer::checkPermissions() : [];
             --primary-color: #0b63d8;
             --text-color: #f1f5f9;
             --border-color: #1e293b;
+            --eafd-font-family: 'Vazirmatn', Tahoma, 'Segoe UI', sans-serif;
         }
         body {
             background-color: var(--bg-color);
             color: var(--text-color);
-            font-family: Tahoma, 'Segoe UI', sans-serif;
+            font-family: var(--eafd-font-family);
             margin: 0;
             padding: 40px 20px;
             display: flex;
             justify-content: center;
+            direction: rtl;
         }
         .installer-card {
             background: var(--surface-color);
@@ -137,6 +144,7 @@ $permissions = ($step === 2) ? Installer::checkPermissions() : [];
             color: #fff;
             font-size: 1rem;
             box-sizing: border-box;
+            font-family: inherit;
         }
         .btn {
             display: inline-block;
@@ -147,6 +155,7 @@ $permissions = ($step === 2) ? Installer::checkPermissions() : [];
             cursor: pointer;
             border: none;
             font-size: 1rem;
+            font-family: inherit;
         }
         .btn-primary { background: var(--primary-color); color: #fff; }
         .btn-secondary { background: #334155; color: #fff; }
