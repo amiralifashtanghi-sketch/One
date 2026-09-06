@@ -149,28 +149,32 @@ class EAFD_Custom_Admin_Meta_Hider {
 
         ?>
         <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            // Append eafd_iframe=1 to internal links and forms
+        (function() {
             function preserveIframeParam() {
-                document.querySelectorAll("a[href]").forEach(function(link) {
-                    var href = link.getAttribute("href");
-                    if (href && !href.startsWith("#") && !href.startsWith("javascript:") && href.indexOf("eafd_iframe=1") === -1) {
-                        link.setAttribute("href", href + (href.indexOf("?") !== -1 ? "&" : "?") + "eafd_iframe=1");
+                var links = document.getElementsByTagName("a");
+                for (var i = 0; i < links.length; i++) {
+                    var href = links[i].getAttribute("href");
+                    if (href && href.indexOf("eafd_iframe=1") === -1 && !href.startsWith("#") && !href.startsWith("javascript:")) {
+                        links[i].setAttribute("href", href + (href.indexOf("?") !== -1 ? "&" : "?") + "eafd_iframe=1");
                     }
-                });
-                document.querySelectorAll("form").forEach(function(form) {
-                    if (!form.querySelector("input[name='eafd_iframe']")) {
+                }
+                var forms = document.getElementsByTagName("form");
+                for (var j = 0; j < forms.length; j++) {
+                    if (!forms[j].querySelector("input[name='eafd_iframe']")) {
                         var hiddenInput = document.createElement("input");
                         hiddenInput.type = "hidden";
                         hiddenInput.name = "eafd_iframe";
                         hiddenInput.value = "1";
-                        form.appendChild(hiddenInput);
+                        forms[j].appendChild(hiddenInput);
                     }
-                });
+                }
             }
-            preserveIframeParam();
-            setInterval(preserveIframeParam, 1500);
-        });
+            if (document.readyState === "loading") {
+                document.addEventListener("DOMContentLoaded", preserveIframeParam);
+            } else {
+                preserveIframeParam();
+            }
+        })();
         </script>
         <?php
     }

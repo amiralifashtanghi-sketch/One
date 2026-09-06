@@ -40,9 +40,16 @@ class EAFD_Custom_Admin_Access_Control {
             return $allcaps;
         }
 
-        // Grant base capabilities for content editing
+        // Grant base capabilities for content editing & Rank Math SEO metabox
         $allcaps['read'] = true;
         $allcaps['upload_files'] = true;
+        $allcaps['rank_math_onpage_analysis'] = true;
+        $allcaps['rank_math_onpage_general'] = true;
+        $allcaps['rank_math_onpage_snippet'] = true;
+        $allcaps['rank_math_onpage_social'] = true;
+        $allcaps['rank_math_onpage_advanced'] = true;
+        $allcaps['rank_math_site_analysis'] = true;
+        $allcaps['wpseo_bulk_editing'] = true;
 
         // Dynamically map allowed menu slugs to specific required capabilities (without granting manage_options)
         foreach ( $allowed as $menu_item ) {
@@ -72,6 +79,9 @@ class EAFD_Custom_Admin_Access_Control {
             }
             if ( strpos( $normalized, 'wpseo' ) !== false ) {
                 $allcaps['wpseo_bulk_editing'] = true;
+            }
+            if ( strpos( $normalized, 'rank_math' ) !== false ) {
+                $allcaps['rank_math_general'] = true;
             }
         }
 
