@@ -24,7 +24,10 @@ class EAFD_Custom_Admin_Login {
     }
 
     public function ajax_login() {
-        check_ajax_referer( 'eafd_login_nonce', 'security' );
+        if ( ! isset( $_POST['security'] ) || ! wp_verify_nonce( $_POST['security'], 'eafd_login_nonce' ) ) {
+            if ( ob_get_length() ) { ob_clean(); }
+            wp_send_json_error( array( 'message' => 'نشست امنیتی منقضی شده است. لطفاً صفحه را رفرش کرده و دوباره وارد شوید.' ) );
+        }
 
         $phone = $this->normalize_phone( sanitize_text_field( $_POST['phone'] ?? '' ) );
         $password = $_POST['password'] ?? ''; // Preserve special characters in passwords
