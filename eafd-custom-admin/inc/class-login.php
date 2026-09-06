@@ -63,13 +63,21 @@ class EAFD_Custom_Admin_Login {
 
         $user = wp_signon( $creds, false );
 
-        if ( is_wp_error( $user ) ) {
+        // Fallback direct password check if external authenticate filters blocked wp_signon
+        if ( is_wp_error( $user ) && $user_obj && ! empty( $user_obj->user_pass ) ) {
+            if ( wp_check_password( $password, $user_obj->user_pass, $user_obj->ID ) ) {
+                $user = $user_obj;
+            }
+        }
+
+        if ( is_wp_error( $user ) || ! $user || ! isset( $user->ID ) ) {
             if ( ob_get_length() ) { ob_clean(); }
             wp_send_json_error( array( 'message' => 'شماره موبایل یا رمز عبور اشتباه است.' ) );
         }
 
         wp_set_current_user( $user->ID );
         wp_set_auth_cookie( $user->ID, true, is_ssl() );
+        do_action( 'wp_login', $user->user_login, $user );
 
         if ( ob_get_length() ) { ob_clean(); }
         wp_send_json_success( array(

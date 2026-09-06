@@ -8,7 +8,12 @@ $message = '';
 $error = '';
 
 if ( isset( $_POST['eafd_add_operator_nonce'] ) && wp_verify_nonce( $_POST['eafd_add_operator_nonce'], 'eafd_add_operator' ) ) {
-    $phone = sanitize_text_field( $_POST['operator_phone'] );
+    $raw_phone = sanitize_text_field( $_POST['operator_phone'] );
+    $persian = array('۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹');
+    $arabic  = array('٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩');
+    $num     = array('0', '1', '2', '3', '4', '5', '6', '7', '8', '9');
+    $phone   = trim( str_replace( $arabic, $num, str_replace( $persian, $num, $raw_phone ) ) );
+
     $password = $_POST['operator_password'] ?? ''; // Preserve password special characters
     $display_name = sanitize_text_field( $_POST['operator_name'] );
 
