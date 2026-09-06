@@ -163,11 +163,22 @@ if ( ! defined( 'ABSPATH' ) ) {
                 method: 'POST',
                 body: formData
             })
-            .then(res => res.json())
-            .then(data => {
+            .then(function(res) {
+                return res.text();
+            })
+            .then(function(text) {
                 btn.disabled = false;
                 btn.innerText = 'ورود به حساب';
-                if (data.success) {
+                var data;
+                try {
+                    data = JSON.parse(text);
+                } catch(e) {
+                    alertBox.className = 'alert-box alert-danger';
+                    alertBox.innerText = 'پاسخ نامعتبر از سرور دریافت شد.';
+                    alertBox.style.display = 'block';
+                    return;
+                }
+                if (data && data.success) {
                     alertBox.className = 'alert-box alert-success';
                     alertBox.innerText = data.data.message;
                     alertBox.style.display = 'block';
@@ -176,11 +187,11 @@ if ( ! defined( 'ABSPATH' ) ) {
                     }, 800);
                 } else {
                     alertBox.className = 'alert-box alert-danger';
-                    alertBox.innerText = data.data.message;
+                    alertBox.innerText = (data && data.data && data.data.message) ? data.data.message : 'شماره موبایل یا رمز عبور اشتباه است.';
                     alertBox.style.display = 'block';
                 }
             })
-            .catch(err => {
+            .catch(function(err) {
                 btn.disabled = false;
                 btn.innerText = 'ورود به حساب';
                 alertBox.className = 'alert-box alert-danger';
