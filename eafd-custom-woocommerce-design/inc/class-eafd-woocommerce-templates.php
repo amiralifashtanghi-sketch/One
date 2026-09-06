@@ -40,12 +40,14 @@ class EAFD_WooCommerce_Templates {
             unset($fields['billing']['billing_email']);
         }
 
-        // Phone required setting
+        // Phone required setting and label customization
         if (isset($fields['billing']['billing_phone'])) {
             if (!empty($options['checkout_phone_required'])) {
                 $fields['billing']['billing_phone']['required'] = true;
+                $fields['billing']['billing_phone']['label']    = __('تلفن (اجباری)', 'woocommerce');
             } else {
                 $fields['billing']['billing_phone']['required'] = false;
+                $fields['billing']['billing_phone']['label']    = __('تلفن (اختیاری)', 'woocommerce');
             }
         }
 

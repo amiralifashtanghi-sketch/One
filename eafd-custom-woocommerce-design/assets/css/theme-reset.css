@@ -102,7 +102,7 @@ body.woocommerce-account .page-wrapper {
     border-color: rgba(0, 0, 0, 0.05) !important;
 }
 
-/* Inputs & Buttons Force Override */
+/* Inputs Force Override */
 .woocommerce-cart input[type="text"],
 .woocommerce-checkout input[type="text"],
 .woocommerce-checkout input[type="email"],
@@ -118,18 +118,40 @@ body.woocommerce-account .page-wrapper {
     max-width: 100% !important;
 }
 
+/* Premium Skeuomorphic Place Order Button Override */
 .woocommerce-cart .button,
 .woocommerce-checkout .button,
 #place_order {
-    background: linear-gradient(180deg, var(--turquoise, #1abc9c) 0%, #16a085 100%) !important;
+    background: linear-gradient(135deg, var(--turquoise, #1abc9c) 0%, #117864 100%) !important;
     color: #ffffff !important;
-    border: 1px solid rgba(255, 255, 255, 0.4) !important;
-    border-radius: 12px !important;
-    padding: 12px 24px !important;
-    font-weight: 700 !important;
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5), 0 4px 10px rgba(22, 160, 133, 0.3) !important;
+    border: 1px solid rgba(255, 255, 255, 0.5) !important;
+    border-radius: 30px !important;
+    padding: 16px 28px !important;
+    font-size: 17px !important;
+    font-weight: 800 !important;
+    box-shadow: 0 8px 24px rgba(26, 188, 156, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.6) !important;
     cursor: pointer !important;
     font-family: 'Vazirmatn', sans-serif !important;
     box-sizing: border-box !important;
+    width: 100% !important;
     max-width: 100% !important;
+    display: block !important;
+    text-align: center !important;
+    transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease !important;
+    margin-top: 15px !important;
+}
+
+.woocommerce-cart .button:hover,
+.woocommerce-checkout .button:hover,
+#place_order:hover {
+    background: linear-gradient(135deg, #16a085 0%, #0e6251 100%) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 12px 28px rgba(26, 188, 156, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.8) !important;
+}
+
+.woocommerce-cart .button:active,
+.woocommerce-checkout .button:active,
+#place_order:active {
+    transform: translateY(1px) !important;
+    box-shadow: inset 0 3px 6px rgba(0, 0, 0, 0.3) !important;
 }
