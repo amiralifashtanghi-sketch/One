@@ -1,0 +1,61 @@
+/* ==========================================
+   EAFD Mobile Bottom Navigation Bar Styles
+   ========================================== */
+
+.eafd-mobile-bottom-nav {
+    display: none;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 65px;
+    background: var(--glass-bg);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    border-top: 1px solid rgba(255, 255, 255, 0.8);
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08);
+    z-index: 9999;
+    justify-content: space-around;
+    align-items: center;
+    direction: rtl;
+}
+
+.eafd-bottom-nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    color: var(--text-secondary, #5d6d7e);
+    text-decoration: none !important;
+    font-size: 11px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    flex: 1;
+}
+
+.eafd-bottom-nav-item i {
+    font-size: 18px;
+    transition: all 0.3s ease;
+}
+
+.eafd-bottom-nav-item.active,
+.eafd-bottom-nav-item:hover {
+    color: var(--turquoise);
+}
+
+.eafd-bottom-nav-item.active i {
+    transform: translateY(-2px) scale(1.1);
+}
+
+@media (max-width: 768px) {
+    .eafd-mobile-bottom-nav {
+        display: flex;
+    }
+    body.woocommerce-page,
+    body.woocommerce-account,
+    body.woocommerce-cart,
+    body.woocommerce-checkout {
+        padding-bottom: 70px !important;
+    }
+}
