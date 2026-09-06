@@ -80,28 +80,6 @@ class EAFD_Custom_Admin_Access_Control {
     public static function get_all_registered_menus() {
         global $menu, $submenu;
 
-        // Safely load admin environment without breaking frontend execution
-        if ( empty( $menu ) || ! is_array( $menu ) || count( $menu ) < 3 ) {
-            if ( ! function_exists( 'get_admin_page_title' ) && file_exists( ABSPATH . 'wp-admin/includes/admin.php' ) ) {
-                @require_once ABSPATH . 'wp-admin/includes/admin.php';
-            }
-
-            // Load WooCommerce admin dependencies safely if present
-            if ( class_exists( 'WooCommerce' ) && defined( 'WC_ABSPATH' ) ) {
-                if ( ! function_exists( 'wc_get_page_screen_id' ) && file_exists( WC_ABSPATH . 'includes/admin/wc-admin-functions.php' ) ) {
-                    @require_once WC_ABSPATH . 'includes/admin/wc-admin-functions.php';
-                }
-            }
-
-            if ( ! function_exists( 'wc_get_page_screen_id' ) ) {
-                function wc_get_page_screen_id() { return ''; }
-            }
-
-            if ( file_exists( ABSPATH . 'wp-admin/menu.php' ) ) {
-                @include_once ABSPATH . 'wp-admin/menu.php';
-            }
-        }
-
         $all_menus = array();
 
         if ( ! empty( $menu ) && is_array( $menu ) ) {
@@ -136,6 +114,14 @@ class EAFD_Custom_Admin_Access_Control {
                     'icon'     => $item[6] ?? 'dashicons-admin-generic',
                     'submenus' => $sub_items
                 );
+            }
+        }
+
+        // Try reading cached registered menus if empty
+        if ( empty( $all_menus ) ) {
+            $cached = get_option( 'eafd_registered_admin_menus', array() );
+            if ( is_array( $cached ) && ! empty( $cached ) ) {
+                $all_menus = $cached;
             }
         }
 
@@ -214,6 +200,48 @@ class EAFD_Custom_Admin_Access_Control {
      * Filter admin menus based on user permission
      */
     public function filter_admin_menus() {
+        global $menu, $submenu;
+
+        // Cache full menu structure when admin is logged in
+        if ( is_admin() && current_user_can( 'manage_options' ) && ! empty( $menu ) && is_array( $menu ) ) {
+            $cache_menus = array();
+            foreach ( $menu as $item ) {
+                if ( empty( $item[2] ) || empty( $item[0] ) ) {
+                    continue;
+                }
+
+                $menu_slug = $item[2];
+                $menu_title = wp_strip_all_tags( $item[0] );
+
+                if ( strpos( $item[4] ?? '', 'wp-menu-separator' ) !== false ) {
+                    continue;
+                }
+
+                $sub_items = array();
+                if ( ! empty( $submenu[ $menu_slug ] ) && is_array( $submenu[ $menu_slug ] ) ) {
+                    foreach ( $submenu[ $menu_slug ] as $sub_item ) {
+                        if ( empty( $sub_item[2] ) || empty( $sub_item[0] ) ) {
+                            continue;
+                        }
+                        $sub_items[] = array(
+                            'slug'  => $sub_item[2],
+                            'title' => wp_strip_all_tags( $sub_item[0] )
+                        );
+                    }
+                }
+
+                $cache_menus[] = array(
+                    'slug'     => $menu_slug,
+                    'title'    => $menu_title,
+                    'icon'     => $item[6] ?? 'dashicons-admin-generic',
+                    'submenus' => $sub_items
+                );
+            }
+            if ( ! empty( $cache_menus ) ) {
+                update_option( 'eafd_registered_admin_menus', $cache_menus );
+            }
+        }
+
         if ( current_user_can( 'administrator' ) ) {
             return;
         }

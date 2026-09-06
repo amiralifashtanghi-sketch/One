@@ -331,19 +331,19 @@ if ( $allowed_menus === 'all' ) {
 
     <!-- ADMIN BAR -->
     <div class="admin-bar">
-        <div class="admin-bar-brand">
-            <div class="brand-logo">W</div>
-            <span><?php echo esc_html( $site_name ); ?></span>
-        </div>
-
         <div class="admin-bar-actions">
             <button class="btn-menu-toggle" onclick="toggleSidebar()">
                 <span>☰</span>
                 <span>منو</span>
             </button>
-            <div class="user-avatar" title="<?php echo esc_attr( $user_display ); ?>">
+        </div>
+
+        <div class="admin-bar-brand">
+            <div class="user-avatar" title="<?php echo esc_attr( $user_display ); ?>" style="margin-left: 6px;">
                 <?php echo esc_html( $initial ); ?>
             </div>
+            <span><?php echo esc_html( $site_name ); ?></span>
+            <div class="brand-logo">W</div>
         </div>
     </div>
 
@@ -360,19 +360,28 @@ if ( $allowed_menus === 'all' ) {
                     <span>📊 پیشخوان</span>
                 </a>
             </li>
-            <?php foreach ( $panel_menus as $menu_item ) : ?>
+            <?php foreach ( $panel_menus as $menu_index => $menu_item ) : ?>
                 <?php
                 $admin_url = admin_url( $menu_item['slug'] );
                 if ( strpos( $menu_item['slug'], '.php' ) === false ) {
                     $admin_url = admin_url( 'admin.php?page=' . $menu_item['slug'] );
                 }
+                $has_subs = ! empty( $menu_item['submenus'] );
+                $sub_id = 'submenu-' . $menu_index;
                 ?>
                 <li>
-                    <a href="#" onclick="loadAdminPage('<?php echo esc_js( $admin_url ); ?>', '<?php echo esc_js( $menu_item['title'] ); ?>'); toggleSidebar();">
-                        <span><?php echo esc_html( $menu_item['title'] ); ?></span>
-                    </a>
-                    <?php if ( ! empty( $menu_item['submenus'] ) ) : ?>
-                        <ul class="sidebar-submenu">
+                    <div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+                        <a href="#" onclick="loadAdminPage('<?php echo esc_js( $admin_url ); ?>', '<?php echo esc_js( $menu_item['title'] ); ?>'); toggleSidebar();" style="flex: 1; display: flex; align-items: center;">
+                            <span><?php echo esc_html( $menu_item['title'] ); ?></span>
+                        </a>
+                        <?php if ( $has_subs ) : ?>
+                            <button type="button" onclick="toggleAccordionSubmenu(event, '<?php echo esc_js( $sub_id ); ?>')" style="background: transparent; border: none; padding: 10px 12px; cursor: pointer; color: #64748b; font-size: 11px; display: flex; align-items: center; justify-content: center;">
+                                <span id="arrow-<?php echo esc_attr( $sub_id ); ?>">▼</span>
+                            </button>
+                        <?php endif; ?>
+                    </div>
+                    <?php if ( $has_subs ) : ?>
+                        <ul class="sidebar-submenu" id="<?php echo esc_attr( $sub_id ); ?>" style="display: none; transition: all 0.2s ease;">
                             <?php foreach ( $menu_item['submenus'] as $sub ) : ?>
                                 <?php
                                 $sub_url = admin_url( $sub['slug'] );
@@ -479,6 +488,23 @@ if ( $allowed_menus === 'all' ) {
         function toggleSidebar() {
             document.getElementById('sidebarDrawer').classList.toggle('active');
             document.getElementById('sidebarOverlay').classList.toggle('active');
+        }
+
+        function toggleAccordionSubmenu(e, id) {
+            if (e) {
+                e.stopPropagation();
+            }
+            var sub = document.getElementById(id);
+            var arrow = document.getElementById('arrow-' + id);
+            if (sub) {
+                if (sub.style.display === 'none' || !sub.style.display) {
+                    sub.style.display = 'block';
+                    if (arrow) arrow.innerText = '▲';
+                } else {
+                    sub.style.display = 'none';
+                    if (arrow) arrow.innerText = '▼';
+                }
+            }
         }
 
         function showDashboard() {
