@@ -8,6 +8,62 @@ class EAFD_Custom_Admin_Access_Control {
     public function __construct() {
         add_action( 'admin_menu', array( $this, 'filter_admin_menus' ), 99999 );
         add_action( 'admin_init', array( $this, 'redirect_and_enforce_page_access' ) );
+        add_filter( 'user_has_cap', array( $this, 'grant_operator_allowed_capabilities' ), 10, 4 );
+    }
+
+    /**
+     * Dynamically grant essential capabilities for allowed operator menus so WP core/plugin page checks pass
+     */
+    public function grant_operator_allowed_capabilities( $allcaps, $caps, $args, $user ) {
+        if ( empty( $user->ID ) ) {
+            return $allcaps;
+        }
+
+        if ( in_array( 'administrator', (array) $user->roles, true ) ) {
+            return $allcaps;
+        }
+
+        if ( ! in_array( 'eafd_operator', (array) $user->roles, true ) ) {
+            return $allcaps;
+        }
+
+        $allowed = self::get_allowed_menus_for_user( $user->ID );
+        if ( empty( $allowed ) || ! is_array( $allowed ) ) {
+            return $allcaps;
+        }
+
+        $grant_caps = array(
+            'manage_options',
+            'edit_theme_options',
+            'wpseo_manage_options',
+            'wpseo_bulk_editing',
+            'rank_math_site_analysis',
+            'rank_math_general',
+            'manage_woocommerce',
+            'edit_products',
+            'publish_products',
+            'edit_others_products',
+            'edit_pages',
+            'publish_pages',
+            'edit_posts',
+            'publish_posts',
+            'upload_files',
+            'edit_shop_orders'
+        );
+
+        foreach ( $grant_caps as $cap ) {
+            $allcaps[ $cap ] = true;
+        }
+
+        return $allcaps;
+    }
+
+    private static function normalize_slug( $slug ) {
+        $slug = trim( (string) $slug );
+        if ( strpos( $slug, 'admin.php?page=' ) !== false ) {
+            $slug = str_replace( 'admin.php?page=', '', $slug );
+        }
+        return $slug;
     }
 
     /**
@@ -52,19 +108,25 @@ class EAFD_Custom_Admin_Access_Control {
             return;
         }
 
-        $target_slug = ! empty( $page_arg ) ? $page_arg : $current_page;
+        $target_slug = ! empty( $page_arg ) ? self::normalize_slug( $page_arg ) : self::normalize_slug( $current_page );
 
         $is_permitted = false;
-        if ( in_array( $target_slug, $allowed, true ) || in_array( $current_page, $allowed, true ) ) {
-            $is_permitted = true;
-        } else {
-            foreach ( $allowed as $allowed_item ) {
-                if ( strpos( $allowed_item, '::' ) !== false ) {
-                    list( $parent, $child ) = explode( '::', $allowed_item, 2 );
-                    if ( $child === $target_slug || $child === $current_page || $parent === $current_page ) {
-                        $is_permitted = true;
-                        break;
-                    }
+        foreach ( $allowed as $allowed_item ) {
+            $normalized_item = self::normalize_slug( $allowed_item );
+
+            if ( strpos( $normalized_item, '::' ) !== false ) {
+                list( $parent, $child ) = explode( '::', $normalized_item, 2 );
+                $parent = self::normalize_slug( $parent );
+                $child = self::normalize_slug( $child );
+
+                if ( $target_slug === $child || $target_slug === $parent || $current_page === $parent ) {
+                    $is_permitted = true;
+                    break;
+                }
+            } else {
+                if ( $target_slug === $normalized_item || $current_page === $normalized_item || strpos( $normalized_item, $target_slug ) !== false ) {
+                    $is_permitted = true;
+                    break;
                 }
             }
         }
