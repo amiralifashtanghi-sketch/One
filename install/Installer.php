@@ -6,6 +6,7 @@ use PDO;
 use Exception;
 use App\Core\Database;
 use App\Core\Auth;
+use App\Core\Config;
 use App\Core\Sanitizer;
 use App\Core\Logger;
 
@@ -105,7 +106,8 @@ class Installer
 
         try {
             $pdo = Database::getConnection();
-            Logger::info("DATABASE_CONNECTED");
+            $driver = Config::get('database.driver', 'sqlite');
+            Logger::info("DATABASE_CONNECTED", ['driver' => $driver]);
 
             $files = glob($baseDir . '/config/migrations/*.sql');
             sort($files);
@@ -116,6 +118,11 @@ class Installer
 
                 $sql = file_get_contents($file);
                 if ($sql) {
+                    // Translate auto-increment syntax for MySQL vs SQLite
+                    if ($driver === 'mysql') {
+                        $sql = str_replace('AUTOINCREMENT', 'AUTO_INCREMENT', $sql);
+                        $sql = str_replace('INTEGER PRIMARY KEY AUTO_INCREMENT', 'INT AUTO_INCREMENT PRIMARY KEY', $sql);
+                    }
                     $pdo->exec($sql);
                 }
                 Logger::info("MIGRATION_COMPLETED: {$fileName}");
@@ -124,7 +131,12 @@ class Installer
             Logger::info("SEED_STARTED");
             $seedSql = file_get_contents($baseDir . '/config/seeds.sql');
             if ($seedSql) {
-                $pdo->exec($seedSql);
+                $statements = array_filter(array_map('trim', explode(';', $seedSql)));
+                foreach ($statements as $stmt) {
+                    if (!empty($stmt)) {
+                        $pdo->exec($stmt);
+                    }
+                }
             }
             Logger::info("SEED_COMPLETED");
             Logger::info("INSTALL_STEP_4_COMPLETED");
