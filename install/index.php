@@ -1,8 +1,12 @@
 <?php
 
-require_once __DIR__ . '/../app/Core/Autoloader.php';
-\App\Core\Autoloader::register(__DIR__ . '/..');
-\App\Core\Config::load(__DIR__ . '/../config');
+if (!defined('EAFD_BASE_DIR')) {
+    define('EAFD_BASE_DIR', dirname(__DIR__));
+}
+
+require_once EAFD_BASE_DIR . '/app/Core/Autoloader.php';
+\App\Core\Autoloader::register(EAFD_BASE_DIR);
+\App\Core\Config::load(EAFD_BASE_DIR . '/config');
 
 use Install\Installer;
 
@@ -12,6 +16,7 @@ if (Installer::isInstalled()) {
 }
 
 $step = (int)($_GET['step'] ?? 1);
+$installerError = null;
 
 if ($step === 3 && $_SERVER['REQUEST_METHOD'] === 'POST') {
     $dbConfig = [
@@ -22,23 +27,27 @@ if ($step === 3 && $_SERVER['REQUEST_METHOD'] === 'POST') {
         'username' => $_POST['username'] ?? 'root',
         'password' => $_POST['password'] ?? '',
         'charset' => 'utf8mb4',
-        'sqlite_path' => __DIR__ . '/../storage/database.sqlite',
+        'sqlite_path' => EAFD_BASE_DIR . '/storage/database.sqlite',
     ];
 
     $dbResult = Installer::testDbConnection($dbConfig);
     if ($dbResult['success']) {
         $content = "<?php\n\nreturn " . var_export($dbConfig, true) . ";\n";
-        file_put_contents(__DIR__ . '/../config/database.php', $content);
+        file_put_contents(EAFD_BASE_DIR . '/config/database.php', $content);
         header('Location: index.php?step=4');
         exit;
+    } else {
+        $dbResultError = $dbResult['message'];
     }
 }
 
 if ($step === 4 && $_SERVER['REQUEST_METHOD'] === 'POST') {
-    $migrateSuccess = Installer::runMigrationsAndSeeds();
-    if ($migrateSuccess) {
+    $migrateResult = Installer::runMigrationsAndSeeds();
+    if ($migrateResult['success']) {
         header('Location: index.php?step=5');
         exit;
+    } else {
+        $installerError = $migrateResult['message'];
     }
 }
 

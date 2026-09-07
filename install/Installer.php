@@ -4,12 +4,21 @@ namespace Install;
 
 use PDO;
 use Exception;
+use App\Core\Database;
+use App\Core\Auth;
+use App\Core\Sanitizer;
+use App\Core\Logger;
 
 class Installer
 {
+    protected static function getBaseDir(): string
+    {
+        return defined('EAFD_BASE_DIR') ? EAFD_BASE_DIR : dirname(__DIR__);
+    }
+
     public static function isInstalled(): bool
     {
-        return file_exists(__DIR__ . '/../config/installed.lock');
+        return file_exists(self::getBaseDir() . '/config/installed.lock');
     }
 
     public static function checkEnvironment(): array
@@ -45,12 +54,13 @@ class Installer
 
     public static function checkPermissions(): array
     {
+        $baseDir = self::getBaseDir();
         $dirs = [
-            'storage' => __DIR__ . '/../storage',
-            'storage/cache' => __DIR__ . '/../storage/cache',
-            'storage/logs' => __DIR__ . '/../storage/logs',
-            'storage/products' => __DIR__ . '/../storage/products',
-            'config' => __DIR__ . '/../config',
+            'storage' => $baseDir . '/storage',
+            'storage/cache' => $baseDir . '/storage/cache',
+            'storage/logs' => $baseDir . '/storage/logs',
+            'storage/products' => $baseDir . '/storage/products',
+            'config' => $baseDir . '/config',
         ];
 
         $results = [];
@@ -74,7 +84,7 @@ class Installer
         try {
             $driver = $dbConfig['driver'] ?? 'sqlite';
             if ($driver === 'sqlite') {
-                $path = $dbConfig['sqlite_path'] ?? __DIR__ . '/../storage/database.sqlite';
+                $path = $dbConfig['sqlite_path'] ?? (self::getBaseDir() . '/storage/database.sqlite');
                 $pdo = new PDO("sqlite:" . $path);
             } else {
                 $dsn = "mysql:host={$dbConfig['host']};port={$dbConfig['port']};dbname={$dbConfig['dbname']};charset=utf8mb4";
@@ -88,53 +98,75 @@ class Installer
         }
     }
 
-    public static function runMigrationsAndSeeds(): bool
+    public static function runMigrationsAndSeeds(): array
     {
+        $baseDir = self::getBaseDir();
+        Logger::info("INSTALL_STEP_4_STARTED");
+
         try {
-            $files = glob(__DIR__ . '/../config/migrations/*.sql');
+            $pdo = Database::getConnection();
+            Logger::info("DATABASE_CONNECTED");
+
+            $files = glob($baseDir . '/config/migrations/*.sql');
             sort($files);
+
             foreach ($files as $file) {
+                $fileName = basename($file);
+                Logger::info("MIGRATION_STARTED: {$fileName}");
+
                 $sql = file_get_contents($file);
-                \App\Core\Database::getConnection()->exec($sql);
+                if ($sql) {
+                    $pdo->exec($sql);
+                }
+                Logger::info("MIGRATION_COMPLETED: {$fileName}");
             }
 
-            $seedSql = file_get_contents(__DIR__ . '/../config/seeds.sql');
-            \App\Core\Database::getConnection()->exec($seedSql);
+            Logger::info("SEED_STARTED");
+            $seedSql = file_get_contents($baseDir . '/config/seeds.sql');
+            if ($seedSql) {
+                $pdo->exec($seedSql);
+            }
+            Logger::info("SEED_COMPLETED");
+            Logger::info("INSTALL_STEP_4_COMPLETED");
 
-            return true;
+            return ['success' => true, 'message' => 'ساخت جداول و ثبت دیتای اولیه فارسی با موفقیت انجام شد.'];
         } catch (Exception $e) {
-            \App\Core\ErrorHandler::log("Installer Migration Error: " . $e->getMessage());
-            return false;
+            Logger::error("INSTALL_STEP_4_FAILED: " . $e->getMessage());
+            return [
+                'success' => false,
+                'message' => 'اجرای ساختار پایگاه داده با خطا مواجه شد: ' . $e->getMessage(),
+            ];
         }
     }
 
     public static function createAdminAccount(string $name, string $email, string $phone, string $password): bool
     {
         try {
-            $passHash = \App\Core\Auth::hashPassword($password);
-            $phone = \App\Core\Sanitizer::cleanPhone($phone);
+            $passHash = Auth::hashPassword($password);
+            $phone = Sanitizer::cleanPhone($phone);
 
-            $existing = \App\Core\Database::fetch("SELECT * FROM users WHERE id = 1");
+            $existing = Database::fetch("SELECT * FROM users WHERE id = 1");
             if ($existing) {
-                \App\Core\Database::query(
+                Database::query(
                     "UPDATE users SET name = ?, email = ?, phone = ?, password_hash = ? WHERE id = 1",
                     [$name, $email, $phone, $passHash]
                 );
             } else {
-                \App\Core\Database::query(
+                Database::query(
                     "INSERT INTO users (id, name, email, phone, password_hash, role, is_active) VALUES (1, ?, ?, ?, ?, 'admin', 1)",
                     [$name, $email, $phone, $passHash]
                 );
             }
             return true;
         } catch (Exception $e) {
+            Logger::error("INSTALL_STEP_5_FAILED: " . $e->getMessage());
             return false;
         }
     }
 
     public static function lockInstallation(): void
     {
-        $lockFile = __DIR__ . '/../config/installed.lock';
+        $lockFile = self::getBaseDir() . '/config/installed.lock';
         file_put_contents($lockFile, "Installed at " . date('Y-m-d H:i:s'));
     }
 }

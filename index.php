@@ -1,7 +1,9 @@
 <?php
 
-require_once __DIR__ . '/../app/Core/Autoloader.php';
-\App\Core\Autoloader::register(__DIR__ . '/..');
+define('EAFD_BASE_DIR', __DIR__);
+
+require_once EAFD_BASE_DIR . '/app/Core/Autoloader.php';
+\App\Core\Autoloader::register(EAFD_BASE_DIR);
 
 use App\Core\Config;
 use App\Core\Request;
@@ -9,7 +11,7 @@ use App\Core\Router;
 use App\Core\ErrorHandler;
 use Install\Installer;
 
-Config::load(__DIR__ . '/../config');
+Config::load(EAFD_BASE_DIR . '/config');
 ErrorHandler::register();
 
 if (!Installer::isInstalled() && !str_starts_with($_SERVER['REQUEST_URI'] ?? '', '/install')) {
