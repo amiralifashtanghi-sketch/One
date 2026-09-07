@@ -1,0 +1,31 @@
+# EAFD Shared Hosting cPanel (.htaccess) Security & Rewrite Rules
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /
+
+    # Prevent direct HTTP access to sensitive directories
+    RewriteRule ^(app|config|storage)/ - [F,L]
+
+    # Block sensitive file extensions
+    <FilesMatch "\.(sql|log|lock|sqlite|json|env|md)$">
+        Order allow,deny
+        Deny from all
+    </FilesMatch>
+
+    # Handle Web Installer
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^install/?$ install/index.php [L,QSA]
+
+    # Redirect all front-end & admin requests to root index.php Entry Point
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^(.*)$ index.php [L,QSA]
+</IfModule>
+
+# Security Headers
+<IfModule mod_headers.c>
+    Header set X-Content-Type-Options "nosniff"
+    Header set X-Frame-Options "SAMEORIGIN"
+    Header set X-XSS-Protection "1; mode=block"
+</IfModule>
