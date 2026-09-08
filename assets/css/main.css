@@ -10,6 +10,19 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+  max-width: 100%;
+}
+
+img, video, iframe, svg, canvas {
+  max-width: 100%;
+  height: auto;
+}
+
+pre, code, table {
+  max-width: 100%;
+  overflow-x: auto;
+  word-break: break-word;
+  white-space: pre-wrap;
 }
 
 html {
@@ -33,6 +46,28 @@ body {
     linear-gradient(to bottom, var(--eafd-grid-line-color) 1px, transparent 1px);
   background-size: var(--eafd-grid-size) var(--eafd-grid-size);
   background-position: center center;
+}
+
+/* Background Grid Intensity Modifiers */
+.eafd-grid-normal {
+  background-image:
+    linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px) !important;
+  background-size: var(--eafd-grid-size) var(--eafd-grid-size) !important;
+}
+
+.eafd-grid-subtle {
+  background-image:
+    linear-gradient(to right, rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.035) 1px, transparent 1px) !important;
+  background-size: var(--eafd-grid-size) var(--eafd-grid-size) !important;
+}
+
+.eafd-grid-very-subtle {
+  background-image:
+    linear-gradient(to right, rgba(255, 255, 255, 0.018) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.018) 1px, transparent 1px) !important;
+  background-size: var(--eafd-grid-size) var(--eafd-grid-size) !important;
 }
 
 /* Accessibility: Skip to Content Link */
@@ -111,7 +146,7 @@ a:hover {
   justify-content: center;
   gap: 10px;
   padding: 12px 24px;
-  border-radius: var(--eafd-border-radius-pill);
+  border-radius: 8px;
   font-size: 0.95rem;
   font-weight: 700;
   cursor: pointer;

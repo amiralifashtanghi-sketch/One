@@ -23,6 +23,10 @@ $router = new Router();
 
 // Public Frontend Routes
 $router->get('/', [\App\Controllers\HomeController::class, 'index']);
+$router->get('/about', [\App\Controllers\PageController::class, 'about']);
+$router->get('/contact', [\App\Controllers\PageController::class, 'contact']);
+$router->get('/faq', [\App\Controllers\PageController::class, 'faq']);
+$router->get('/page/{slug}', [\App\Controllers\PageController::class, 'show']);
 $router->get('/services', [\App\Controllers\ServiceController::class, 'index']);
 $router->get('/services/{slug}', [\App\Controllers\ServiceController::class, 'detail']);
 $router->get('/projects', [\App\Controllers\ProjectController::class, 'index']);

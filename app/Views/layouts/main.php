@@ -7,10 +7,8 @@
     <?= \App\Helpers\SeoHelper::renderOrganizationJsonLd() ?>
     <link rel="stylesheet" href="/assets/css/main.css">
 </head>
-<body>
+<body class="eafd-grid-subtle">
     <a href="#main-content" class="skip-link">پرش به محتوای اصلی سایت</a>
-
-    <canvas id="matrix-canvas" aria-hidden="true" style="position:fixed; top:0; left:0; width:100vw; height:100vh; pointer-events:none; z-index:-1; opacity:0.12;"></canvas>
 
     <?php \App\Core\View::partial('partials/header'); ?>
 
@@ -28,7 +26,5 @@
     </main>
 
     <?php \App\Core\View::partial('components/footer'); ?>
-
-    <script src="/assets/js/matrix.js"></script>
 </body>
 </html>
