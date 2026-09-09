@@ -4,33 +4,44 @@ namespace App\Core\Payment;
 
 class MockGateway implements PaymentGatewayInterface
 {
-    public function requestPayment(array $order): array
+    public function getId(): string
     {
-        $mockTransactionId = 'MOCK-TXN-' . time() . '-' . rand(1000, 9999);
+        return 'mock';
+    }
+
+    public function getName(): string
+    {
+        return 'درگاه پرداخت آزمایشی (Mock)';
+    }
+
+    public function request(array $orderData, string $callbackUrl): array
+    {
+        $authority = 'MOCK_' . uniqid() . '_' . rand(1000, 9999);
+        $redirectUrl = $callbackUrl . (str_contains($callbackUrl, '?') ? '&' : '?') . 'Authority=' . $authority . '&Status=OK';
+
         return [
             'success' => true,
-            'redirect_url' => "/checkout/callback?gateway=mock&order_id={$order['id']}&transaction_id={$mockTransactionId}&status=success",
-            'transaction_id' => $mockTransactionId,
+            'transaction_id' => $authority,
+            'redirect_url' => $redirectUrl,
+            'raw' => ['status' => 'initiated'],
         ];
     }
 
-    public function verifyPayment(array $requestData): array
+    public function verify(array $requestData, array $transactionData): array
     {
-        $status = $requestData['status'] ?? 'failed';
-        $transactionId = $requestData['transaction_id'] ?? ('MOCK-' . time());
-
-        if ($status === 'success') {
+        $status = $requestData['Status'] ?? $requestData['status'] ?? 'OK';
+        if ($status === 'OK' || $status === '100') {
             return [
                 'success' => true,
-                'transaction_id' => $transactionId,
-                'message' => 'پرداخت آزمایشی درگاه Sandbox با موفقیت انجام گردید.',
+                'reference_id' => 'REF_' . rand(100000, 999999),
+                'amount' => $transactionData['amount'],
+                'message' => 'پرداخت آزمایشی با موفقیت انجام شد.',
             ];
         }
 
         return [
             'success' => false,
-            'transaction_id' => $transactionId,
-            'message' => 'پرداخت آزمایشی ناموفق بود.',
+            'error' => 'پرداخت آزمایشی توسط کاربر لغو شد.',
         ];
     }
 }

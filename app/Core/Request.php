@@ -30,6 +30,7 @@ class Request
     public function uri(): string
     {
         $uri = strtok($this->server['REQUEST_URI'] ?? '/', '?');
+        $uri = rawurldecode($uri);
         return '/' . trim($uri, '/');
     }
 

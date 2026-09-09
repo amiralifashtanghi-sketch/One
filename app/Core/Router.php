@@ -29,8 +29,8 @@ class Router
 
     protected function addRoute(string $method, string $path, array|callable $handler, array $middleware, string $name): void
     {
-        $pattern = preg_replace('/\{([a-zA-Z0-9_]+)\}/', '(?P<$1>[a-zA-Z0-9_-]+)', $path);
-        $pattern = '#^' . $pattern . '$#';
+        $pattern = preg_replace('/\{([a-zA-Z0-9_]+)\}/', '(?P<$1>[^/]+)', $path);
+        $pattern = '#^' . $pattern . '$#u';
 
         $route = [
             'method' => $method,

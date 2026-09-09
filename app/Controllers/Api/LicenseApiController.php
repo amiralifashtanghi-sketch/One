@@ -4,102 +4,159 @@ namespace App\Controllers\Api;
 
 use App\Core\Controller;
 use App\Core\Request;
-use App\Core\Response;
 use App\Core\Database;
-use App\Models\License;
 
 class LicenseApiController extends Controller
 {
-    public function verify(Request $request): void
-    {
-        $licenseKey = $request->post('license_key') ?? $request->get('license_key');
-        $domain = $request->post('domain') ?? $request->get('domain');
-        $ip = $_SERVER['REMOTE_ADDR'] ?? '127.0.0.1';
-
-        if (empty($licenseKey) || empty($domain)) {
-            Response::json(['valid' => false, 'message' => 'پارامترهای license_key و domain الزامی می‌باشند.'], 400);
-        }
-
-        $licenseModel = new License();
-        $result = $licenseModel->verifyAndActivate((string)$licenseKey, (string)$domain, $ip);
-
-        Response::json($result, $result['valid'] ? 200 : 403);
-    }
-
     public function activate(Request $request): void
     {
-        $licenseKey = $request->post('license_key');
-        $domain = $request->post('domain');
-        $ip = $_SERVER['REMOTE_ADDR'] ?? '127.0.0.1';
+        header('Content-Type: application/json; charset=utf-8');
+
+        $licenseKey = trim($request->post('license_key', ''));
+        $productId = (int)$request->post('product_id', 0);
+        $domain = strtolower(trim($request->post('domain', '')));
 
         if (empty($licenseKey) || empty($domain)) {
-            Response::json(['success' => false, 'message' => 'اطلاعات لایسنس و دامنه ناکافی است.'], 400);
+            echo json_encode(['success' => false, 'message' => 'کلید لایسنس و دامنه اجباری می‌باشند.']);
+            exit;
         }
 
-        $licenseModel = new License();
-        $result = $licenseModel->verifyAndActivate((string)$licenseKey, (string)$domain, $ip);
+        $license = Database::fetch("SELECT * FROM licenses WHERE license_key = ?", [$licenseKey]);
 
-        Response::json([
-            'success' => $result['valid'],
-            'message' => $result['message'],
-            'data' => $result,
+        if (!$license) {
+            echo json_encode(['success' => false, 'message' => 'کلید لایسنس وارد شده در سامانه وجود ندارد.']);
+            exit;
+        }
+
+        if ($productId > 0 && (int)$license['product_id'] !== $productId) {
+            echo json_encode(['success' => false, 'message' => 'این لایسنس متعلق به محصول دیگری می‌باشد.']);
+            exit;
+        }
+
+        if ($license['status'] !== 'active') {
+            echo json_encode(['success' => false, 'message' => 'این لایسنس در حال حاضر غیرفعال یا لغو گردیده است.']);
+            exit;
+        }
+
+        // Check Expiration for Periodic Licenses
+        if ($license['license_type'] === 'periodic' && !empty($license['expires_at'])) {
+            if (strtotime($license['expires_at']) < time()) {
+                echo json_encode(['success' => false, 'message' => 'اعتبار زمانی این لایسنس به پایان رسیده است.']);
+                exit;
+            }
+        }
+
+        // Check Existing Activation for this domain
+        $existing = Database::fetch("SELECT * FROM license_activations WHERE license_id = ? AND domain = ?", [$license['id'], $domain]);
+        if ($existing) {
+            Database::query("UPDATE license_activations SET last_check_at = CURRENT_TIMESTAMP WHERE id = ?", [$existing['id']]);
+            echo json_encode([
+                'success' => true,
+                'message' => 'دامنه قبلاً فعال شده است.',
+                'grace_period_days' => 7,
+            ]);
+            exit;
+        }
+
+        // Check Max Activations Limit
+        $activeCount = Database::fetch("SELECT COUNT(*) as cnt FROM license_activations WHERE license_id = ?", [$license['id']])['cnt'] ?? 0;
+        $maxAllowed = (int)($license['max_activations'] ?? 1);
+
+        if ($maxAllowed > 0 && $activeCount >= $maxAllowed) {
+            echo json_encode(['success' => false, 'message' => "سقف تعداد فعال‌سازی این لایسنس ({$maxAllowed} دامنه) تکمیل شده است."]);
+            exit;
+        }
+
+        // Create Activation
+        Database::query("INSERT INTO license_activations (license_id, domain, created_at, last_check_at) VALUES (?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)", [$license['id'], $domain]);
+
+        echo json_encode([
+            'success' => true,
+            'message' => 'فعال‌سازی دامنه با موفقیت انجام شد.',
+            'grace_period_days' => 7,
         ]);
+        exit;
     }
 
     public function deactivate(Request $request): void
     {
-        $licenseKey = $request->post('license_key');
-        $domain = $request->post('domain');
+        header('Content-Type: application/json; charset=utf-8');
 
-        $license = Database::fetch("SELECT * FROM licenses WHERE license_key = ? LIMIT 1", [$licenseKey]);
+        $licenseKey = trim($request->post('license_key', ''));
+        $domain = strtolower(trim($request->post('domain', '')));
 
-        if (!$license) {
-            Response::json(['success' => false, 'message' => 'لایسنس غیرمعتبر است.'], 404);
+        $license = Database::fetch("SELECT * FROM licenses WHERE license_key = ?", [$licenseKey]);
+        if ($license) {
+            Database::query("DELETE FROM license_activations WHERE license_id = ? AND domain = ?", [$license['id'], $domain]);
         }
 
-        Database::query("DELETE FROM license_activations WHERE license_id = ? AND domain = ?", [$license['id'], $domain]);
-
-        Response::json(['success' => true, 'message' => "دامنه {$domain} با موفقیت غیرفعال گردید."]);
+        echo json_encode(['success' => true, 'message' => 'دامنه با موفقیت غیرفعال شد.']);
+        exit;
     }
 
-    public function check(Request $request): void
+    public function verify(Request $request): void
     {
-        $licenseKey = $request->get('license_key');
-        $license = Database::fetch("SELECT l.*, p.title as product_title, p.version as current_version FROM licenses l JOIN products p ON l.product_id = p.id WHERE l.license_key = ? LIMIT 1", [$licenseKey]);
+        header('Content-Type: application/json; charset=utf-8');
 
-        if (!$license) {
-            Response::json(['status' => 'invalid', 'message' => 'کد لایسنس پیدا نشد.'], 404);
+        $licenseKey = trim($request->all()['license_key'] ?? '');
+        $domain = strtolower(trim($request->all()['domain'] ?? ''));
+
+        $license = Database::fetch("SELECT * FROM licenses WHERE license_key = ?", [$licenseKey]);
+        if (!$license || $license['status'] !== 'active') {
+            echo json_encode(['valid' => false, 'message' => 'لایسنس غیرفعال یا نامعتبر است.']);
+            exit;
         }
 
-        Response::json([
-            'status' => $license['status'],
-            'license_key' => $license['license_key'],
-            'product_title' => $license['product_title'],
-            'max_domains' => $license['max_domains'],
-            'expires_at' => $license['expires_at'],
-        ]);
+        $activation = Database::fetch("SELECT * FROM license_activations WHERE license_id = ? AND domain = ?", [$license['id'], $domain]);
+        if (!$activation) {
+            echo json_encode(['valid' => false, 'message' => 'این دامنه روی لایسنس فعال نشده است.']);
+            exit;
+        }
+
+        echo json_encode(['valid' => true, 'grace_period_days' => 7]);
+        exit;
     }
 
     public function update(Request $request): void
     {
-        $licenseKey = $request->get('license_key') ?? $request->post('license_key');
-        $currentVersion = $request->get('version') ?? $request->post('version');
+        header('Content-Type: application/json; charset=utf-8');
 
-        $license = Database::fetch("SELECT l.*, p.version as latest_version, p.title as product_title, p.file_path FROM licenses l JOIN products p ON l.product_id = p.id WHERE l.license_key = ? LIMIT 1", [$licenseKey]);
+        $productId = (int)($request->get('product_id') ?? $request->post('product_id', 0));
+        $licenseKey = trim($request->get('license_key') ?? $request->post('license_key', ''));
+        $currentVersion = trim($request->get('current_version') ?? $request->post('current_version', '1.0.0'));
+
+        $license = Database::fetch("SELECT * FROM licenses WHERE license_key = ? AND product_id = ?", [$licenseKey, $productId]);
 
         if (!$license || $license['status'] !== 'active') {
-            Response::json(['update_available' => false, 'message' => 'لایسنس معتبر نمی‌باشد.'], 403);
+            echo json_encode(['has_update' => false, 'message' => 'لایسنس معتبر نمی‌باشد.']);
+            exit;
         }
 
-        $updateAvailable = version_compare($license['latest_version'], (string)$currentVersion, '>');
+        $product = Database::fetch("SELECT * FROM products WHERE id = ?", [$productId]);
+        if (!$product) {
+            echo json_encode(['has_update' => false, 'message' => 'محصول یافت نشد.']);
+            exit;
+        }
 
-        Response::json([
-            'update_available' => $updateAvailable,
-            'product_title' => $license['product_title'],
-            'current_version' => $currentVersion,
-            'latest_version' => $license['latest_version'],
-            'download_url' => $updateAvailable ? "http://" . ($_SERVER['HTTP_HOST'] ?? 'localhost') . "/download?license=" . $license['license_key'] : '',
-            'changelog' => 'بهینه‌سازی کارایی و به‌روزرسانی هسته امنیتی EAFD.',
-        ]);
+        $latestVersion = $product['version'] ?? '1.0.0';
+
+        if (version_compare($latestVersion, $currentVersion, '>')) {
+            $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
+            $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
+            $downloadUrl = $protocol . '://' . $host . '/download?product_id=' . $productId . '&license_key=' . $licenseKey;
+
+            echo json_encode([
+                'has_update' => true,
+                'new_version' => $latestVersion,
+                'download_url' => $downloadUrl,
+                'changelog' => $product['changelog'] ?? 'به‌روزرسانی و بهبود کارایی.',
+                'requires_wp' => $product['wp_version'] ?? '6.0',
+                'requires_php' => $product['php_version'] ?? '8.2',
+            ]);
+            exit;
+        }
+
+        echo json_encode(['has_update' => false, 'message' => 'شما از آخرین نسخه استفاده می‌کنید.']);
+        exit;
     }
 }
