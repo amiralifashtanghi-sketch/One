@@ -50,6 +50,7 @@ body {
 
 /* Background Grid Intensity Modifiers */
 .eafd-grid-normal {
+  background-color: var(--eafd-color-bg);
   background-image:
     linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
     linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px) !important;
@@ -57,13 +58,15 @@ body {
 }
 
 .eafd-grid-subtle {
+  background-color: var(--eafd-color-bg);
   background-image:
-    linear-gradient(to right, rgba(255, 255, 255, 0.035) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.035) 1px, transparent 1px) !important;
+    linear-gradient(to right, var(--eafd-grid-line-color, rgba(255, 255, 255, 0.035)) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--eafd-grid-line-color, rgba(255, 255, 255, 0.035)) 1px, transparent 1px) !important;
   background-size: var(--eafd-grid-size) var(--eafd-grid-size) !important;
 }
 
 .eafd-grid-very-subtle {
+  background-color: var(--eafd-color-bg);
   background-image:
     linear-gradient(to right, rgba(255, 255, 255, 0.018) 1px, transparent 1px),
     linear-gradient(to bottom, rgba(255, 255, 255, 0.018) 1px, transparent 1px) !important;
@@ -139,6 +142,24 @@ a:hover {
   }
 }
 
+/* Form Control & Inputs */
+.input, .form-control {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--eafd-color-border);
+  color: var(--eafd-color-text);
+  padding: 8px 12px;
+  border-radius: var(--eafd-border-radius-sm, 6px);
+  font-family: var(--eafd-font-family);
+  font-size: 0.9rem;
+  outline: none;
+  transition: border-color var(--eafd-motion-speed) var(--eafd-motion-easing);
+}
+
+.input:focus, .form-control:focus {
+  border-color: var(--eafd-color-border-hover);
+  background: rgba(255, 255, 255, 0.08);
+}
+
 /* Standardized EAFD Button System */
 .btn, .eafd-btn-primary, .eafd-btn-secondary {
   display: inline-flex;
@@ -146,7 +167,7 @@ a:hover {
   justify-content: center;
   gap: 10px;
   padding: 12px 24px;
-  border-radius: 8px;
+  border-radius: var(--eafd-border-radius, 8px);
   font-size: 0.95rem;
   font-weight: 700;
   cursor: pointer;
@@ -154,6 +175,22 @@ a:hover {
   transition: all var(--eafd-motion-speed) var(--eafd-motion-easing);
   text-decoration: none;
   white-space: nowrap;
+}
+
+.card {
+  background: var(--eafd-color-surface);
+  border: 1px solid var(--eafd-color-border);
+  border-radius: var(--eafd-border-radius, 12px);
+  padding: var(--eafd-spacing-lg);
+  color: var(--eafd-color-text);
+  box-shadow: var(--eafd-shadow-subtle);
+  transition: border-color var(--eafd-motion-speed) var(--eafd-motion-easing),
+              background-color var(--eafd-motion-speed) var(--eafd-motion-easing);
+}
+
+.card:hover {
+  border-color: var(--eafd-color-border-hover);
+  background: var(--eafd-color-surface-hover);
 }
 
 .btn-primary, .eafd-btn-primary {

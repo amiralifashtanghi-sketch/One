@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <?= \App\Helpers\SeoHelper::renderMeta($page['title'] ?? 'EAFD', $page['summary'] ?? '') ?>
     <?= \App\Helpers\SeoHelper::renderOrganizationJsonLd() ?>
+    <link rel="stylesheet" href="/assets/css/design-tokens.css">
     <link rel="stylesheet" href="/assets/css/main.css">
 </head>
 <body class="eafd-grid-subtle">

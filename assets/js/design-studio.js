@@ -4,46 +4,54 @@
  */
 
 document.addEventListener('DOMContentLoaded', function() {
-    const colorInputs = document.querySelectorAll('.token-color-input');
-    const textInputs = document.querySelectorAll('.token-text-input');
+    const tokenInputs = document.querySelectorAll('[data-token]');
     const contrastBadge = document.getElementById('contrast-badge');
-    const contrastValue = document.getElementById('contrast-value');
 
-    // Bind inputs to CSS variables in real-time
-    colorInputs.forEach(input => {
-        input.addEventListener('input', function() {
+    tokenInputs.forEach(input => {
+        const handler = function() {
             const tokenKey = this.getAttribute('data-token');
-            document.documentElement.style.setProperty(tokenKey, this.value);
+            let val = this.value;
 
-            // Sync text input next to color picker
-            const textInput = document.querySelector(`input[data-token="${tokenKey}"].token-text-input`);
-            if (textInput) {
-                textInput.value = this.value;
+            // Ensure length tokens always include 'px' unit
+            if (this.type === 'range' || tokenKey.includes('grid-size') || tokenKey.includes('radius')) {
+                if (!val.endsWith('px') && !val.endsWith('rem') && !val.endsWith('%')) {
+                    val = val + 'px';
+                }
             }
 
+            // Immediately set CSS variable on :root
+            document.documentElement.style.setProperty(tokenKey, val);
+
+            // Sync paired text/color/hidden or range display inputs
+            const syncTargets = document.querySelectorAll(`[data-token="${tokenKey}"]`);
+            syncTargets.forEach(target => {
+                if (target !== this) {
+                    if (target.tagName === 'SPAN' || target.tagName === 'LABEL') {
+                        target.textContent = val;
+                    } else if (target.type === 'hidden' || target.type === 'text') {
+                        target.value = val;
+                    } else if (target.type === 'range') {
+                        target.value = parseInt(val, 10) || 0;
+                    } else if (target.type === 'color') {
+                        target.value = val;
+                    }
+                }
+            });
+
             checkContrast();
-        });
-    });
+        };
 
-    textInputs.forEach(input => {
-        input.addEventListener('input', function() {
-            const tokenKey = this.getAttribute('data-token');
-            document.documentElement.style.setProperty(tokenKey, this.value);
-
-            const colorInput = document.querySelector(`input[data-token="${tokenKey}"].token-color-input`);
-            if (colorInput) {
-                colorInput.value = this.value;
-            }
-
-            checkContrast();
-        });
+        input.addEventListener('input', handler);
+        input.addEventListener('change', handler);
     });
 
     function getLuminance(hex) {
-        hex = hex.replace('#', '');
+        if (!hex) return 0;
+        hex = hex.replace('#', '').trim();
         if (hex.length === 3) {
             hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2];
         }
+        if (hex.length !== 6) return 0;
 
         let r = parseInt(hex.substring(0, 2), 16) / 255;
         let g = parseInt(hex.substring(2, 4), 16) / 255;
@@ -57,10 +65,10 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function checkContrast() {
-        const bgInput = document.querySelector('input[data-token="--eafd-color-bg"]');
-        const textInput = document.querySelector('input[data-token="--eafd-color-text"]');
+        const bgInput = document.querySelector('[data-token="--eafd-color-bg"]');
+        const textInput = document.querySelector('[data-token="--eafd-color-text"]');
 
-        if (!bgInput || !textInput || !contrastBadge || !contrastValue) return;
+        if (!bgInput || !textInput || !contrastBadge) return;
 
         const bgLuminance = getLuminance(bgInput.value);
         const textLuminance = getLuminance(textInput.value);
@@ -70,13 +78,14 @@ document.addEventListener('DOMContentLoaded', function() {
             : (textLuminance + 0.05) / (bgLuminance + 0.05);
 
         ratio = Math.round(ratio * 100) / 100;
-        contrastValue.textContent = ratio + ':1';
 
         if (ratio >= 4.5) {
-            contrastBadge.className = 'badge badge-success';
+            contrastBadge.style.background = '#14532d';
+            contrastBadge.style.color = '#86efac';
             contrastBadge.textContent = '✓ تایید WCAG 2.2 AA (' + ratio + ':1)';
         } else {
-            contrastBadge.className = 'badge badge-danger';
+            contrastBadge.style.background = '#7f1d1d';
+            contrastBadge.style.color = '#fca5a5';
             contrastBadge.textContent = '✕ هشدار: کنتراست ضعیف (' + ratio + ':1 < 4.5:1)';
         }
     }

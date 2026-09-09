@@ -41,9 +41,16 @@ class DesignStudioController extends Controller
         $tokensData = $request->post('tokens', []);
 
         foreach ($tokensData as $key => $value) {
-            if (str_starts_with($key, '--eafd-')) {
-                $this->tokenModel->setToken($key, (string)$value);
+            if (!str_starts_with($key, '--eafd-')) {
+                continue;
             }
+            $val = trim((string)$value);
+            if (str_contains($key, 'grid-size') || str_contains($key, 'radius')) {
+                if ($val !== '' && is_numeric($val)) {
+                    $val = $val . 'px';
+                }
+            }
+            $this->tokenModel->setToken($key, $val);
         }
 
         $this->regenerateCssFile();
@@ -88,8 +95,19 @@ class DesignStudioController extends Controller
 
         $cssContent .= "}\n";
 
-        $destPath = __DIR__ . '/../../../assets/css/design-tokens.css';
-        file_put_contents($destPath, $cssContent, LOCK_EX);
+        $baseDir = defined('EAFD_BASE_DIR') ? EAFD_BASE_DIR : dirname(__DIR__, 3);
+        $paths = [
+            $baseDir . '/assets/css/design-tokens.css',
+            $baseDir . '/public/assets/css/design-tokens.css'
+        ];
+
+        foreach ($paths as $destPath) {
+            $dir = dirname($destPath);
+            if (!is_dir($dir)) {
+                @mkdir($dir, 0755, true);
+            }
+            @file_put_contents($destPath, $cssContent, LOCK_EX);
+        }
     }
 
     protected function calculateContrastRatio(string $hex1, string $hex2): float
