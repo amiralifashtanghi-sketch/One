@@ -14,6 +14,21 @@ defined( 'ABSPATH' ) || exit;
 
 	<h2 class="eafd-cart-summary-title">خلاصه صورت‌حساب</h2>
 
+	<?php if ( wc_coupons_enabled() ) : ?>
+		<div class="eafd-accordion-card eafd-coupon-accordion">
+			<div class="eafd-accordion-header js-eafd-toggle-accordion">
+				<span>کد تخفیف دارید؟</span>
+				<span class="eafd-accordion-toggle-icon">▼</span>
+			</div>
+			<div class="eafd-accordion-body">
+				<div class="eafd-coupon-box">
+					<input type="text" name="coupon_code" class="eafd-coupon-input" id="cart_totals_coupon_code" value="" placeholder="کد تخفیف را وارد کنید" />
+					<button type="button" class="button eafd-btn eafd-btn-primary js-eafd-apply-coupon-btn">اعمال کد</button>
+				</div>
+			</div>
+		</div>
+	<?php endif; ?>
+
 	<table cellspacing="0" class="shop_table shop_table_responsive eafd-cart-totals-table">
 
 		<tr class="cart-subtotal">

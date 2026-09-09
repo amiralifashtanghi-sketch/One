@@ -155,31 +155,80 @@ document.addEventListener('DOMContentLoaded', function () {
 	if (cartOverlay) cartOverlay.addEventListener('click', closeCart);
 
 	// ==========================================
-	// 4. QUANTITY CONTROLS (+ / -) LOGIC
+	// 4. QUANTITY CONTROLS (+ / -) & AJAX CART LOGIC
 	// ==========================================
+	let cartUpdateTimeout = null;
+
 	document.body.addEventListener('click', function (e) {
 		if (e.target.classList.contains('eafd-qty-plus')) {
-			const input = e.target.parentElement.querySelector('input.qty');
+			const qtyBox = e.target.closest('.eafd-cart-quantity-box, .eafd-quantity-control');
+			const input = qtyBox ? qtyBox.querySelector('input.qty') : null;
 			if (input) {
 				const val = parseInt(input.value) || 0;
 				const max = parseInt(input.getAttribute('max')) || 999;
 				if (val < max) {
 					input.value = val + 1;
-					input.dispatchEvent(new Event('change', { bubbles: true }));
+					triggerCartUpdate(qtyBox);
 				}
 			}
 		}
 
 		if (e.target.classList.contains('eafd-qty-minus')) {
-			const input = e.target.parentElement.querySelector('input.qty');
+			const qtyBox = e.target.closest('.eafd-cart-quantity-box, .eafd-quantity-control');
+			const input = qtyBox ? qtyBox.querySelector('input.qty') : null;
 			if (input) {
 				const val = parseInt(input.value) || 0;
 				const min = parseInt(input.getAttribute('min')) || 1;
 				if (val > min) {
 					input.value = val - 1;
-					input.dispatchEvent(new Event('change', { bubbles: true }));
+					triggerCartUpdate(qtyBox);
 				}
 			}
 		}
+
+		// Accordion Toggles
+		const accordionHeader = e.target.closest('.js-eafd-toggle-accordion, .eafd-accordion-header');
+		if (accordionHeader) {
+			const card = accordionHeader.closest('.eafd-accordion-card');
+			if (card) {
+				card.classList.toggle('is-open');
+			}
+		}
+
+		// Apply Coupon Bridge Button
+		if (e.target.classList.contains('js-eafd-apply-coupon-btn')) {
+			const couponInput = document.getElementById('cart_totals_coupon_code');
+			const mainCouponInput = document.getElementById('coupon_code');
+			const mainApplyBtn = document.querySelector('button[name="apply_coupon"]');
+			if (couponInput && mainCouponInput) {
+				mainCouponInput.value = couponInput.value;
+				if (mainApplyBtn) mainApplyBtn.click();
+			}
+		}
+
+		// Place Order Button Loading State
+		if (e.target.id === 'place_order' || e.target.closest('#place_order')) {
+			const placeBtn = document.getElementById('place_order');
+			if (placeBtn && !placeBtn.classList.contains('is-processing')) {
+				setTimeout(function () {
+					placeBtn.classList.add('is-processing');
+					placeBtn.innerHTML = '⏳ در حال پردازش سفارش...';
+				}, 100);
+			}
+		}
 	});
+
+	function triggerCartUpdate(qtyBox) {
+		if (qtyBox) qtyBox.classList.add('is-loading');
+
+		if (cartUpdateTimeout) clearTimeout(cartUpdateTimeout);
+
+		cartUpdateTimeout = setTimeout(function () {
+			const updateBtn = document.querySelector('button[name="update_cart"]');
+			if (updateBtn) {
+				updateBtn.disabled = false;
+				updateBtn.click();
+			}
+		}, 400);
+	}
 });

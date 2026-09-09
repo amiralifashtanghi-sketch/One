@@ -11,6 +11,25 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 do_action( 'woocommerce_before_checkout_form', $checkout );
 
+// Mobile top collapsible order summary
+?>
+<div class="eafd-accordion-card eafd-mobile-checkout-summary js-eafd-mobile-summary">
+	<div class="eafd-accordion-header js-eafd-toggle-accordion">
+		<div class="eafd-mobile-summary-title">
+			<span>🛍️ خلاصه سفارش</span>
+			<span class="eafd-mobile-summary-total"><?php echo WC()->cart->get_total(); ?></span>
+		</div>
+		<span class="eafd-accordion-toggle-icon">▼</span>
+	</div>
+	<div class="eafd-accordion-body">
+		<?php do_action( 'woocommerce_checkout_before_order_review' ); ?>
+		<div class="woocommerce-checkout-review-order">
+			<?php woocommerce_order_review(); ?>
+		</div>
+	</div>
+</div>
+
+<?php
 // If checkout registration is disabled and not logged in, the user cannot checkout.
 if ( ! $checkout->is_registration_enabled() && $checkout->is_registration_required() && ! is_user_logged_in() ) {
 	echo esc_html( apply_filters( 'woocommerce_checkout_must_be_logged_in_message', __( 'You must be logged in to checkout.', 'woocommerce' ) ) );
