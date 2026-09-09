@@ -1,51 +1,40 @@
 /* ==========================================
    EAFD WooCommerce Theme Reset & Force Override Layer
+   Targeted strictly to main content areas to protect site header & hamburger menus
    ========================================== */
 
-body.woocommerce-page,
-body.woocommerce-account,
-body.woocommerce-cart,
-body.woocommerce-checkout {
-    background-color: #f8fafc !important;
-    overflow-x: hidden !important;
-    width: 100% !important;
+/* Universal Box-Sizing for WooCommerce Plugin Containers */
+.eafd-wc-container,
+.eafd-wc-checkout-wrapper,
+.checkout-container,
+.cart-container-wrapper,
+.eafd-dashboard-container {
+    box-sizing: border-box !important;
     max-width: 100% !important;
+    width: 100% !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
 }
 
-/* Force Reset Parent Theme Wrappers & Containers for Custom Themes */
-body.woocommerce-checkout .container,
-body.woocommerce-checkout .site-main,
-body.woocommerce-checkout #primary,
-body.woocommerce-checkout #content,
+/* Force Reset Main Content Parent Wrappers while explicitly protecting Header & Navigation */
+body.woocommerce-checkout main:not(header):not(nav),
 body.woocommerce-checkout .entry-content,
-body.woocommerce-checkout .site-content,
-body.woocommerce-checkout .page-content,
-body.woocommerce-checkout .main-content,
-body.woocommerce-checkout .page-wrapper,
-body.woocommerce-cart .container,
-body.woocommerce-cart .site-main,
-body.woocommerce-cart #primary,
-body.woocommerce-cart #content,
+body.woocommerce-checkout #primary:not(header):not(nav),
+body.woocommerce-checkout #content:not(header):not(nav),
+body.woocommerce-cart main:not(header):not(nav),
 body.woocommerce-cart .entry-content,
-body.woocommerce-cart .site-content,
-body.woocommerce-cart .page-content,
-body.woocommerce-cart .main-content,
-body.woocommerce-cart .page-wrapper,
-body.woocommerce-account .container,
-body.woocommerce-account .site-main,
-body.woocommerce-account #primary,
-body.woocommerce-account #content,
+body.woocommerce-cart #primary:not(header):not(nav),
+body.woocommerce-cart #content:not(header):not(nav),
+body.woocommerce-account main:not(header):not(nav),
 body.woocommerce-account .entry-content,
-body.woocommerce-account .site-content,
-body.woocommerce-account .page-content,
-body.woocommerce-account .main-content,
-body.woocommerce-account .page-wrapper {
+body.woocommerce-account #primary:not(header):not(nav),
+body.woocommerce-account #content:not(header):not(nav) {
     max-width: 100% !important;
     width: 100% !important;
     padding-left: 0 !important;
     padding-right: 0 !important;
-    margin-left: 0 !important;
-    margin-right: 0 !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
     box-sizing: border-box !important;
     float: none !important;
 }
@@ -69,7 +58,7 @@ body.woocommerce-account .page-wrapper {
     grid-template-columns: 1fr 1fr !important;
     gap: 24px !important;
     width: 100% !important;
-    max-width: 100% !important;
+    max-width: 1200px !important;
     box-sizing: border-box !important;
     margin: 0 auto !important;
     padding: 24px !important;
@@ -80,6 +69,8 @@ body.woocommerce-account .page-wrapper {
         grid-template-columns: 1fr !important;
         padding: 12px !important;
         gap: 16px !important;
+        width: 100% !important;
+        max-width: 100% !important;
     }
 }
 
@@ -118,7 +109,7 @@ body.woocommerce-account .page-wrapper {
     max-width: 100% !important;
 }
 
-/* Premium Skeuomorphic Place Order Button Override */
+/* Premium Place Order Button Override */
 .woocommerce-cart .button,
 .woocommerce-checkout .button,
 #place_order {

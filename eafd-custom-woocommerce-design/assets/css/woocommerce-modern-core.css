@@ -1,30 +1,60 @@
 /* ==========================================
    EAFD Modern Combined Styles: Glass, Neo & Skeuo
    High Performance Ultra Fast Render CSS
+   Guaranteed Zero Horizontal Overflow & Zero Double Scroll
    ========================================== */
 
-/* Universal Mobile Prevent Horizontal Overflow */
-html, body {
-    max-width: 100% !important;
-    overflow-x: hidden !important;
+/* Universal Reset for Plugin Components */
+.eafd-wc-container,
+.eafd-wc-checkout-wrapper,
+.checkout-container,
+.cart-container-wrapper,
+.eafd-dashboard-container {
+    box-sizing: border-box !important;
+    width: 100% !important;
+    max-width: 1200px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    padding-left: 15px !important;
+    padding-right: 15px !important;
 }
 
-*, *::before, *::after {
+/* Eliminate any unintended nested / double scrollbars */
+.eafd-wc-container,
+.eafd-wc-checkout-wrapper,
+.checkout-container,
+.cart-container-wrapper,
+.eafd-dashboard-container,
+.glass-card,
+.neumor-card,
+.order-summary,
+.cart-summary,
+.woocommerce-checkout-review-order,
+.shop_table {
+    overflow: visible !important;
+}
+
+/* Ensure flex/grid items never expand past 100% parent width */
+.checkout-container > *,
+.cart-grid-layout > *,
+.eafd-widgets-grid > *,
+.car-card,
+.glass-card,
+.neumor-card {
+    min-width: 0 !important;
+    max-width: 100% !important;
     box-sizing: border-box !important;
 }
 
-/* Base Container */
+/* Base Dashboard Container */
 .eafd-dashboard-container {
     display: flex;
-    max-width: 1400px;
     margin: 20px auto;
     gap: 24px;
     position: relative;
     z-index: 1;
     direction: rtl;
     font-family: var(--font);
-    contain: layout style;
-    width: 100%;
 }
 
 /* Glassmorphic Sidebar & Header */
@@ -46,8 +76,6 @@ html, body {
     box-shadow: var(--shadow-neo-out, 6px 6px 16px #bdc3c7, -6px -6px 16px #ffffff);
     padding: 20px;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
-    contain: layout style;
-    max-width: 100%;
 }
 
 /* Skeuomorphic & Glossy Place Order Buttons */
@@ -69,6 +97,7 @@ html, body {
     text-align: center !important;
     text-decoration: none !important;
     margin-top: 15px !important;
+    box-sizing: border-box !important;
 }
 
 .eafd-btn-skeuo:hover,
@@ -88,26 +117,25 @@ html, body {
 
 /* Checkout Container Integration */
 .checkout-container {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 2rem;
-    max-width: 100% !important;
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 2rem !important;
     width: 100% !important;
-    margin: 15px auto;
-    padding: 1.5rem;
-    background: #ffffff;
-    border-radius: 20px;
-    border: 1px solid #e2e8f0;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-    direction: rtl;
-    font-family: var(--font, 'Vazirmatn', sans-serif);
-    box-sizing: border-box;
+    max-width: 1200px !important;
+    margin: 15px auto !important;
+    padding: 1.5rem !important;
+    background: #ffffff !important;
+    border-radius: 20px !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05) !important;
+    direction: rtl !important;
+    font-family: var(--font, 'Vazirmatn', sans-serif) !important;
+    box-sizing: border-box !important;
 }
 
 .woocommerce-checkout {
     width: 100% !important;
     max-width: 100% !important;
-    overflow-x: hidden !important;
 }
 
 /* Glassmorphism Card */
@@ -117,7 +145,6 @@ html, body {
     border-radius: 16px;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
     padding: 1.5rem;
-    max-width: 100%;
 }
 
 /* Neomorphism Inputs & Elements */
@@ -126,7 +153,6 @@ html, body {
     border-radius: 16px;
     box-shadow: inset 0 0 0 1px #e2e8f0;
     padding: 1.5rem;
-    max-width: 100%;
 }
 
 /* Form Row Responsive Fixes for WooCommerce */
@@ -147,10 +173,14 @@ html, body {
     display: flex;
     flex-direction: column;
     gap: 12px;
+    width: 100% !important;
+    box-sizing: border-box !important;
 }
 
+/* Select2 Dropdown Zero Overflow */
 .select2-container,
-.select2-container--default {
+.select2-container--default,
+.select2-container .select2-selection--single {
     width: 100% !important;
     max-width: 100% !important;
     box-sizing: border-box !important;
@@ -165,7 +195,7 @@ html, body {
     align-items: center !important;
 }
 
-/* Neomorphic & Glass Inputs */
+/* Inputs & Textareas Zero Overflow */
 .neumor-input,
 .checkout-container input[type="text"],
 .checkout-container input[type="tel"],
@@ -201,6 +231,7 @@ html, body {
     table-layout: fixed !important;
     border-collapse: collapse !important;
     word-break: break-word !important;
+    box-sizing: border-box !important;
 }
 
 .shop_table th, .shop_table td {
@@ -213,7 +244,6 @@ html, body {
 /* Cart Page Responsive Overrides */
 .car-card {
     transition: transform 0.2s ease, box-shadow 0.2s ease;
-    max-width: 100% !important;
 }
 
 .cart-quantity-input-box input.qty {
@@ -227,11 +257,20 @@ html, body {
     padding: 0 !important;
 }
 
-/* Responsive Mobile Layouts (< 768px) */
+/* Responsive Mobile Breakpoints (320px - 768px) */
 @media (max-width: 768px) {
+    .eafd-wc-container,
+    .eafd-wc-checkout-wrapper,
+    .checkout-container,
+    .cart-container-wrapper,
+    .eafd-dashboard-container {
+        padding-left: 10px !important;
+        padding-right: 10px !important;
+    }
+
     .checkout-container {
         grid-template-columns: 1fr !important;
-        padding: 10px !important;
+        padding: 12px !important;
         gap: 16px !important;
         border-radius: 16px !important;
     }
@@ -287,7 +326,6 @@ html, body {
 
     .eafd-dashboard-container {
         flex-direction: column !important;
-        padding: 0 10px !important;
     }
 
     .eafd-sidebar {
