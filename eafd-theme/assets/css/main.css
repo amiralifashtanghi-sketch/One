@@ -181,11 +181,32 @@ img {
 	overflow: hidden;
 	box-shadow: var(--eafd-shadow);
 	background: #fff;
+	height: 400px; /* Fixed height for desktop */
+	width: 100%;
+}
+
+@media (max-width: 992px) {
+	.eafd-hero-slider-wrapper {
+		height: 300px;
+	}
+}
+
+@media (max-width: 768px) {
+	.eafd-hero-slider-wrapper {
+		height: 220px;
+	}
+}
+
+@media (max-width: 480px) {
+	.eafd-hero-slider-wrapper {
+		height: 180px;
+	}
 }
 
 .eafd-hero-slider {
 	position: relative;
 	width: 100%;
+	height: 100%;
 	overflow: hidden;
 }
 
@@ -193,24 +214,28 @@ img {
 	display: flex;
 	transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
 	width: 100%;
+	height: 100%;
 }
 
 .eafd-slide {
 	position: relative;
 	min-width: 100%;
 	flex: 0 0 100%;
+	height: 100%;
 }
 
 .eafd-slide-picture {
 	display: block;
 	width: 100%;
+	height: 100%;
 }
 
 .eafd-hero-img {
-	width: 100%;
-	height: auto;
-	max-height: 480px;
-	object-fit: cover;
+	width: 100% !important;
+	height: 100% !important;
+	max-height: none !important;
+	object-fit: cover !important;
+	object-position: center center !important;
 	display: block;
 }
 
