@@ -80,7 +80,6 @@ do_action( 'woocommerce_before_cart' ); ?>
 
 								<div class="eafd-cart-item-body">
 									<div class="eafd-cart-quantity-box">
-										<span class="eafd-qty-btn eafd-qty-minus">-</span>
 										<?php
 										if ( $_product->is_sold_individually() ) {
 											$min_quantity = 1;
@@ -104,7 +103,6 @@ do_action( 'woocommerce_before_cart' ); ?>
 
 										echo apply_filters( 'woocommerce_cart_item_quantity', $product_quantity, $cart_item_key, $cart_item ); // PHPCS: XSS ok.
 										?>
-										<span class="eafd-qty-btn eafd-qty-plus">+</span>
 									</div>
 
 									<div class="eafd-cart-item-price-column">
@@ -126,15 +124,7 @@ do_action( 'woocommerce_before_cart' ); ?>
 				<?php do_action( 'woocommerce_cart_contents' ); ?>
 
 				<div class="eafd-cart-actions-row">
-					<?php if ( wc_coupons_enabled() ) { ?>
-						<div class="eafd-coupon-box">
-							<input type="text" name="coupon_code" class="eafd-coupon-input" id="coupon_code" value="" placeholder="کد تخفیف..." />
-							<button type="submit" class="button eafd-btn eafd-btn-outline" name="apply_coupon" value="<?php esc_attr_e( 'Apply coupon', 'woocommerce' ); ?>">اعمال کد</button>
-							<?php do_action( 'woocommerce_cart_coupon' ); ?>
-						</div>
-					<?php } ?>
-
-					<button type="submit" class="button eafd-btn eafd-btn-outline eafd-update-cart-btn" name="update_cart" value="<?php esc_attr_e( 'Update cart', 'woocommerce' ); ?>">به‌روزرسانی سبد</button>
+					<button type="submit" class="button eafd-btn eafd-btn-outline eafd-update-cart-btn" name="update_cart" value="<?php esc_attr_e( 'Update cart', 'woocommerce' ); ?>">به‌روزرسانی سبد خرید</button>
 
 					<?php do_action( 'woocommerce_cart_actions' ); ?>
 
