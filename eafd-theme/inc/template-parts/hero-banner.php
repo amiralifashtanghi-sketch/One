@@ -53,10 +53,6 @@ if ( empty( $hero_slides ) && ! empty( $hero_banner_url ) ) {
 								<div class="eafd-slide-content">
 									<?php if ( $subtitle ) : ?>
 										<div class="eafd-hero-location-pill">
-											<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-												<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-												<circle cx="12" cy="10" r="3"></circle>
-											</svg>
 											<span><?php echo esc_html( $subtitle ); ?></span>
 										</div>
 									<?php endif; ?>
@@ -71,10 +67,6 @@ if ( empty( $hero_slides ) && ! empty( $hero_banner_url ) ) {
 								</div>
 							<?php elseif ( ! empty( $hero_location_tag ) ) : ?>
 								<div class="eafd-hero-location-pill">
-									<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-										<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-										<circle cx="12" cy="10" r="3"></circle>
-									</svg>
 									<span><?php echo esc_html( $hero_location_tag ); ?></span>
 								</div>
 							<?php endif; ?>

@@ -241,13 +241,16 @@ function eafd_ajax_filter_products() {
 					<a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
 				</h3>
 
-				<div class="eafd-product-price-box">
-					<?php if ( $regular_price > 0 && $sale_price > 0 ) : ?>
-						<del class="eafd-regular-price"><?php echo esc_html( eafd_convert_to_persian_digits( number_format( $regular_price ) ) ); ?> تومان</del>
-						<ins class="eafd-sale-price"><?php echo esc_html( eafd_convert_to_persian_digits( number_format( $sale_price ) ) ); ?> تومان</ins>
-					<?php else : ?>
-						<span class="eafd-sale-price"><?php echo $product->get_price_html(); ?></span>
-					<?php endif; ?>
+				<div class="eafd-product-footer" style="display: flex; align-items: center; justify-content: space-between; margin-top: 10px; width: 100%;">
+					<div class="eafd-product-price-box">
+						<?php if ( $regular_price > 0 && $sale_price > 0 ) : ?>
+							<del class="eafd-regular-price"><?php echo esc_html( eafd_convert_to_persian_digits( number_format( $regular_price ) ) ); ?> تومان</del>
+							<ins class="eafd-sale-price"><?php echo esc_html( eafd_convert_to_persian_digits( number_format( $sale_price ) ) ); ?> تومان</ins>
+						<?php else : ?>
+							<span class="eafd-sale-price"><?php echo $product->get_price_html(); ?></span>
+						<?php endif; ?>
+					</div>
+					<a href="<?php the_permalink(); ?>" class="eafd-product-buy-btn" style="background: var(--eafd-primary); color: #fff; padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 700; text-decoration: none; display: inline-block;">خرید کنید</a>
 				</div>
 			</div>
 			<?php

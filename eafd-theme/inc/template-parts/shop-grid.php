@@ -62,13 +62,16 @@ $shop_products = new WP_Query( $args );
 							<a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
 						</h3>
 
-						<div class="eafd-product-price-box">
-							<?php if ( $regular_price > 0 && $sale_price > 0 ) : ?>
-								<del class="eafd-regular-price"><?php echo esc_html( eafd_convert_to_persian_digits( number_format( $regular_price ) ) ); ?> تومان</del>
-								<ins class="eafd-sale-price"><?php echo esc_html( eafd_convert_to_persian_digits( number_format( $sale_price ) ) ); ?> تومان</ins>
-							<?php else : ?>
-								<span class="eafd-sale-price"><?php echo $product->get_price_html(); ?></span>
-							<?php endif; ?>
+						<div class="eafd-product-footer" style="display: flex; align-items: center; justify-content: space-between; margin-top: 10px; width: 100%;">
+							<div class="eafd-product-price-box">
+								<?php if ( $regular_price > 0 && $sale_price > 0 ) : ?>
+									<del class="eafd-regular-price"><?php echo esc_html( eafd_convert_to_persian_digits( number_format( $regular_price ) ) ); ?> تومان</del>
+									<ins class="eafd-sale-price"><?php echo esc_html( eafd_convert_to_persian_digits( number_format( $sale_price ) ) ); ?> تومان</ins>
+								<?php else : ?>
+									<span class="eafd-sale-price"><?php echo $product->get_price_html(); ?></span>
+								<?php endif; ?>
+							</div>
+							<a href="<?php the_permalink(); ?>" class="eafd-product-buy-btn" style="background: var(--eafd-primary); color: #fff; padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 700; text-decoration: none; display: inline-block;">خرید کنید</a>
 						</div>
 					</div>
 				<?php endwhile; wp_reset_postdata(); ?>
@@ -93,11 +96,14 @@ $shop_products = new WP_Query( $args );
 							<svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="#aaa" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
 						</div>
 						<h3 class="eafd-product-title"><a href="#"><?php echo esc_html( $item['title'] ); ?></a></h3>
-						<div class="eafd-product-price-box">
-							<?php if ( isset( $item['old_price'] ) ) : ?>
-								<del class="eafd-regular-price"><?php echo esc_html( $item['old_price'] ); ?></del>
-							<?php endif; ?>
-							<span class="eafd-sale-price"><?php echo esc_html( $item['price'] ); ?></span>
+						<div class="eafd-product-footer" style="display: flex; align-items: center; justify-content: space-between; margin-top: 10px; width: 100%;">
+							<div class="eafd-product-price-box">
+								<?php if ( isset( $item['old_price'] ) ) : ?>
+									<del class="eafd-regular-price"><?php echo esc_html( $item['old_price'] ); ?></del>
+								<?php endif; ?>
+								<span class="eafd-sale-price"><?php echo esc_html( $item['price'] ); ?></span>
+							</div>
+							<a href="#" class="eafd-product-buy-btn" style="background: var(--eafd-primary); color: #fff; padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 700; text-decoration: none; display: inline-block;">خرید کنید</a>
 						</div>
 					</div>
 				<?php endforeach; ?>
