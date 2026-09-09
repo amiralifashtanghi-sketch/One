@@ -85,9 +85,36 @@ function eafd_sanitize_options( $input ) {
 	$output['logo_url']    = isset( $input['logo_url'] ) ? esc_url_raw( $input['logo_url'] ) : '';
 	$output['all_products_cat_img'] = isset( $input['all_products_cat_img'] ) ? esc_url_raw( $input['all_products_cat_img'] ) : '';
 
-	// Hero Banner
+	// Hero Banner & Slider
 	$output['hero_banner_url']  = isset( $input['hero_banner_url'] ) ? esc_url_raw( $input['hero_banner_url'] ) : '';
 	$output['hero_location_tag'] = isset( $input['hero_location_tag'] ) ? sanitize_text_field( $input['hero_location_tag'] ) : 'سبزوار - توحید شهر - فرزاندگان ۵';
+
+	$sanitized_slides = array();
+	if ( isset( $input['hero_slides'] ) && is_array( $input['hero_slides'] ) ) {
+		foreach ( $input['hero_slides'] as $slide ) {
+			if ( ! is_array( $slide ) ) {
+				continue;
+			}
+			$desktop_img = isset( $slide['desktop_img'] ) ? esc_url_raw( $slide['desktop_img'] ) : '';
+			$mobile_img  = isset( $slide['mobile_img'] ) ? esc_url_raw( $slide['mobile_img'] ) : '';
+			$title       = isset( $slide['title'] ) ? sanitize_text_field( $slide['title'] ) : '';
+			$subtitle    = isset( $slide['subtitle'] ) ? sanitize_text_field( $slide['subtitle'] ) : '';
+			$btn_text    = isset( $slide['btn_text'] ) ? sanitize_text_field( $slide['btn_text'] ) : '';
+			$btn_link    = isset( $slide['btn_link'] ) ? esc_url_raw( $slide['btn_link'] ) : '';
+
+			if ( ! empty( $desktop_img ) || ! empty( $mobile_img ) || ! empty( $title ) ) {
+				$sanitized_slides[] = array(
+					'desktop_img' => $desktop_img,
+					'mobile_img'  => $mobile_img,
+					'title'       => $title,
+					'subtitle'    => $subtitle,
+					'btn_text'    => $btn_text,
+					'btn_link'    => $btn_link,
+				);
+			}
+		}
+	}
+	$output['hero_slides'] = $sanitized_slides;
 
 	// Navigation Menus
 	$output['hamburger_menu_id'] = isset( $input['hamburger_menu_id'] ) ? absint( $input['hamburger_menu_id'] ) : 0;
@@ -120,6 +147,19 @@ function eafd_render_admin_page() {
 	$all_products_cat_img = eafd_get_option( 'all_products_cat_img', '' );
 	$hero_banner_url   = eafd_get_option( 'hero_banner_url', '' );
 	$hero_location_tag = eafd_get_option( 'hero_location_tag', 'سبزوار - توحید شهر - فرزاندگان ۵' );
+	$hero_slides       = eafd_get_option( 'hero_slides', array() );
+	if ( empty( $hero_slides ) && ! empty( $hero_banner_url ) ) {
+		$hero_slides = array(
+			array(
+				'desktop_img' => $hero_banner_url,
+				'mobile_img'  => $hero_banner_url,
+				'title'       => '',
+				'subtitle'    => $hero_location_tag,
+				'btn_text'    => '',
+				'btn_link'    => '#',
+			)
+		);
+	}
 	$hamburger_menu_id = eafd_get_option( 'hamburger_menu_id', 0 );
 	$footer_menu_id    = eafd_get_option( 'footer_menu_id', 0 );
 	$footer_about      = eafd_get_option( 'footer_about', 'فروشگاه محصولات ارگانیک سجاد برزویی آماده ثبت سفارش آنلاین شماست.' );
@@ -193,23 +233,61 @@ function eafd_render_admin_page() {
 				</table>
 			</div>
 
-			<!-- HERO BANNER SETTINGS -->
+			<!-- HERO BANNER & SLIDER SETTINGS -->
 			<div style="margin-bottom: 30px; border-bottom: 2px solid #f0f0f0; padding-bottom: 20px;">
-				<h2 style="font-size: 18px; color: #111; margin-bottom: 15px;">🖼️ بنر اصلی (Hero Banner)</h2>
-				<table class="form-table" role="presentation">
-					<tr>
-						<th scope="row"><label for="hero_banner_url">تصویر بنر اصلی</label></th>
-						<td>
-							<input type="text" id="hero_banner_url" name="<?php echo esc_attr( EAFD_OPTIONS_KEY ); ?>[hero_banner_url]" value="<?php echo esc_attr( $hero_banner_url ); ?>" class="regular-text" />
-							<button type="button" class="button eafd-upload-btn" data-target="#hero_banner_url">انتخاب / آپلود بنر</button>
-							<div id="hero_preview" style="margin-top: 10px;"><?php if ( $hero_banner_url ) : ?><img src="<?php echo esc_url( $hero_banner_url ); ?>" style="max-height: 100px; border-radius: 8px;" /><?php endif; ?></div>
-						</td>
-					</tr>
-					<tr>
-						<th scope="row"><label for="hero_location_tag">متن آدرس / برچسب روی بنر</label></th>
-						<td><input type="text" id="hero_location_tag" name="<?php echo esc_attr( EAFD_OPTIONS_KEY ); ?>[hero_location_tag]" value="<?php echo esc_attr( $hero_location_tag ); ?>" class="regular-text" placeholder="مثال: سبزوار - توحید شهر - فرزاندگان ۵" /></td>
-					</tr>
-				</table>
+				<h2 style="font-size: 18px; color: #111; margin-bottom: 15px;">🖼️ اسلایدر و بنرهای اصلی هیرو (Hero Banner Slider)</h2>
+				<p class="description" style="margin-bottom: 15px;">شما می‌توانید چندین اسلاید را برای اسلایدر اصلی سایت تعریف کنید. برای هر اسلاید تصویر دسکتاپ و موبایل، عنوان و دکمه لینک دلخواه قرار دهید.</p>
+
+				<div id="eafd-slides-container">
+					<?php if ( ! empty( $hero_slides ) ) : ?>
+						<?php foreach ( $hero_slides as $index => $slide ) : ?>
+							<div class="eafd-slide-item" style="background: #f9f9f9; border: 1px solid #e2e8f0; border-radius: 10px; padding: 15px; margin-bottom: 15px; position: relative;">
+								<span class="eafd-remove-slide" style="position: absolute; left: 15px; top: 15px; color: #e53e3e; cursor: pointer; font-weight: bold;">❌ حذف اسلاید</span>
+								<h3 style="margin-top: 0; font-size: 15px; color: #2d3748;">اسلاید شماره <span class="slide-num"><?php echo $index + 1; ?></span></h3>
+
+								<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 10px;">
+									<div>
+										<label style="display: block; font-weight: bold; margin-bottom: 5px;">تصویر دسکتاپ:</label>
+										<input type="text" class="regular-text slide-desktop-img" name="<?php echo esc_attr( EAFD_OPTIONS_KEY ); ?>[hero_slides][<?php echo $index; ?>][desktop_img]" value="<?php echo esc_attr( $slide['desktop_img'] ?? '' ); ?>" style="width: 100%;" />
+										<button type="button" class="button eafd-slide-upload-btn" style="margin-top: 5px;">انتخاب تصویر دسکتاپ</button>
+									</div>
+									<div>
+										<label style="display: block; font-weight: bold; margin-bottom: 5px;">تصویر موبایل (اختیاری):</label>
+										<input type="text" class="regular-text slide-mobile-img" name="<?php echo esc_attr( EAFD_OPTIONS_KEY ); ?>[hero_slides][<?php echo $index; ?>][mobile_img]" value="<?php echo esc_attr( $slide['mobile_img'] ?? '' ); ?>" style="width: 100%;" />
+										<button type="button" class="button eafd-slide-upload-btn" style="margin-top: 5px;">انتخاب تصویر موبایل</button>
+									</div>
+								</div>
+
+								<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 10px;">
+									<div>
+										<label style="display: block; font-weight: bold; margin-bottom: 5px;">عنوان اسلاید:</label>
+										<input type="text" name="<?php echo esc_attr( EAFD_OPTIONS_KEY ); ?>[hero_slides][<?php echo $index; ?>][title]" value="<?php echo esc_attr( $slide['title'] ?? '' ); ?>" style="width: 100%;" placeholder="مثال: جشنواره فروش ویژه تابستانه" />
+									</div>
+									<div>
+										<label style="display: block; font-weight: bold; margin-bottom: 5px;">زیرعنوان / برچسب:</label>
+										<input type="text" name="<?php echo esc_attr( EAFD_OPTIONS_KEY ); ?>[hero_slides][<?php echo $index; ?>][subtitle]" value="<?php echo esc_attr( $slide['subtitle'] ?? '' ); ?>" style="width: 100%;" placeholder="مثال: تا ۵۰٪ تخفیف روی تمامی محصولات" />
+									</div>
+								</div>
+
+								<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+									<div>
+										<label style="display: block; font-weight: bold; margin-bottom: 5px;">متن دکمه:</label>
+										<input type="text" name="<?php echo esc_attr( EAFD_OPTIONS_KEY ); ?>[hero_slides][<?php echo $index; ?>][btn_text]" value="<?php echo esc_attr( $slide['btn_text'] ?? '' ); ?>" style="width: 100%;" placeholder="مثال: مشاهده و خرید" />
+									</div>
+									<div>
+										<label style="display: block; font-weight: bold; margin-bottom: 5px;">لینک دکمه:</label>
+										<input type="text" name="<?php echo esc_attr( EAFD_OPTIONS_KEY ); ?>[hero_slides][<?php echo $index; ?>][btn_link]" value="<?php echo esc_attr( $slide['btn_link'] ?? '' ); ?>" style="width: 100%;" placeholder="https://..." />
+									</div>
+								</div>
+							</div>
+						<?php endforeach; ?>
+					<?php endif; ?>
+				</div>
+
+				<button type="button" id="eafd-add-slide-btn" class="button button-primary" style="margin-top: 10px; font-weight: bold;">➕ افزودن اسلاید جدید</button>
+
+				<input type="hidden" id="hero_banner_url" name="<?php echo esc_attr( EAFD_OPTIONS_KEY ); ?>[hero_banner_url]" value="<?php echo esc_attr( $hero_banner_url ); ?>" />
+				<input type="hidden" id="hero_location_tag" name="<?php echo esc_attr( EAFD_OPTIONS_KEY ); ?>[hero_location_tag]" value="<?php echo esc_attr( $hero_location_tag ); ?>" />
 			</div>
 
 			<!-- MENU SETTINGS -->
@@ -299,6 +377,60 @@ function eafd_render_admin_page() {
 					var attachment = customUploader.state().get('selection').first().toJSON();
 					targetInput.val(attachment.url);
 				}).open();
+			});
+
+			$(document).on('click', '.eafd-slide-upload-btn', function(e) {
+				e.preventDefault();
+				var button = $(this);
+				var targetInput = button.siblings('input[type="text"]');
+
+				var slideUploader = wp.media({
+					title: 'انتخاب تصویر اسلاید',
+					button: { text: 'استفاده از این تصویر' },
+					multiple: false
+				}).on('select', function() {
+					var attachment = slideUploader.state().get('selection').first().toJSON();
+					targetInput.val(attachment.url);
+				}).open();
+			});
+
+			$('#eafd-add-slide-btn').click(function(e) {
+				e.preventDefault();
+				var container = $('#eafd-slides-container');
+				var index = container.find('.eafd-slide-item').length;
+
+				var html = '<div class="eafd-slide-item" style="background: #f9f9f9; border: 1px solid #e2e8f0; border-radius: 10px; padding: 15px; margin-bottom: 15px; position: relative;">' +
+					'<span class="eafd-remove-slide" style="position: absolute; left: 15px; top: 15px; color: #e53e3e; cursor: pointer; font-weight: bold;">❌ حذف اسلاید</span>' +
+					'<h3 style="margin-top: 0; font-size: 15px; color: #2d3748;">اسلاید شماره <span class="slide-num">' + (index + 1) + '</span></h3>' +
+					'<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 10px;">' +
+						'<div><label style="display: block; font-weight: bold; margin-bottom: 5px;">تصویر دسکتاپ:</label><input type="text" class="regular-text slide-desktop-img" name="eafd_theme_options[hero_slides][' + index + '][desktop_img]" value="" style="width: 100%;" /><button type="button" class="button eafd-slide-upload-btn" style="margin-top: 5px;">انتخاب تصویر دسکتاپ</button></div>' +
+						'<div><label style="display: block; font-weight: bold; margin-bottom: 5px;">تصویر موبایل (اختیاری):</label><input type="text" class="regular-text slide-mobile-img" name="eafd_theme_options[hero_slides][' + index + '][mobile_img]" value="" style="width: 100%;" /><button type="button" class="button eafd-slide-upload-btn" style="margin-top: 5px;">انتخاب تصویر موبایل</button></div>' +
+					'</div>' +
+					'<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 10px;">' +
+						'<div><label style="display: block; font-weight: bold; margin-bottom: 5px;">عنوان اسلاید:</label><input type="text" name="eafd_theme_options[hero_slides][' + index + '][title]" value="" style="width: 100%;" placeholder="مثال: جشنواره فروش ویژه تابستانه" /></div>' +
+						'<div><label style="display: block; font-weight: bold; margin-bottom: 5px;">زیرعنوان / برچسب:</label><input type="text" name="eafd_theme_options[hero_slides][' + index + '][subtitle]" value="" style="width: 100%;" placeholder="مثال: تا ۵۰٪ تخفیف روی تمامی محصولات" /></div>' +
+					'</div>' +
+					'<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">' +
+						'<div><label style="display: block; font-weight: bold; margin-bottom: 5px;">متن دکمه:</label><input type="text" name="eafd_theme_options[hero_slides][' + index + '][btn_text]" value="" style="width: 100%;" placeholder="مثال: مشاهده و خرید" /></div>' +
+						'<div><label style="display: block; font-weight: bold; margin-bottom: 5px;">لینک دکمه:</label><input type="text" name="eafd_theme_options[hero_slides][' + index + '][btn_link]" value="" style="width: 100%;" placeholder="https://..." /></div>' +
+					'</div>' +
+				'</div>';
+
+				container.append(html);
+			});
+
+			$(document).on('click', '.eafd-remove-slide', function() {
+				$(this).closest('.eafd-slide-item').remove();
+				$('#eafd-slides-container .eafd-slide-item').each(function(idx) {
+					$(this).find('.slide-num').text(idx + 1);
+					$(this).find('input').each(function() {
+						var name = $(this).attr('name');
+						if (name) {
+							name = name.replace(/\[hero_slides\]\[\d+\]/, '[hero_slides][' + idx + ']');
+							$(this).attr('name', name);
+						}
+					});
+				});
 			});
 		});
 	</script>

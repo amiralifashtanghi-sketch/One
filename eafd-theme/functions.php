@@ -75,6 +75,7 @@ function eafd_theme_scripts() {
 	wp_enqueue_style( 'vazirmatn-font', EAFD_THEME_URI . '/assets/fonts/vazirmatn.css', array(), EAFD_THEME_VERSION );
 	wp_enqueue_style( 'eafd-main-style', EAFD_THEME_URI . '/assets/css/main.css', array( 'vazirmatn-font' ), EAFD_THEME_VERSION );
 
+	wp_enqueue_script( 'eafd-main-script', EAFD_THEME_URI . '/assets/js/main.js', array(), EAFD_THEME_VERSION, array( 'in_footer' => true, 'strategy' => 'defer' ) );
 	wp_enqueue_script( 'eafd-ajax-cart', EAFD_THEME_URI . '/assets/js/ajax-cart.js', array( 'jquery' ), EAFD_THEME_VERSION, array( 'in_footer' => true, 'strategy' => 'defer' ) );
 
 	wp_localize_script( 'eafd-ajax-cart', 'eafd_cart_params', array(
