@@ -26,12 +26,15 @@ class SeoHelper
 
     public static function renderOrganizationJsonLd(): string
     {
+        $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
+        $host = $_SERVER['HTTP_HOST'] ?? 'eafd.ir';
+        $baseUrl = $protocol . '://' . $host;
+
         $data = [
             '@context' => 'https://schema.org',
             '@type' => 'Organization',
             'name' => 'EAFD Web Platform',
-            'url' => 'https://eafd.ir',
-            'logo' => 'https://eafd.ir/assets/logo.png',
+            'url' => $baseUrl,
             'contactPoint' => [
                 '@type' => 'ContactPoint',
                 'telephone' => '+98-9150591710',

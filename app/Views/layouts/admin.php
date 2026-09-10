@@ -56,6 +56,20 @@
             color: var(--eafd-color-text, #F5F5F5);
             background: rgba(255, 255, 255, 0.05);
         }
+        @media (max-width: 768px) {
+            .eafd-admin-wrapper {
+                flex-direction: column;
+            }
+            .eafd-admin-sidebar {
+                width: 100%;
+                border-left: none;
+                border-bottom: 1px solid var(--eafd-color-border, rgba(255, 255, 255, 0.08));
+                padding: 1rem;
+            }
+            .eafd-admin-content {
+                padding: 1rem;
+            }
+        }
     </style>
 </head>
 <body class="eafd-body">

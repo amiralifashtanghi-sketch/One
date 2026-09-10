@@ -72,7 +72,7 @@ class DesignStudioController extends Controller
             '--eafd-color-text-muted' => '#94A3B8',
             '--eafd-font-family' => "Vazirmatn, sans-serif",
             '--eafd-border-radius' => '12px',
-            '--eafd-matrix-enabled' => '1',
+            '--eafd-grid-enabled' => '1',
         ];
 
         foreach ($defaults as $key => $value) {

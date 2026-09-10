@@ -33,7 +33,7 @@ class ErrorHandler
     public static function handleException(Throwable $e): void
     {
         self::log("Uncaught Exception: " . $e->getMessage() . "\nTrace: " . $e->getTraceAsString());
-        self::renderErrorPage(500, "خطای سامانه EAFD", $e->getMessage());
+        self::renderErrorPage(500, "خطای سامانه EAFD", "خطایی در هنگام پردازش درخواست رخ داده است. لطفاً بعداً تلاش کنید.");
         exit(1);
     }
 

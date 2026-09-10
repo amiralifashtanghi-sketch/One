@@ -109,11 +109,25 @@ class Installer
             $driver = Config::get('database.driver', 'sqlite');
             Logger::info("DATABASE_CONNECTED", ['driver' => $driver]);
 
+            // Create migrations history table if not exists
+            if ($driver === 'mysql') {
+                $pdo->exec("CREATE TABLE IF NOT EXISTS schema_migrations (id INT AUTO_INCREMENT PRIMARY KEY, migration VARCHAR(255) NOT NULL, executed_at DATETIME DEFAULT CURRENT_TIMESTAMP)");
+            } else {
+                $pdo->exec("CREATE TABLE IF NOT EXISTS schema_migrations (id INTEGER PRIMARY KEY AUTOINCREMENT, migration VARCHAR(255) NOT NULL, executed_at DATETIME DEFAULT CURRENT_TIMESTAMP)");
+            }
+
+            $executedStmt = $pdo->query("SELECT migration FROM schema_migrations");
+            $executedMigrations = $executedStmt ? $executedStmt->fetchAll(PDO::FETCH_COLUMN) : [];
+
             $files = glob($baseDir . '/config/migrations/*.sql');
             sort($files);
 
             foreach ($files as $file) {
                 $fileName = basename($file);
+                if (in_array($fileName, $executedMigrations)) {
+                    continue;
+                }
+
                 Logger::info("MIGRATION_STARTED: {$fileName}");
 
                 $sql = file_get_contents($file);
@@ -125,6 +139,10 @@ class Installer
                     }
                     $pdo->exec($sql);
                 }
+
+                $logStmt = $pdo->prepare("INSERT INTO schema_migrations (migration) VALUES (?)");
+                $logStmt->execute([$fileName]);
+
                 Logger::info("MIGRATION_COMPLETED: {$fileName}");
             }
 

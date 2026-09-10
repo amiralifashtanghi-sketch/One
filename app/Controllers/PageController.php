@@ -36,7 +36,7 @@ class PageController extends Controller
         $page = $this->pageModel->getBySlug($slug);
 
         if (!$page) {
-            $this->render404("صفحه مورد نظر پیدا نشد", "صفحه‌ای با شناسه {$slug} در سیستم ثبت نشده است.");
+            \App\Core\ErrorHandler::renderErrorPage(404, "صفحه مورد نظر پیدا نشد", "صفحه‌ای با شناسه {$slug} در سیستم ثبت نشده است.");
             return;
         }
 

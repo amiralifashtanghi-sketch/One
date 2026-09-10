@@ -23,7 +23,7 @@ class CheckoutController extends Controller
     public function index(Request $request): void
     {
         $items = Cart::getItems();
-        $total = Cart::getTotal();
+        $total = Cart::total();
         $gateways = $this->gatewayManager->getAvailableGateways();
 
         $this->render('shop.checkout', [
@@ -53,7 +53,7 @@ class CheckoutController extends Controller
         }
 
         $userId = $_SESSION['user_id'] ?? null;
-        $totalAmount = Cart::getTotal();
+        $totalAmount = Cart::total();
 
         Database::beginTransaction();
         try {
