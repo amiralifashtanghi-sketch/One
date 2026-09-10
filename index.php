@@ -46,7 +46,7 @@ $router->get('/cart/remove/{id}', [\App\Controllers\Shop\CartController::class, 
 $router->get('/checkout', [\App\Controllers\Shop\CheckoutController::class, 'index']);
 $router->post('/checkout/process', [\App\Controllers\Shop\CheckoutController::class, 'process'], ['csrf']);
 $router->get('/checkout/callback', [\App\Controllers\Shop\CheckoutController::class, 'callback']);
-$router->get('/download', [\App\Controllers\Shop\DownloadController::class, 'download'], ['auth']);
+$router->get('/download', [\App\Controllers\Shop\DownloadController::class, 'download']);
 
 // Auth & Customer Account Routes
 $router->get('/login', [\App\Controllers\AuthController::class, 'showLogin'], ['guest']);

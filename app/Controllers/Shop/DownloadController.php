@@ -13,19 +13,27 @@ class DownloadController extends Controller
     {
         $userId = $_SESSION['user_id'] ?? null;
         $productId = (int)$request->get('product_id', 0);
-        $token = trim($request->get('token', ''));
+        $licenseKey = trim($request->get('license_key', ''));
 
-        if (!$userId) {
+        if (!$userId && empty($licenseKey)) {
             header('Location: /login');
             exit;
         }
 
-        // Verify customer entitlement via paid order or active license
-        $hasLicense = Database::fetch("
-            SELECT * FROM licenses
-            WHERE user_id = ? AND product_id = ? AND status = 'active'
-            LIMIT 1
-        ", [$userId, $productId]);
+        // Verify customer entitlement via active license key OR session user ID
+        if (!empty($licenseKey)) {
+            $hasLicense = Database::fetch("
+                SELECT * FROM licenses
+                WHERE license_key = ? AND product_id = ? AND status = 'active'
+                LIMIT 1
+            ", [$licenseKey, $productId]);
+        } else {
+            $hasLicense = Database::fetch("
+                SELECT * FROM licenses
+                WHERE user_id = ? AND product_id = ? AND status = 'active'
+                LIMIT 1
+            ", [$userId, $productId]);
+        }
 
         if (!$hasLicense) {
             \App\Core\ErrorHandler::renderErrorPage(403, "عدم دسترسی", "شما به این فایل یا لایسنس خریدار شده دسترسی ندارید.");
