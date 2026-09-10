@@ -68,7 +68,7 @@ class LicenseApiController extends Controller
         }
 
         // Create Activation
-        Database::query("INSERT INTO license_activations (license_id, domain, created_at, last_check_at) VALUES (?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)", [$license['id'], $domain]);
+        Database::query("INSERT INTO license_activations (license_id, domain, activated_at, last_check_at) VALUES (?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)", [$license['id'], $domain]);
 
         echo json_encode([
             'success' => true,

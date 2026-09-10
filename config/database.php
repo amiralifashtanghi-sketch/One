@@ -1,8 +1,8 @@
 <?php
 
 return [
-    'driver' => 'sqlite',
-    'host' => '127.0.0.1',
+    'driver' => 'mysql',
+    'host' => 'localhost',
     'port' => '3306',
     'dbname' => 'eafd_db',
     'username' => 'root',

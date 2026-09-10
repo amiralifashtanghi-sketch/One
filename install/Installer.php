@@ -132,11 +132,6 @@ class Installer
 
                 $sql = file_get_contents($file);
                 if ($sql) {
-                    // Translate auto-increment syntax for MySQL vs SQLite
-                    if ($driver === 'mysql') {
-                        $sql = str_replace('AUTOINCREMENT', 'AUTO_INCREMENT', $sql);
-                        $sql = str_replace('INTEGER PRIMARY KEY AUTO_INCREMENT', 'INT AUTO_INCREMENT PRIMARY KEY', $sql);
-                    }
                     $pdo->exec($sql);
                 }
 

@@ -14,7 +14,7 @@ class SitemapController extends Controller
 {
     public function xml(Request $request): void
     {
-        $baseUrl = "http://" . ($_SERVER['HTTP_HOST'] ?? 'localhost');
+        $baseUrl = \App\Core\Config::get('config.url', 'https://eafd.ir');
 
         $pageModel = new Page();
         $serviceModel = new Service();
@@ -59,7 +59,7 @@ class SitemapController extends Controller
 
     public function robots(Request $request): void
     {
-        $baseUrl = "http://" . ($_SERVER['HTTP_HOST'] ?? 'localhost');
+        $baseUrl = \App\Core\Config::get('config.url', 'https://eafd.ir');
         $txt = "User-agent: *\nDisallow: /admin/\nDisallow: /checkout/\nDisallow: /download\nSitemap: {$baseUrl}/sitemap.xml\n";
 
         Response::setHeader('Content-Type', 'text/plain; charset=UTF-8');

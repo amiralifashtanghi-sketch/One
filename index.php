@@ -74,7 +74,7 @@ $router->get('/admin/pages', [\App\Controllers\Admin\PageController::class, 'ind
 $router->get('/admin/pages/create', [\App\Controllers\Admin\PageController::class, 'create'], ['admin']);
 $router->get('/admin/pages/edit/{id}', [\App\Controllers\Admin\PageController::class, 'edit'], ['admin']);
 $router->post('/admin/pages/save/{id}', [\App\Controllers\Admin\PageController::class, 'save'], ['admin', 'csrf']);
-$router->get('/admin/pages/delete/{id}', [\App\Controllers\Admin\PageController::class, 'delete'], ['admin', 'csrf']);
+$router->post('/admin/pages/delete/{id}', [\App\Controllers\Admin\PageController::class, 'delete'], ['admin', 'csrf']);
 
 $router->get('/admin/pages/{id}/builder', [\App\Controllers\Admin\PageBuilderController::class, 'edit'], ['admin']);
 $router->post('/admin/pages/{id}/builder/save', [\App\Controllers\Admin\PageBuilderController::class, 'save'], ['admin', 'csrf']);
@@ -85,36 +85,36 @@ $router->get('/admin/services', [\App\Controllers\Admin\ServiceController::class
 $router->get('/admin/services/create', [\App\Controllers\Admin\ServiceController::class, 'create'], ['admin']);
 $router->get('/admin/services/edit/{id}', [\App\Controllers\Admin\ServiceController::class, 'edit'], ['admin']);
 $router->post('/admin/services/save/{id}', [\App\Controllers\Admin\ServiceController::class, 'save'], ['admin', 'csrf']);
-$router->get('/admin/services/delete/{id}', [\App\Controllers\Admin\ServiceController::class, 'delete'], ['admin', 'csrf']);
+$router->post('/admin/services/delete/{id}', [\App\Controllers\Admin\ServiceController::class, 'delete'], ['admin', 'csrf']);
 
 $router->get('/admin/projects', [\App\Controllers\Admin\ProjectController::class, 'index'], ['admin']);
 $router->get('/admin/projects/create', [\App\Controllers\Admin\ProjectController::class, 'create'], ['admin']);
 $router->get('/admin/projects/edit/{id}', [\App\Controllers\Admin\ProjectController::class, 'edit'], ['admin']);
 $router->post('/admin/projects/save/{id}', [\App\Controllers\Admin\ProjectController::class, 'save'], ['admin', 'csrf']);
-$router->get('/admin/projects/delete/{id}', [\App\Controllers\Admin\ProjectController::class, 'delete'], ['admin', 'csrf']);
+$router->post('/admin/projects/delete/{id}', [\App\Controllers\Admin\ProjectController::class, 'delete'], ['admin', 'csrf']);
 
 $router->get('/admin/products', [\App\Controllers\Admin\ProductController::class, 'index'], ['admin']);
 $router->get('/admin/products/create', [\App\Controllers\Admin\ProductController::class, 'create'], ['admin']);
 $router->get('/admin/products/edit/{id}', [\App\Controllers\Admin\ProductController::class, 'edit'], ['admin']);
 $router->post('/admin/products/save/{id}', [\App\Controllers\Admin\ProductController::class, 'save'], ['admin', 'csrf']);
-$router->get('/admin/products/delete/{id}', [\App\Controllers\Admin\ProductController::class, 'delete'], ['admin', 'csrf']);
+$router->post('/admin/products/delete/{id}', [\App\Controllers\Admin\ProductController::class, 'delete'], ['admin', 'csrf']);
 
 $router->get('/admin/licenses', [\App\Controllers\Admin\LicenseController::class, 'index'], ['admin']);
 $router->get('/admin/licenses/edit/{id}', [\App\Controllers\Admin\LicenseController::class, 'edit'], ['admin']);
 $router->post('/admin/licenses/save/{id}', [\App\Controllers\Admin\LicenseController::class, 'save'], ['admin', 'csrf']);
-$router->get('/admin/licenses/revoke/{id}', [\App\Controllers\Admin\LicenseController::class, 'revoke'], ['admin', 'csrf']);
+$router->post('/admin/licenses/revoke/{id}', [\App\Controllers\Admin\LicenseController::class, 'revoke'], ['admin', 'csrf']);
 
 $router->get('/admin/tools', [\App\Controllers\Admin\ToolController::class, 'index'], ['admin']);
 $router->get('/admin/tools/create', [\App\Controllers\Admin\ToolController::class, 'create'], ['admin']);
 $router->get('/admin/tools/edit/{id}', [\App\Controllers\Admin\ToolController::class, 'edit'], ['admin']);
 $router->post('/admin/tools/save/{id}', [\App\Controllers\Admin\ToolController::class, 'save'], ['admin', 'csrf']);
-$router->get('/admin/tools/delete/{id}', [\App\Controllers\Admin\ToolController::class, 'delete'], ['admin', 'csrf']);
+$router->post('/admin/tools/delete/{id}', [\App\Controllers\Admin\ToolController::class, 'delete'], ['admin', 'csrf']);
 
 $router->get('/admin/quizzes', [\App\Controllers\Admin\QuizController::class, 'index'], ['admin']);
 $router->get('/admin/quizzes/create', [\App\Controllers\Admin\QuizController::class, 'create'], ['admin']);
 $router->get('/admin/quizzes/edit/{id}', [\App\Controllers\Admin\QuizController::class, 'edit'], ['admin']);
 $router->post('/admin/quizzes/save/{id}', [\App\Controllers\Admin\QuizController::class, 'save'], ['admin', 'csrf']);
-$router->get('/admin/quizzes/delete/{id}', [\App\Controllers\Admin\QuizController::class, 'delete'], ['admin', 'csrf']);
+$router->post('/admin/quizzes/delete/{id}', [\App\Controllers\Admin\QuizController::class, 'delete'], ['admin', 'csrf']);
 
 $router->get('/admin/users', [\App\Controllers\Admin\UserController::class, 'index'], ['admin']);
 $router->get('/admin/users/edit/{id}', [\App\Controllers\Admin\UserController::class, 'edit'], ['admin']);
