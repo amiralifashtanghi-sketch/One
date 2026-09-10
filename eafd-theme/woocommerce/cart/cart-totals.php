@@ -22,8 +22,8 @@ defined( 'ABSPATH' ) || exit;
 			</div>
 			<div class="eafd-accordion-body">
 				<div class="eafd-coupon-box">
-					<input type="text" name="coupon_code" class="eafd-coupon-input" id="cart_totals_coupon_code" value="" placeholder="کد تخفیف را وارد کنید" />
-					<button type="button" class="button eafd-btn eafd-btn-primary js-eafd-apply-coupon-btn">اعمال کد</button>
+					<input type="text" name="coupon_code" class="eafd-coupon-input" id="coupon_code" value="" placeholder="کد تخفیف را وارد کنید" />
+					<button type="submit" class="button eafd-btn eafd-btn-primary" name="apply_coupon" value="<?php esc_attr_e( 'Apply coupon', 'woocommerce' ); ?>">اعمال کد</button>
 				</div>
 			</div>
 		</div>

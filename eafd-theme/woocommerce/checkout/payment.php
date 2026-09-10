@@ -38,7 +38,10 @@ if ( ! wp_doing_ajax() ) {
 
 		<?php do_action( 'woocommerce_review_order_before_submit' ); ?>
 
-		<?php echo apply_filters( 'woocommerce_order_button_html', '<button type="submit" class="button alt eafd-btn eafd-place-order-btn" name="woocommerce_checkout_place_order" id="place_order" value="ثبت نهایی سفارش" data-value="ثبت نهایی سفارش">ثبت نهایی سفارش 🔒</button>' ); ?>
+		<?php
+		$order_button_text = isset( $order_button_text ) ? $order_button_text : __( 'Place order', 'woocommerce' );
+		echo apply_filters( 'woocommerce_order_button_html', '<button type="submit" class="button alt eafd-btn eafd-place-order-btn" name="woocommerce_checkout_place_order" id="place_order" value="' . esc_attr( $order_button_text ) . '" data-value="' . esc_attr( $order_button_text ) . '">' . esc_html( $order_button_text ) . '</button>' ); // @codingStandardsIgnoreLine
+		?>
 
 		<?php do_action( 'woocommerce_review_order_after_submit' ); ?>
 
