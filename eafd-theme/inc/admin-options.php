@@ -26,7 +26,7 @@ function eafd_get_option( $key, $default = '' ) {
 }
 
 /**
- * Add Top Level Admin Menu "طراحی ظاهر سایت"
+ * Add Top Level Admin Menu "طراحی ظاهر سایت" & Submenu "سلامت ووکامرس"
  */
 function eafd_register_admin_menu() {
 	add_menu_page(
@@ -37,6 +37,15 @@ function eafd_register_admin_menu() {
 		'eafd_render_admin_page',
 		'dashicons-art',
 		59
+	);
+
+	add_submenu_page(
+		'eafd-appearance-settings',
+		'سلامت ووکامرس',
+		'سلامت ووکامرس',
+		'manage_options',
+		'eafd-wc-health',
+		'eafd_render_wc_health_page'
 	);
 }
 add_action( 'admin_menu', 'eafd_register_admin_menu' );
@@ -360,6 +369,79 @@ function eafd_render_admin_page() {
 		</form>
 	</div>
 
+	<?php
+}
+
+/**
+ * Render WooCommerce Health Diagnostic Admin Page
+ */
+function eafd_render_wc_health_page() {
+	if ( ! current_user_can( 'manage_options' ) ) {
+		return;
+	}
+
+	$action_msg = '';
+
+	// Handle repair trigger
+	if ( isset( $_POST['eafd_repair_wc_pages'] ) && check_admin_referer( 'eafd_wc_repair_nonce' ) ) {
+		$results = eafd_wc_pages()->auto_setup_pages();
+		$count   = count( $results['created'] );
+		$action_msg = '<div class="notice notice-success is-dismissible"><p>عملیات بازسازی برگه با موفقیت انجام شد. ' . esc_html( eafd_convert_to_persian_digits( $count ) ) . ' برگه جدید ساخته/اصلاح شد.</p></div>';
+	}
+
+	$health_data = eafd_wc_pages()->get_health_status();
+	?>
+	<div class="wrap" style="direction: rtl; font-family: 'Vazirmatn', sans-serif; max-width: 900px;">
+		<h1 style="margin-bottom: 10px;">🩺 وضعیت سلامت برگه های ووکامرس</h1>
+		<p style="color: #666; margin-bottom: 25px;">در این بخش می‌توانید از متصل بودن صحیح برگه‌های پایه ووکامرس (سبد خرید، تسویه حساب، حساب کاربری و فروشگاه) اطمینان حاصل کنید.</p>
+
+		<?php echo $action_msg; ?>
+
+		<div style="background: #fff; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 25px;">
+			<table class="wp-list-table widefat fixed striped" style="border: none;">
+				<thead>
+					<tr>
+						<th style="font-weight: bold;">نام برگه ووکامرس</th>
+						<th style="font-weight: bold;">شناسه برگه (ID)</th>
+						<th style="font-weight: bold;">وضعیت اتصالات</th>
+						<th style="font-weight: bold;">آدرس مستقیم (URL)</th>
+					</tr>
+				</thead>
+				<tbody>
+					<?php foreach ( $health_data as $key => $item ) : ?>
+						<tr>
+							<td style="font-weight: bold;"><?php echo esc_html( $item['title'] ); ?></td>
+							<td><?php echo $item['page_id'] > 0 ? esc_html( eafd_convert_to_persian_digits( $item['page_id'] ) ) : '<span style="color:#e53e3e;">تعریف نشده</span>'; ?></td>
+							<td>
+								<?php if ( $item['exists'] ) : ?>
+									<span style="background: #c6f6d5; color: #22543d; padding: 4px 10px; border-radius: 20px; font-weight: bold; font-size: 12px;">✅ فعال و متصل</span>
+								<?php else : ?>
+									<span style="background: #fed7d7; color: #742a2a; padding: 4px 10px; border-radius: 20px; font-weight: bold; font-size: 12px;">❌ مفقود / نامعتبر</span>
+								<?php endif; ?>
+							</td>
+							<td><a href="<?php echo esc_url( $item['url'] ); ?>" target="_blank" style="color: var(--eafd-primary, #ff8a00);"><?php echo esc_html( $item['url'] ); ?></a></td>
+						</tr>
+					<?php endforeach; ?>
+				</tbody>
+			</table>
+		</div>
+
+		<form method="post" action="">
+			<?php wp_nonce_field( 'eafd_wc_repair_nonce' ); ?>
+			<button type="submit" name="eafd_repair_wc_pages" class="button button-primary button-hero" style="font-weight: bold;">
+				🔨 تعمیر و ساخت خودکار برگه‌های مفقود ووکامرس
+			</button>
+		</form>
+	</div>
+	<?php
+}
+
+function eafd_admin_scripts_inline() {
+	$screen = get_current_screen();
+	if ( ! $screen || false === strpos( $screen->id, 'eafd-appearance-settings' ) ) {
+		return;
+	}
+	?>
 	<script>
 		jQuery(document).ready(function($) {
 			$('.eafd-color-picker').wpColorPicker();
@@ -436,3 +518,4 @@ function eafd_render_admin_page() {
 	</script>
 	<?php
 }
+add_action( 'admin_footer', 'eafd_admin_scripts_inline' );

@@ -158,7 +158,9 @@ document.addEventListener('DOMContentLoaded', function () {
 				let step = parseFloat(input.getAttribute('step')) || 1;
 				if (val > min) {
 					input.value = val - step;
+					input.dispatchEvent(new Event('input', { bubbles: true }));
 					input.dispatchEvent(new Event('change', { bubbles: true }));
+					triggerCartFormUpdate(box);
 				}
 			});
 
@@ -169,10 +171,36 @@ document.addEventListener('DOMContentLoaded', function () {
 				let step = parseFloat(input.getAttribute('step')) || 1;
 				if (val < max) {
 					input.value = val + step;
+					input.dispatchEvent(new Event('input', { bubbles: true }));
 					input.dispatchEvent(new Event('change', { bubbles: true }));
+					triggerCartFormUpdate(box);
 				}
 			});
 		});
+	}
+
+	let qtyUpdateTimeout = null;
+	function triggerCartFormUpdate(element) {
+		const cartForm = element.closest('form.woocommerce-cart-form');
+		if (!cartForm) return;
+
+		const updateBtn = cartForm.querySelector('button[name="update_cart"]');
+		if (!updateBtn) return;
+
+		// Add loading overlay to cart card
+		const cartCard = cartForm.closest('.eafd-cart-items-card') || cartForm;
+		cartCard.style.opacity = '0.6';
+		cartCard.style.pointerEvents = 'none';
+
+		clearTimeout(qtyUpdateTimeout);
+		qtyUpdateTimeout = setTimeout(function () {
+			updateBtn.disabled = false;
+			if (typeof jQuery !== 'undefined') {
+				jQuery(updateBtn).trigger('click');
+			} else {
+				updateBtn.click();
+			}
+		}, 400);
 	}
 
 	initCustomQuantitySelectors();

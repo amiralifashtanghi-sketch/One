@@ -23,8 +23,9 @@ function eafd_convert_to_persian_digits( $string ) {
 }
 
 /**
- * Include Admin Options & SEO Performance
+ * Include Admin Options, WooCommerce Pages Resolver & SEO Performance
  */
+require_once EAFD_THEME_DIR . '/inc/class-eafd-woocommerce-pages.php';
 require_once EAFD_THEME_DIR . '/inc/admin-options.php';
 require_once EAFD_THEME_DIR . '/inc/seo-performance.php';
 
@@ -81,7 +82,7 @@ function eafd_theme_scripts() {
 	wp_localize_script( 'eafd-ajax-cart', 'eafd_cart_params', array(
 		'ajax_url' => admin_url( 'admin-ajax.php' ),
 		'nonce'    => wp_create_nonce( 'eafd_cart_nonce' ),
-		'cart_url' => function_exists( 'wc_get_cart_url' ) ? wc_get_cart_url() : '#',
+		'cart_url' => eafd_get_cart_url(),
 	) );
 }
 add_action( 'wp_enqueue_scripts', 'eafd_theme_scripts' );
@@ -163,8 +164,8 @@ function eafd_render_cart_drawer_content() {
 		echo '<div class="eafd-cart-drawer-footer">';
 		echo '<div class="eafd-cart-total"><span>جمع کل:</span> <strong>' . WC()->cart->get_cart_subtotal() . '</strong></div>';
 		echo '<div class="eafd-cart-actions">';
-		echo '<a href="' . esc_url( wc_get_cart_url() ) . '" class="eafd-btn eafd-btn-outline">مشاهده سبد خرید</a>';
-		echo '<a href="' . esc_url( wc_get_checkout_url() ) . '" class="eafd-btn eafd-btn-primary">تسویه حساب</a>';
+		echo '<a href="' . esc_url( eafd_get_cart_url() ) . '" class="eafd-btn eafd-btn-outline">مشاهده سبد خرید</a>';
+		echo '<a href="' . esc_url( eafd_get_checkout_url() ) . '" class="eafd-btn eafd-btn-primary">تسویه حساب</a>';
 		echo '</div>';
 		echo '</div>';
 	}

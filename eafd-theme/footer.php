@@ -59,8 +59,10 @@ $cart_count         = class_exists( 'WooCommerce' ) && WC()->cart ? WC()->cart->
 							?>
 							<ul class="eafd-footer-nav-list">
 								<li><a href="<?php echo esc_url( home_url( '/' ) ); ?>">صفحه اصلی</a></li>
-								<li><a href="<?php echo esc_url( function_exists( 'wc_get_page_permalink' ) ? wc_get_page_permalink( 'myaccount' ) : '#' ); ?>">حساب کاربری</a></li>
-								<li><a href="#">قوانین سایت</a></li>
+								<li><a href="<?php echo esc_url( eafd_get_shop_url() ); ?>">فروشگاه</a></li>
+								<li><a href="<?php echo esc_url( eafd_get_cart_url() ); ?>">سبد خرید</a></li>
+								<li><a href="<?php echo esc_url( eafd_get_checkout_url() ); ?>">تسویه حساب</a></li>
+								<li><a href="<?php echo esc_url( eafd_get_account_url() ); ?>">حساب کاربری</a></li>
 							</ul>
 							<?php
 						}
@@ -169,22 +171,11 @@ $cart_count         = class_exists( 'WooCommerce' ) && WC()->cart ? WC()->cart->
 			} else {
 				?>
 				<ul class="eafd-borzouie-nav-menu">
-					<li>
-						<a href="#">
-							<span class="eafd-arrow-icon">▼</span>
-							دوره های رایگان
-						</a>
-					</li>
-					<li><a href="#">اپلیکیشن‌های آکادمی</a></li>
-					<li><a href="<?php echo esc_url( home_url( '/' ) ); ?>">محصولات طبیعی</a></li>
-					<li><a href="#">بیزیینس شما</a></li>
-					<li><a href="#">مقالات</a></li>
-					<li>
-						<a href="#">
-							<span class="eafd-arrow-icon">▼</span>
-							درباره آکادمی
-						</a>
-					</li>
+					<li><a href="<?php echo esc_url( home_url( '/' ) ); ?>">صفحه اصلی</a></li>
+					<li><a href="<?php echo esc_url( eafd_get_shop_url() ); ?>">فروشگاه محصولات</a></li>
+					<li><a href="<?php echo esc_url( eafd_get_cart_url() ); ?>">سبد خرید</a></li>
+					<li><a href="<?php echo esc_url( eafd_get_checkout_url() ); ?>">تسویه حساب</a></li>
+					<li><a href="<?php echo esc_url( eafd_get_account_url() ); ?>">حساب کاربری من</a></li>
 				</ul>
 				<?php
 			}
