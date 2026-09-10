@@ -31,7 +31,7 @@
                         </td>
                         <td>
                             <?php if ($lic['status'] === 'active'): ?>
-                                <a href="/download?license=<?= htmlspecialchars($lic['license_key']) ?>" class="btn btn-primary" style="padding:6px 14px; font-size:0.85rem;">دانلود فایل ZIP ⬇</a>
+                                <a href="/download?product_id=<?= $lic['product_id'] ?>&license_key=<?= htmlspecialchars($lic['license_key']) ?>" class="btn btn-primary" style="padding:6px 14px; font-size:0.85rem;">دانلود فایل ZIP ⬇</a>
                             <?php else: ?>
                                 <span style="color:var(--eafd-color-text-muted); font-size:0.85rem;">غیرقابل دانلود</span>
                             <?php endif; ?>

@@ -96,18 +96,12 @@ class DesignStudioController extends Controller
         $cssContent .= "}\n";
 
         $baseDir = defined('EAFD_BASE_DIR') ? EAFD_BASE_DIR : dirname(__DIR__, 3);
-        $paths = [
-            $baseDir . '/assets/css/design-tokens.css',
-            $baseDir . '/public/assets/css/design-tokens.css'
-        ];
-
-        foreach ($paths as $destPath) {
-            $dir = dirname($destPath);
-            if (!is_dir($dir)) {
-                @mkdir($dir, 0755, true);
-            }
-            @file_put_contents($destPath, $cssContent, LOCK_EX);
+        $destPath = $baseDir . '/assets/css/design-tokens.css';
+        $dir = dirname($destPath);
+        if (!is_dir($dir)) {
+            @mkdir($dir, 0755, true);
         }
+        @file_put_contents($destPath, $cssContent, LOCK_EX);
     }
 
     protected function calculateContrastRatio(string $hex1, string $hex2): float

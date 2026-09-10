@@ -4,6 +4,8 @@ CREATE TABLE IF NOT EXISTS licenses (
     product_id INTEGER NOT NULL,
     order_id INTEGER NOT NULL,
     license_key VARCHAR(100) UNIQUE NOT NULL,
+    license_type VARCHAR(50) DEFAULT 'lifetime',
+    max_activations INTEGER DEFAULT 1,
     max_domains INTEGER DEFAULT 1,
     status VARCHAR(50) DEFAULT 'active',
     expires_at DATETIME NULL,

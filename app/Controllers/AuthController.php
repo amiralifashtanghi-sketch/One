@@ -24,6 +24,12 @@ class AuthController extends Controller
 
     public function login(Request $request): void
     {
+        if (!\App\Services\RateLimiter::check('login_attempts', 5, 60)) {
+            Session::flash('error', 'تعداد تلاش‌های ناموفق بیش از حد مجاز است. لطفاً ۱ دقیقه صبر کنید.');
+            $this->redirect('/login');
+            return;
+        }
+
         $identifier = $request->post('identifier');
         $password = $request->post('password');
 
