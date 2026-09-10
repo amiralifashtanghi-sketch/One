@@ -245,6 +245,14 @@ function eafd_render_admin_page() {
 			<!-- HERO BANNER & SLIDER SETTINGS -->
 			<div style="margin-bottom: 30px; border-bottom: 2px solid #f0f0f0; padding-bottom: 20px;">
 				<h2 style="font-size: 18px; color: #111; margin-bottom: 15px;">🖼️ اسلایدر و بنرهای اصلی هیرو (Hero Banner Slider)</h2>
+
+				<div style="background: #ebf8ff; border-right: 4px solid #3182ce; padding: 14px 18px; border-radius: 8px; margin-bottom: 20px; font-size: 13px; color: #2b6cb0; line-height: 1.7;">
+					<strong>💡 راهنمای ابعاد و سایز پیشنهادی بنرها (پیکسل):</strong><br />
+					• <strong>نسخه دسکتاپ:</strong> سایز پیشنهادی <code>1200 × 400 پیکسل</code> یا <code>1600 × 500 پیکسل</code> (نسبت تصویر ۱۶:۹ یا ۳:۱).<br />
+					• <strong>نسخه موبایل (اختیاری):</strong> سایز پیشنهادی <code>768 × 450 پیکسل</code> یا <code>600 × 400 پیکسل</code> (نسبت تصویر ۴:۳) برای نمایش شکیل‌تر در گوشی‌ها.<br />
+					• <strong>نکته:</strong> در صورتی که عنوان، زیرعنوان و متن دکمه را خالی بگذارید، فقط تصویر خالص بنر بدون هیچ متن اضافی قرار می‌گیرد.
+				</div>
+
 				<p class="description" style="margin-bottom: 15px;">شما می‌توانید چندین اسلاید را برای اسلایدر اصلی سایت تعریف کنید. برای هر اسلاید تصویر دسکتاپ و موبایل، عنوان و دکمه لینک دلخواه قرار دهید.</p>
 
 				<div id="eafd-slides-container">

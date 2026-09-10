@@ -37,7 +37,7 @@ if ( empty( $hero_slides ) && ! empty( $hero_banner_url ) ) {
 						$desktop_img = ! empty( $slide['desktop_img'] ) ? $slide['desktop_img'] : $hero_banner_url;
 						$mobile_img  = ! empty( $slide['mobile_img'] ) ? $slide['mobile_img'] : $desktop_img;
 						$title       = ! empty( $slide['title'] ) ? $slide['title'] : '';
-						$subtitle    = ! empty( $slide['subtitle'] ) ? $slide['subtitle'] : $hero_location_tag;
+						$subtitle    = ! empty( $slide['subtitle'] ) ? $slide['subtitle'] : '';
 						$btn_text    = ! empty( $slide['btn_text'] ) ? $slide['btn_text'] : '';
 						$btn_link    = ! empty( $slide['btn_link'] ) ? $slide['btn_link'] : '';
 						?>
@@ -49,25 +49,21 @@ if ( empty( $hero_slides ) && ! empty( $hero_banner_url ) ) {
 								<img src="<?php echo esc_url( $desktop_img ); ?>" alt="<?php echo esc_attr( $title ? $title : 'بنر اصلی' ); ?>" class="eafd-hero-img" width="1200" height="450" loading="<?php echo 0 === $index ? 'eager' : 'lazy'; ?>" fetchpriority="<?php echo 0 === $index ? 'high' : 'low'; ?>" />
 							</picture>
 
-							<?php if ( $title || $subtitle || $btn_text ) : ?>
+							<?php if ( ! empty( $title ) || ! empty( $subtitle ) || ( ! empty( $btn_text ) && ! empty( $btn_link ) ) ) : ?>
 								<div class="eafd-slide-content">
-									<?php if ( $subtitle ) : ?>
+									<?php if ( ! empty( $subtitle ) ) : ?>
 										<div class="eafd-hero-location-pill">
 											<span><?php echo esc_html( $subtitle ); ?></span>
 										</div>
 									<?php endif; ?>
 
-									<?php if ( $title ) : ?>
+									<?php if ( ! empty( $title ) ) : ?>
 										<h2 class="eafd-slide-title"><?php echo esc_html( $title ); ?></h2>
 									<?php endif; ?>
 
-									<?php if ( $btn_text && $btn_link ) : ?>
+									<?php if ( ! empty( $btn_text ) && ! empty( $btn_link ) ) : ?>
 										<a href="<?php echo esc_url( $btn_link ); ?>" class="eafd-slide-btn"><?php echo esc_html( $btn_text ); ?></a>
 									<?php endif; ?>
-								</div>
-							<?php elseif ( ! empty( $hero_location_tag ) ) : ?>
-								<div class="eafd-hero-location-pill">
-									<span><?php echo esc_html( $hero_location_tag ); ?></span>
 								</div>
 							<?php endif; ?>
 						</div>
