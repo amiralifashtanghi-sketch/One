@@ -1402,6 +1402,58 @@ select:focus,
 	outline: none;
 }
 
+/* GUTENBERG & WOOCOMMERCE BLOCKS (wp:woocommerce/checkout, wp:woocommerce/cart, wp:woocommerce/my-account) */
+.wp-block-woocommerce-checkout,
+.wp-block-woocommerce-cart,
+.wp-block-woocommerce-my-account,
+.wc-block-checkout,
+.wc-block-cart {
+	width: 100% !important;
+	max-width: 100% !important;
+	box-sizing: border-box !important;
+	margin-top: 20px !important;
+	margin-bottom: 30px !important;
+}
+
+.wc-block-checkout__main,
+.wc-block-cart__main {
+	background: var(--eafd-card-bg) !important;
+	border-radius: var(--eafd-card-radius) !important;
+	padding: 24px !important;
+	box-shadow: var(--eafd-shadow) !important;
+	border: 1px solid #e2e8f0 !important;
+	margin-bottom: 20px !important;
+}
+
+.wc-block-components-sidebar,
+.wc-block-cart__sidebar {
+	background: var(--eafd-card-bg) !important;
+	border-radius: var(--eafd-card-radius) !important;
+	padding: 24px !important;
+	box-shadow: var(--eafd-shadow) !important;
+	border: 1px solid #e2e8f0 !important;
+}
+
+.wc-block-components-button,
+.wc-block-cart__submit-button,
+.wc-block-checkout__actions button {
+	background-color: var(--eafd-primary) !important;
+	color: #ffffff !important;
+	border-radius: 30px !important;
+	padding: 12px 28px !important;
+	font-weight: 800 !important;
+	border: none !important;
+	box-shadow: 0 4px 14px rgba(255, 138, 0, 0.3) !important;
+	transition: all 0.2s ease !important;
+}
+
+.wc-block-components-button:hover,
+.wc-block-cart__submit-button:hover,
+.wc-block-checkout__actions button:hover {
+	background-color: var(--eafd-primary-hover) !important;
+	transform: translateY(-2px) !important;
+}
+
 /* CHECKOUT DESIGN SYSTEM STYLES */
 .eafd-checkout-form-wrapper {
 	display: grid;
