@@ -3,6 +3,7 @@ CREATE TABLE IF NOT EXISTS pages (
     title VARCHAR(255) NOT NULL,
     slug VARCHAR(255) UNIQUE NOT NULL,
     summary TEXT,
+    content TEXT,
     is_published TINYINT(1) DEFAULT 1,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
