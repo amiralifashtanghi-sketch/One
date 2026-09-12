@@ -1,0 +1,31 @@
+/* EAFD Custom Admin Base Panel Styles */
+:root {
+    --wp-blue: #2271b1;
+    --wp-blue-hover: #135e96;
+    --bg-gradient: linear-gradient(145deg, #e6e9f0 0%, #f0f2f5 100%);
+    --text-primary: #2d3748;
+    --text-secondary: #64748b;
+    --card-bg: rgba(255, 255, 255, 0.85);
+    --border-radius-lg: 20px;
+    --border-radius-md: 14px;
+    --border-radius-sm: 8px;
+    --shadow-soft: 0 10px 25px rgba(0, 0, 0, 0.05);
+    --transition-base: all 0.25s ease-in-out;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    -webkit-tap-highlight-color: transparent;
+}
+
+body.eafd-admin-panel {
+    background: var(--bg-gradient);
+    color: var(--text-primary);
+    font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, sans-serif;
+    min-height: 100vh;
+    direction: rtl;
+    overflow-x: hidden;
+    padding-bottom: 70px;
+}
