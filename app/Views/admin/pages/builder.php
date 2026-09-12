@@ -28,7 +28,10 @@
                             <h3 style="margin:0; font-size:1.1rem; color:var(--eafd-color-secondary);">
                                 <?= $index + 1 ?>. <?= htmlspecialchars($schema['name'] ?? $sec['section_type']) ?>
                             </h3>
-                            <a href="/admin/pages/<?= $page['id'] ?>/builder/delete-section/<?= $sec['id'] ?>" class="btn btn-secondary" style="padding:4px 10px; color:#fca5a5;" onclick="return confirm('آیا از حذف این بخش اطمینان دارید؟');">حذف بخش</a>
+                            <form method="POST" action="/admin/pages/<?= $page['id'] ?>/builder/delete-section/<?= $sec['id'] ?>" style="display:inline;" onsubmit="return confirm('آیا از حذف این بخش اطمینان دارید؟');">
+                                <input type="hidden" name="_csrf_token" value="<?= \App\Core\Csrf::generate() ?>">
+                                <button type="submit" class="btn btn-secondary" style="padding:4px 10px; color:#fca5a5;">حذف بخش</button>
+                            </form>
                         </div>
 
                         <input type="hidden" name="sections[<?= $index ?>][id]" value="<?= $sec['id'] ?>">

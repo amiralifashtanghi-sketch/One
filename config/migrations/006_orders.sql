@@ -10,6 +10,7 @@ CREATE TABLE IF NOT EXISTS orders (
     gateway VARCHAR(50) DEFAULT 'mock',
     transaction_id VARCHAR(255),
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (id),
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -18,8 +19,9 @@ CREATE TABLE IF NOT EXISTS order_items (
     id INT UNSIGNED NOT NULL AUTO_INCREMENT,
     order_id INT UNSIGNED NOT NULL,
     product_id INT UNSIGNED NOT NULL,
-    product_title VARCHAR(255) NOT NULL,
+    product_name VARCHAR(255) NOT NULL,
     price INT NOT NULL DEFAULT 0,
+    quantity INT NOT NULL DEFAULT 1,
     PRIMARY KEY (id),
     FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE,
     FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE

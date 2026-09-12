@@ -1,7 +1,9 @@
-storage/database.sqlite
+storage/*.sqlite
 storage/cache/*
 storage/logs/*
+storage/private/*
 !storage/cache/.gitkeep
 !storage/logs/.gitkeep
+!storage/private/.gitkeep
 config/database.php
 config/installed.lock

@@ -50,7 +50,7 @@ class ErrorHandler
     {
         $logDir = __DIR__ . '/../../storage/logs';
         if (!is_dir($logDir)) {
-            mkdir($logDir, 0777, true);
+            mkdir($logDir, 0755, true);
         }
         $logFile = $logDir . '/app.log';
         $timestamp = date('Y-m-d H:i:s');

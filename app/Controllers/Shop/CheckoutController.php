@@ -65,17 +65,19 @@ class CheckoutController extends Controller
             // 2. Insert Order Items
             $productModel = new Product();
             foreach ($items as $item) {
-                $p = $productModel->find($item['product_id']);
-                $price = $p['sale_price'] ?? $p['price'];
-                $itemSql = "INSERT INTO order_items (order_id, product_id, product_name, price, quantity) VALUES (?, ?, ?, ?, ?)";
-                Database::query($itemSql, [$orderId, $p['id'], $p['title'], $price, $item['quantity']]);
+                $pId = (int)($item['product_id'] ?? $item['id'] ?? 0);
+                $p = $productModel->find($pId);
+                if ($p) {
+                    $price = $p['sale_price'] ?? $p['price'];
+                    $itemSql = "INSERT INTO order_items (order_id, product_id, product_name, price, quantity) VALUES (?, ?, ?, ?, ?)";
+                    Database::query($itemSql, [$orderId, $p['id'], $p['title'], $price, $item['quantity']]);
+                }
             }
 
             // 3. Initiate Payment Gateway
             $gateway = $this->gatewayManager->getGateway($gatewayId);
-            $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
-            $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
-            $callbackUrl = $protocol . '://' . $host . '/checkout/callback?order_id=' . $orderId . '&gateway=' . $gatewayId;
+            $baseUrl = \App\Core\Config::get('config.url', 'https://eafd.ir');
+            $callbackUrl = $baseUrl . '/checkout/callback?order_id=' . $orderId . '&gateway=' . $gatewayId;
 
             $payReq = $gateway->request([
                 'order_id' => $orderId,
@@ -103,7 +105,8 @@ class CheckoutController extends Controller
 
         } catch (Exception $e) {
             Database::rollBack();
-            $_SESSION['checkout_error'] = 'خطای سیستم در پردازش سفارش: ' . $e->getMessage();
+            \App\Core\Logger::error("Order processing error: " . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
+            $_SESSION['checkout_error'] = 'خطایی در ثبت و پردازش سفارش رخ داده است. لطفاً مجدداً تلاش نمایید.';
             header('Location: /checkout');
             exit;
         }
@@ -160,7 +163,8 @@ class CheckoutController extends Controller
 
             } catch (Exception $e) {
                 Database::rollBack();
-                \App\Core\ErrorHandler::renderErrorPage(500, "خطای صدور لایسنس", "پرداخت تایید شد اما در صدور لایسنس خطایی رخ داد: " . $e->getMessage());
+                \App\Core\Logger::error("License generation error: " . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
+                \App\Core\ErrorHandler::renderErrorPage(500, "خطای صدور لایسنس", "پرداخت تایید شد اما در صدور لایسنس خطایی رخ داد. تیم پشتیبانی در حال پیگیری موضوع می‌باشد.");
             }
         } else {
             Database::query("UPDATE transactions SET status = 'failed', updated_at = CURRENT_TIMESTAMP WHERE id = ?", [$tx['id']]);

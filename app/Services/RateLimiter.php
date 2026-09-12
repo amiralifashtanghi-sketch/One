@@ -12,12 +12,6 @@ class RateLimiter
         $fullKey = hash('sha256', $key . '_' . $ip);
         $now = time();
 
-        Database::query("CREATE TABLE IF NOT EXISTS rate_limits (
-            id VARCHAR(64) PRIMARY KEY,
-            attempts INT DEFAULT 1,
-            reset_at INT NOT NULL
-        )");
-
         // Clean expired limits
         Database::query("DELETE FROM rate_limits WHERE reset_at < ?", [$now]);
 

@@ -79,7 +79,7 @@ $router->post('/admin/pages/delete/{id}', [\App\Controllers\Admin\PageController
 $router->get('/admin/pages/{id}/builder', [\App\Controllers\Admin\PageBuilderController::class, 'edit'], ['admin']);
 $router->post('/admin/pages/{id}/builder/save', [\App\Controllers\Admin\PageBuilderController::class, 'save'], ['admin', 'csrf']);
 $router->post('/admin/pages/{id}/builder/add-section', [\App\Controllers\Admin\PageBuilderController::class, 'addSection'], ['admin', 'csrf']);
-$router->get('/admin/pages/{page_id}/builder/delete-section/{section_id}', [\App\Controllers\Admin\PageBuilderController::class, 'deleteSection'], ['admin', 'csrf']);
+$router->post('/admin/pages/{page_id}/builder/delete-section/{section_id}', [\App\Controllers\Admin\PageBuilderController::class, 'deleteSection'], ['admin', 'csrf']);
 
 $router->get('/admin/services', [\App\Controllers\Admin\ServiceController::class, 'index'], ['admin']);
 $router->get('/admin/services/create', [\App\Controllers\Admin\ServiceController::class, 'create'], ['admin']);

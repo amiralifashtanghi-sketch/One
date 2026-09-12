@@ -13,14 +13,14 @@ class Database
     public static function getConnection(): PDO
     {
         if (self::$instance === null) {
-            $driver = Config::get('database.driver', 'sqlite');
+            $driver = Config::get('database.driver', 'mysql');
 
             try {
                 if ($driver === 'sqlite') {
                     $sqlitePath = Config::get('database.sqlite_path', __DIR__ . '/../../storage/database.sqlite');
                     $dir = dirname($sqlitePath);
                     if (!is_dir($dir)) {
-                        mkdir($dir, 0777, true);
+                        mkdir($dir, 0755, true);
                     }
                     self::$instance = new PDO("sqlite:" . $sqlitePath, null, null, [
                         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
@@ -44,7 +44,8 @@ class Database
                     ]);
                 }
             } catch (PDOException $e) {
-                throw new Exception("Database Connection Error: " . $e->getMessage());
+                error_log("Database connection failed: " . $e->getMessage());
+                throw new Exception("خطا در اتصال به پایگاه‌داده. لطفا تنظیمات پایگاه‌داده را بررسی کنید.");
             }
         }
 

@@ -26,9 +26,7 @@ class SeoHelper
 
     public static function renderOrganizationJsonLd(): string
     {
-        $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
-        $host = $_SERVER['HTTP_HOST'] ?? 'eafd.ir';
-        $baseUrl = $protocol . '://' . $host;
+        $baseUrl = \App\Core\Config::get('config.url', 'https://eafd.ir');
 
         $data = [
             '@context' => 'https://schema.org',

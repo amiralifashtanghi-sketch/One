@@ -21,9 +21,10 @@ class Order extends Model
         $orderId = (int)Database::lastInsertId();
 
         foreach ($cartItems as $item) {
+            $qty = (int)($item['quantity'] ?? 1);
             Database::query(
-                "INSERT INTO order_items (order_id, product_id, product_title, price) VALUES (?, ?, ?, ?)",
-                [$orderId, $item['id'], $item['title'], $item['price']]
+                "INSERT INTO order_items (order_id, product_id, product_name, price, quantity) VALUES (?, ?, ?, ?, ?)",
+                [$orderId, $item['id'], $item['title'], $item['price'], $qty]
             );
         }
 
