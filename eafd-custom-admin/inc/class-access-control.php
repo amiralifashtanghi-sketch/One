@@ -51,37 +51,58 @@ class EAFD_Custom_Admin_Access_Control {
         $allcaps['rank_math_site_analysis'] = true;
         $allcaps['wpseo_bulk_editing'] = true;
 
-        // Dynamically map allowed menu slugs to specific required capabilities (without granting manage_options)
+        // Dynamically map allowed menu slugs to specific required capabilities
         foreach ( $allowed as $menu_item ) {
             $normalized = self::normalize_slug( $menu_item );
-            if ( strpos( $normalized, 'post_type=product' ) !== false || strpos( $normalized, 'wc-orders' ) !== false ) {
+
+            // Handle submenus formatted as Parent::Child
+            if ( strpos( $normalized, '::' ) !== false ) {
+                list( $parent_part, $child_part ) = explode( '::', $normalized, 2 );
+                $normalized = $child_part;
+            }
+
+            // Product & WooCommerce
+            if ( strpos( $normalized, 'product' ) !== false || strpos( $normalized, 'wc-orders' ) !== false || strpos( $normalized, 'woocommerce' ) !== false ) {
                 $allcaps['manage_woocommerce'] = true;
                 $allcaps['edit_products'] = true;
                 $allcaps['publish_products'] = true;
                 $allcaps['edit_others_products'] = true;
                 $allcaps['edit_published_products'] = true;
                 $allcaps['read_private_products'] = true;
+                $allcaps['manage_product_terms'] = true;
+                $allcaps['edit_product_terms'] = true;
+                $allcaps['delete_product_terms'] = true;
+                $allcaps['assign_product_terms'] = true;
                 $allcaps['edit_shop_orders'] = true;
                 $allcaps['edit_others_shop_orders'] = true;
                 $allcaps['read_private_shop_orders'] = true;
             }
+
+            // Pages
             if ( strpos( $normalized, 'post_type=page' ) !== false ) {
                 $allcaps['edit_pages'] = true;
                 $allcaps['publish_pages'] = true;
                 $allcaps['edit_others_pages'] = true;
                 $allcaps['edit_published_pages'] = true;
             }
+
+            // Posts & Categories
             if ( strpos( $normalized, 'edit.php' ) !== false && strpos( $normalized, 'post_type=' ) === false ) {
                 $allcaps['edit_posts'] = true;
                 $allcaps['publish_posts'] = true;
                 $allcaps['edit_others_posts'] = true;
                 $allcaps['edit_published_posts'] = true;
+                $allcaps['manage_categories'] = true;
             }
+
+            // SEO Plugins
             if ( strpos( $normalized, 'wpseo' ) !== false ) {
                 $allcaps['wpseo_bulk_editing'] = true;
+                $allcaps['wpseo_manage_options'] = true;
             }
             if ( strpos( $normalized, 'rank_math' ) !== false ) {
                 $allcaps['rank_math_general'] = true;
+                $allcaps['rank_math_site_analysis'] = true;
             }
         }
 
@@ -119,7 +140,11 @@ class EAFD_Custom_Admin_Access_Control {
 
         // If accessed directly outside /admin frame, redirect to /admin with target page parameter
         if ( ! $is_iframe && ! $has_referer_iframe && is_admin() && strpos( $_SERVER['REQUEST_URI'] ?? '', 'eafd_iframe' ) === false ) {
-            wp_redirect( home_url( '/admin' ) );
+            if ( isset( $_GET['page'] ) && $_GET['page'] === 'index.php' ) {
+                wp_redirect( home_url( '/admin' ) );
+            } else {
+                wp_redirect( home_url( '/admin' ) );
+            }
             exit;
         }
 

@@ -513,6 +513,10 @@ if ( $allowed_menus === 'all' ) {
         }
 
         function loadAdminPage(url, title) {
+            if (url.indexOf('index.php') !== -1 && url.indexOf('?') === -1) {
+                showDashboard();
+                return;
+            }
             var sep = url.indexOf('?') !== -1 ? '&' : '?';
             var iframeUrl = url + sep + 'eafd_iframe=1';
 
