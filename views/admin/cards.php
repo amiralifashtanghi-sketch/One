@@ -3,7 +3,7 @@ ob_start();
 ?>
 
 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-    <h2 style="margin: 0;">مدیریت کارت‌ها و کیو آر کدها</h2>
+    <h2 style="margin: 0;">مدیریت کارت‌ها و QR کدها</h2>
     <form method="POST" action="/admin/cards/generate" style="display: flex; gap: 0.5rem; align-items: center;">
         <input type="number" name="count" value="10" min="1" max="100" style="width: 80px; text-align: center;">
         <button type="submit" class="btn btn-success">+ ساخت کارت جدید</button>
@@ -18,7 +18,7 @@ ob_start();
                 <th>لینک و کیو آر کد</th>
                 <th>وضعیت</th>
                 <th>مالک فعلی</th>
-                <th>عملیات و تغییر مالک</th>
+                <th>عملیات و تغییر مالک / رمز</th>
             </tr>
         </thead>
         <tbody>
@@ -60,13 +60,14 @@ ob_start();
                         </td>
                         <td>
                             <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
-                                <form method="POST" action="/admin/cards/reassign" style="display: flex; gap: 0.25rem;">
+                                <form method="POST" action="/admin/cards/reassign" style="display: flex; gap: 0.25rem; flex-direction: column;">
                                     <input type="hidden" name="card_id" value="<?= $card['id'] ?>">
-                                    <input type="text" name="new_phone" placeholder="شماره همراه جدید" style="width: 130px; padding: 0.35rem; font-size: 0.8rem;">
-                                    <button type="submit" class="btn" style="padding: 0.35rem 0.6rem; font-size: 0.8rem;">تغییر مالک</button>
+                                    <input type="text" name="new_phone" placeholder="شماره همراه مالک" style="width: 150px; padding: 0.35rem; font-size: 0.8rem;" required>
+                                    <input type="password" name="new_password" placeholder="رمز عبور مالک" style="width: 150px; padding: 0.35rem; font-size: 0.8rem;">
+                                    <button type="submit" class="btn" style="padding: 0.35rem 0.6rem; font-size: 0.8rem;">ثبت/تغییر مالک و رمز</button>
                                 </form>
 
-                                <form method="POST" action="/admin/cards/update-status" style="display: inline;">
+                                <form method="POST" action="/admin/cards/update-status" style="display: inline; margin-top: auto;">
                                     <input type="hidden" name="card_id" value="<?= $card['id'] ?>">
                                     <input type="hidden" name="status" value="<?= $card['status'] === 'blocked' ? 'unassigned' : 'blocked' ?>">
                                     <button type="submit" class="btn <?= $card['status'] === 'blocked' ? 'btn-success' : 'btn-danger' ?>" style="padding: 0.35rem 0.6rem; font-size: 0.8rem;">

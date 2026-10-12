@@ -4,20 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= htmlspecialchars($title ?? 'ورود به سامانه') ?></title>
+    <link rel="stylesheet" href="/assets/fonts/vazirmatn.css">
     <style>
         :root {
-            --bg: #0f172a;
-            --card-bg: #1e293b;
-            --primary: #3b82f6;
-            --primary-hover: #2563eb;
-            --text: #f8fafc;
-            --muted: #94a3b8;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --text: #0f172a;
+            --muted: #64748b;
             --danger: #ef4444;
             --success: #10b981;
-            --border: #334155;
+            --border: #e2e8f0;
         }
         body {
-            font-family: system-ui, -apple-system, sans-serif;
+            font-family: 'Vazirmatn', system-ui, sans-serif;
             background: var(--bg);
             color: var(--text);
             margin: 0;
@@ -30,11 +31,11 @@
         }
         .login-card {
             background: var(--card-bg);
-            padding: 2rem;
+            padding: 2.5rem 2rem;
             border-radius: 16px;
             width: 100%;
             max-width: 420px;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
             border: 1px solid var(--border);
         }
         .tabs {
@@ -62,7 +63,7 @@
         input[type="text"], input[type="password"] {
             width: 100%;
             padding: 0.75rem 1rem;
-            background: #0f172a;
+            background: #ffffff;
             border: 1px solid var(--border);
             border-radius: 8px;
             color: var(--text);
@@ -90,8 +91,8 @@
             margin-bottom: 1rem;
             font-size: 0.9rem;
         }
-        .alert-danger { background: rgba(239, 68, 68, 0.15); border: 1px solid var(--danger); color: #fca5a5; }
-        .alert-success { background: rgba(16, 185, 129, 0.15); border: 1px solid var(--success); color: #6ee7b7; }
+        .alert-danger { background: #fee2e2; border: 1px solid #fca5a5; color: #991b1b; }
+        .alert-success { background: #d1fae5; border: 1px solid #6ee7b7; color: #065f46; }
         .links { margin-top: 1.25rem; text-align: center; font-size: 0.85rem; }
         .links a { color: var(--primary); text-decoration: none; }
         .otp-row { display: flex; gap: 0.5rem; }
@@ -100,7 +101,7 @@
 </head>
 <body>
     <div class="login-card">
-        <h2 style="text-align: center; margin-top: 0; margin-bottom: 1.5rem;">ورود به سامانه بیو لینک</h2>
+        <h2 style="text-align: center; margin-top: 0; margin-bottom: 1.5rem; color: var(--primary);">ورود به سامانه بیو لینک</h2>
 
         <?php if (!empty($error)): ?>
             <div class="alert alert-danger"><?= htmlspecialchars($error) ?></div>
@@ -125,7 +126,7 @@
                 <label>رمز عبور:</label>
                 <input type="password" name="password" required>
             </div>
-            <button type="submit" class="btn">ورود</button>
+            <button type="submit" class="btn">ورود به پنل</button>
         </form>
 
         <!-- OTP Form -->

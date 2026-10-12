@@ -4,22 +4,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= htmlspecialchars($title ?? 'پنل فروشنده') ?></title>
+    <link rel="stylesheet" href="/assets/fonts/vazirmatn.css">
     <style>
         :root {
-            --bg: #0f172a;
-            --card-bg: #1e293b;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --sidebar-bg: #064e3b;
             --primary: #10b981;
             --primary-hover: #059669;
-            --text: #f8fafc;
-            --muted: #94a3b8;
-            --border: #334155;
+            --text: #0f172a;
+            --muted: #64748b;
+            --border: #e2e8f0;
             --danger: #ef4444;
             --success: #10b981;
             --warning: #f59e0b;
         }
         * { box-sizing: border-box; }
         body {
-            font-family: system-ui, -apple-system, sans-serif;
+            font-family: 'Vazirmatn', system-ui, sans-serif;
             background: var(--bg);
             color: var(--text);
             margin: 0;
@@ -28,18 +30,19 @@
         }
         .sidebar {
             width: 250px;
-            background: #13222e;
+            background: var(--sidebar-bg);
             border-left: 1px solid var(--border);
             display: flex;
             flex-direction: column;
             flex-shrink: 0;
+            color: #fff;
         }
         .brand {
             padding: 1.5rem;
             font-size: 1.2rem;
             font-weight: bold;
             color: #fff;
-            border-bottom: 1px solid var(--border);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
             text-align: center;
         }
         .menu {
@@ -53,15 +56,15 @@
             align-items: center;
             gap: 0.75rem;
             padding: 0.85rem 1.5rem;
-            color: var(--muted);
+            color: #a7f3d0;
             text-decoration: none;
             font-size: 0.95rem;
             transition: all 0.2s;
         }
         .menu li a:hover, .menu li a.active {
-            background: rgba(16, 185, 129, 0.15);
-            color: var(--primary);
-            border-right: 4px solid var(--primary);
+            background: rgba(255, 255, 255, 0.15);
+            color: #ffffff;
+            border-right: 4px solid #ffffff;
         }
         .main-content {
             flex: 1;
@@ -77,6 +80,7 @@
             align-items: center;
             justify-content: space-between;
             padding: 0 2rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
         }
         .content {
             padding: 2rem;
@@ -88,6 +92,7 @@
             border: 1px solid var(--border);
             padding: 1.5rem;
             margin-bottom: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
         }
         table {
             width: 100%;
@@ -100,7 +105,7 @@
             border-bottom: 1px solid var(--border);
             font-size: 0.9rem;
         }
-        th { color: var(--muted); font-weight: 600; background: rgba(0,0,0,0.2); }
+        th { color: var(--muted); font-weight: 600; background: #f1f5f9; }
         .btn {
             display: inline-block;
             background: var(--primary);
@@ -121,21 +126,22 @@
         input {
             width: 100%;
             padding: 0.75rem 1rem;
-            background: #0f172a;
+            background: #ffffff;
             border: 1px solid var(--border);
             border-radius: 8px;
             color: var(--text);
             box-sizing: border-box;
             outline: none;
         }
+        input:focus { border-color: var(--primary); }
         .alert {
             padding: 0.85rem 1rem;
             border-radius: 8px;
             margin-bottom: 1.25rem;
             font-size: 0.9rem;
         }
-        .alert-danger { background: rgba(239, 68, 68, 0.15); border: 1px solid var(--danger); color: #fca5a5; }
-        .alert-success { background: rgba(16, 185, 129, 0.15); border: 1px solid var(--success); color: #6ee7b7; }
+        .alert-danger { background: #fee2e2; border: 1px solid #fca5a5; color: #991b1b; }
+        .alert-success { background: #d1fae5; border: 1px solid #6ee7b7; color: #065f46; }
     </style>
 </head>
 <body>
@@ -146,14 +152,14 @@
             <li><a href="/seller/assign" class="<?= ($activePage ?? '') === 'assign' ? 'active' : '' ?>">📱 تخصیص کارت به خریدار</a></li>
             <li><a href="/seller/history" class="<?= ($activePage ?? '') === 'history' ? 'active' : '' ?>">📜 تاریخچه فروش</a></li>
             <?php if (($_SESSION['user_role'] ?? '') === 'admin'): ?>
-                <li><a href="/admin" style="color: var(--warning);">👑 بازگشت به مدیریت کل</a></li>
+                <li><a href="/admin" style="color: #fde047;">👑 بازگشت به مدیریت کل</a></li>
             <?php endif; ?>
         </ul>
     </div>
 
     <div class="main-content">
         <div class="header">
-            <div>فروشنده: <?= htmlspecialchars($_SESSION['user_name'] ?? 'همکار محترم') ?> 👋</div>
+            <div>فروشنده: <strong><?= htmlspecialchars($_SESSION['user_name'] ?? 'همکار محترم') ?></strong> 👋</div>
             <div>
                 <a href="/logout" class="btn btn-danger" style="padding: 0.4rem 0.85rem; font-size: 0.85rem;">خروج</a>
             </div>

@@ -115,6 +115,7 @@ class AdminController {
     public function reassignCardProcess(): void {
         $cardId = (int)Request::post('card_id', 0);
         $newPhone = Request::post('new_phone', '');
+        $newPassword = Request::post('new_password', '');
 
         $normPhone = Helper::normalizePhone($newPhone);
         if (!$normPhone) {
@@ -122,14 +123,27 @@ class AdminController {
             Response::redirect('/admin/cards');
         }
 
+        // Find or create buyer user
         $user = Database::fetch("SELECT id FROM users WHERE phone = ?", [$normPhone]);
         if (!$user) {
-            Session::flash('error', 'کاربری با این شماره همراه یافت نشد.');
-            Response::redirect('/admin/cards');
+            $pass = !empty($newPassword) ? $newPassword : '123456';
+            $hash = Helper::hashPassword($pass);
+            Database::query("INSERT INTO users (phone, password, role) VALUES (?, ?, 'user')", [$normPhone, $hash]);
+            $userId = Database::lastInsertId();
+
+            // Create default bio page
+            $username = 'u' . substr($normPhone, -4) . rand(100, 999);
+            Database::query("INSERT INTO bio_pages (user_id, username, title) VALUES (?, ?, 'صفحه بیو اختصاصی')", [$userId, $username]);
+        } else {
+            $userId = $user['id'];
+            if (!empty($newPassword)) {
+                $hash = Helper::hashPassword($newPassword);
+                Database::query("UPDATE users SET password = ? WHERE id = ?", [$hash, $userId]);
+            }
         }
 
-        Database::query("UPDATE cards SET assigned_user_id = ?, status = 'assigned', assigned_at = NOW() WHERE id = ?", [$user['id'], $cardId]);
-        Session::flash('success', 'مالک کارت با موفقیت به شماره جدید تغییر یافت.');
+        Database::query("UPDATE cards SET assigned_user_id = ?, status = 'assigned', assigned_at = NOW() WHERE id = ?", [$userId, $cardId]);
+        Session::flash('success', 'مالک کارت با موفقیت تخصیص یافت/تغییر کرد و رمز عبور نیز ذخیره شد.');
         Response::redirect('/admin/cards');
     }
 
@@ -144,12 +158,42 @@ class AdminController {
         ");
 
         Response::render('admin.users', [
-            'title' => 'مدیریت کاربران و فروشندگان',
+            'title' => 'مدیریت کاربران و تعریف فروشندگان',
             'activePage' => 'users',
             'users' => $users,
             'error' => Session::flash('error'),
             'success' => Session::flash('success')
         ]);
+    }
+
+    public function addSellerProcess(): void {
+        $name = trim(Request::post('name', ''));
+        $phone = trim(Request::post('phone', ''));
+        $password = trim(Request::post('password', ''));
+
+        $normPhone = Helper::normalizePhone($phone);
+        if (!$normPhone) {
+            Session::flash('error', 'شماره همراه فروشنده معتبر نیست.');
+            Response::redirect('/admin/users');
+        }
+
+        if (strlen($password) < 4) {
+            Session::flash('error', 'رمز عبور فروشنده باید حداقل ۴ کاراکتر باشد.');
+            Response::redirect('/admin/users');
+        }
+
+        $existing = Database::fetch("SELECT id FROM users WHERE phone = ?", [$normPhone]);
+        $hash = Helper::hashPassword($password);
+
+        if ($existing) {
+            Database::query("UPDATE users SET name = ?, password = ?, role = 'seller' WHERE id = ?", [$name, $hash, $existing['id']]);
+            Session::flash('success', 'کاربر موجود با موفقیت به نقش فروشنده ارتقا یافت و رمز عبور جدید ثبت شد.');
+        } else {
+            Database::query("INSERT INTO users (name, phone, password, role) VALUES (?, ?, ?, 'seller')", [$name, $normPhone, $hash]);
+            Session::flash('success', 'فروشنده جدید با موفقیت ایجاد گردید.');
+        }
+
+        Response::redirect('/admin/users');
     }
 
     public function toggleSellerProcess(): void {
@@ -301,5 +345,15 @@ class AdminController {
         }
 
         Response::redirect('/admin/settings');
+    }
+
+    public function guide(): void {
+        Response::render('admin.guide', [
+            'title' => 'راهنمای کامل کاربردی سامانه',
+            'activePage' => 'guide',
+            'appUrl' => (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://" . $_SERVER['HTTP_HOST'],
+            'error' => Session::flash('error'),
+            'success' => Session::flash('success')
+        ]);
     }
 }

@@ -2,7 +2,10 @@
 ob_start();
 ?>
 
-<h2 style="margin-top: 0; margin-bottom: 1.5rem;">مدیریت کاربران و فروشندگان</h2>
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+    <h2 style="margin: 0;">مدیریت کاربران و تعریف فروشندگان</h2>
+    <button onclick="document.getElementById('addSellerModal').style.display='flex'" class="btn btn-success">+ تعریف فروشنده جدید</button>
+</div>
 
 <div class="card">
     <table>
@@ -81,6 +84,32 @@ ob_start();
             <?php endif; ?>
         </tbody>
     </table>
+</div>
+
+<!-- Modal Add Seller -->
+<div id="addSellerModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); align-items: center; justify-content: center; z-index: 1000; padding: 1rem;">
+    <div style="background: var(--card-bg); border-radius: 16px; padding: 1.5rem; width: 100%; max-width: 450px; border: 1px solid var(--border); box-shadow: 0 10px 25px rgba(0,0,0,0.2);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+            <h3 style="margin:0;">تعریف فروشنده جدید</h3>
+            <button type="button" onclick="document.getElementById('addSellerModal').style.display='none'" style="background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--text);">&times;</button>
+        </div>
+
+        <form method="POST" action="/admin/users/add-seller">
+            <div class="form-group">
+                <label>نام و نام خانوادگی فروشنده:</label>
+                <input type="text" name="name" placeholder="مثال: محمد رضا فروشنده" required>
+            </div>
+            <div class="form-group">
+                <label>شماره همراه (ورود):</label>
+                <input type="text" name="phone" placeholder="۰۹۱۲۱۲۳۴۵۶۷" required>
+            </div>
+            <div class="form-group">
+                <label>رمز عبور فروشنده:</label>
+                <input type="password" name="password" required>
+            </div>
+            <button type="submit" class="btn btn-success" style="width: 100%; margin-top: 1rem;">ثبت و ایجاد حساب فروشنده</button>
+        </form>
+    </div>
 </div>
 
 <?php

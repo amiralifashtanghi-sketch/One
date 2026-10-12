@@ -66,6 +66,7 @@ Router::post('/admin/cards/update-status', [\App\Controllers\AdminController::cl
 Router::post('/admin/cards/reassign', [\App\Controllers\AdminController::class, 'reassignCardProcess']);
 
 Router::get('/admin/users', [\App\Controllers\AdminController::class, 'users']);
+Router::post('/admin/users/add-seller', [\App\Controllers\AdminController::class, 'addSellerProcess']);
 Router::post('/admin/users/toggle-seller', [\App\Controllers\AdminController::class, 'toggleSellerProcess']);
 Router::post('/admin/users/toggle-block', [\App\Controllers\AdminController::class, 'toggleUserBlockProcess']);
 
@@ -76,6 +77,7 @@ Router::post('/admin/bios/save', [\App\Controllers\AdminController::class, 'save
 Router::get('/admin/settings', [\App\Controllers\AdminController::class, 'settings']);
 Router::post('/admin/settings/save', [\App\Controllers\AdminController::class, 'saveSettingsProcess']);
 Router::post('/admin/settings/test-sms', [\App\Controllers\AdminController::class, 'testSmsProcess']);
+Router::get('/admin/guide', [\App\Controllers\AdminController::class, 'guide']);
 
 // 3. Seller Panel
 Router::get('/seller', [\App\Controllers\SellerController::class, 'dashboard']);
