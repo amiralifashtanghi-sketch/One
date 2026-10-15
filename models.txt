@@ -1,0 +1,11 @@
+app/Models/Product.php
+app/Models/Page.php
+app/Models/LicenseActivation.php
+app/Models/Tool.php
+app/Models/PageSection.php
+app/Models/DesignToken.php
+app/Models/Order.php
+app/Models/Service.php
+app/Models/Project.php
+app/Models/License.php
+app/Models/Quiz.php

@@ -1,0 +1,13 @@
+CREATE TABLE IF NOT EXISTS transactions (
+    id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    order_id INT UNSIGNED NOT NULL,
+    gateway VARCHAR(50) NOT NULL,
+    transaction_id VARCHAR(255) NOT NULL,
+    reference_id VARCHAR(255),
+    amount INT NOT NULL DEFAULT 0,
+    status VARCHAR(50) DEFAULT 'pending',
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (id),
+    FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

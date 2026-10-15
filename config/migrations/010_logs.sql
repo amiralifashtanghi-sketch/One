@@ -1,0 +1,9 @@
+CREATE TABLE IF NOT EXISTS activity_logs (
+    id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    user_id INT UNSIGNED DEFAULT 0,
+    action VARCHAR(255) NOT NULL,
+    context TEXT,
+    ip_address VARCHAR(50),
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

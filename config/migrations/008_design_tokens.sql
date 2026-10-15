@@ -1,0 +1,8 @@
+CREATE TABLE IF NOT EXISTS design_tokens (
+    id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    token_key VARCHAR(100) UNIQUE NOT NULL,
+    token_value TEXT NOT NULL,
+    category VARCHAR(50) DEFAULT 'general',
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
