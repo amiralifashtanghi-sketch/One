@@ -1,0 +1,148 @@
+/* ==========================================
+   EAFD WooCommerce Theme Reset & Force Override Layer
+   Targeted strictly to main content areas to protect site header & hamburger menus
+   ========================================== */
+
+/* Universal Box-Sizing for WooCommerce Plugin Containers */
+.eafd-wc-container,
+.eafd-wc-checkout-wrapper,
+.checkout-container,
+.cart-container-wrapper,
+.eafd-dashboard-container {
+    box-sizing: border-box !important;
+    max-width: 100% !important;
+    width: 100% !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+}
+
+/* Force Reset Main Content Parent Wrappers while explicitly protecting Header & Navigation */
+body.woocommerce-checkout main:not(header):not(nav),
+body.woocommerce-checkout .entry-content,
+body.woocommerce-checkout #primary:not(header):not(nav),
+body.woocommerce-checkout #content:not(header):not(nav),
+body.woocommerce-cart main:not(header):not(nav),
+body.woocommerce-cart .entry-content,
+body.woocommerce-cart #primary:not(header):not(nav),
+body.woocommerce-cart #content:not(header):not(nav),
+body.woocommerce-account main:not(header):not(nav),
+body.woocommerce-account .entry-content,
+body.woocommerce-account #primary:not(header):not(nav),
+body.woocommerce-account #content:not(header):not(nav) {
+    max-width: 100% !important;
+    width: 100% !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    box-sizing: border-box !important;
+    float: none !important;
+}
+
+.woocommerce-cart .woocommerce,
+.woocommerce-checkout .woocommerce,
+.woocommerce-account .woocommerce {
+    max-width: 100% !important;
+    width: 100% !important;
+    margin: 10px auto !important;
+    padding: 0 10px !important;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    box-sizing: border-box !important;
+}
+
+/* Checkout Container Desktop Full Width 2-Column Grid */
+.checkout-container {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 24px !important;
+    width: 100% !important;
+    max-width: 1200px !important;
+    box-sizing: border-box !important;
+    margin: 0 auto !important;
+    padding: 24px !important;
+}
+
+@media (max-width: 991px) {
+    .checkout-container {
+        grid-template-columns: 1fr !important;
+        padding: 12px !important;
+        gap: 16px !important;
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+}
+
+.woocommerce-cart table.shop_table,
+.woocommerce-checkout #order_review,
+.woocommerce-checkout table.shop_table {
+    background: var(--neo-bg, #f0f4f8) !important;
+    border-radius: var(--neo-radius, 20px) !important;
+    box-shadow: var(--shadow-neo-out, 6px 6px 16px #bdc3c7, -6px -6px 16px #ffffff) !important;
+    border: none !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+}
+
+.woocommerce-cart table.shop_table th,
+.woocommerce-cart table.shop_table td,
+.woocommerce-checkout table.shop_table th,
+.woocommerce-checkout table.shop_table td {
+    border-color: rgba(0, 0, 0, 0.05) !important;
+}
+
+/* Inputs Force Override */
+.woocommerce-cart input[type="text"],
+.woocommerce-checkout input[type="text"],
+.woocommerce-checkout input[type="email"],
+.woocommerce-checkout input[type="tel"],
+.woocommerce-checkout select,
+.woocommerce-checkout textarea {
+    background: #ffffff !important;
+    border: 1px solid #cbd5e1 !important;
+    border-radius: 10px !important;
+    padding: 12px 15px !important;
+    font-family: 'Vazirmatn', sans-serif !important;
+    box-sizing: border-box !important;
+    max-width: 100% !important;
+}
+
+/* Premium Place Order Button Override */
+.woocommerce-cart .button,
+.woocommerce-checkout .button,
+#place_order {
+    background: linear-gradient(135deg, var(--turquoise, #1abc9c) 0%, #117864 100%) !important;
+    color: #ffffff !important;
+    border: 1px solid rgba(255, 255, 255, 0.5) !important;
+    border-radius: 30px !important;
+    padding: 16px 28px !important;
+    font-size: 17px !important;
+    font-weight: 800 !important;
+    box-shadow: 0 8px 24px rgba(26, 188, 156, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.6) !important;
+    cursor: pointer !important;
+    font-family: 'Vazirmatn', sans-serif !important;
+    box-sizing: border-box !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    display: block !important;
+    text-align: center !important;
+    transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease !important;
+    margin-top: 15px !important;
+}
+
+.woocommerce-cart .button:hover,
+.woocommerce-checkout .button:hover,
+#place_order:hover {
+    background: linear-gradient(135deg, #16a085 0%, #0e6251 100%) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 12px 28px rgba(26, 188, 156, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.8) !important;
+}
+
+.woocommerce-cart .button:active,
+.woocommerce-checkout .button:active,
+#place_order:active {
+    transform: translateY(1px) !important;
+    box-shadow: inset 0 3px 6px rgba(0, 0, 0, 0.3) !important;
+}

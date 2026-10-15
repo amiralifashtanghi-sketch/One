@@ -1,0 +1,352 @@
+/* ==========================================
+   EAFD Modern Combined Styles: Glass, Neo & Skeuo
+   High Performance Ultra Fast Render CSS
+   Guaranteed Zero Horizontal Overflow & Zero Double Scroll
+   ========================================== */
+
+/* Universal Reset for Plugin Components */
+.eafd-wc-container,
+.eafd-wc-checkout-wrapper,
+.checkout-container,
+.cart-container-wrapper,
+.eafd-dashboard-container {
+    box-sizing: border-box !important;
+    width: 100% !important;
+    max-width: 1200px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    padding-left: 15px !important;
+    padding-right: 15px !important;
+}
+
+/* Eliminate any unintended nested / double scrollbars */
+.eafd-wc-container,
+.eafd-wc-checkout-wrapper,
+.checkout-container,
+.cart-container-wrapper,
+.eafd-dashboard-container,
+.glass-card,
+.neumor-card,
+.order-summary,
+.cart-summary,
+.woocommerce-checkout-review-order,
+.shop_table {
+    overflow: visible !important;
+}
+
+/* Ensure flex/grid items never expand past 100% parent width */
+.checkout-container > *,
+.cart-grid-layout > *,
+.eafd-widgets-grid > *,
+.car-card,
+.glass-card,
+.neumor-card {
+    min-width: 0 !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+}
+
+/* Base Dashboard Container */
+.eafd-dashboard-container {
+    display: flex;
+    margin: 20px auto;
+    gap: 24px;
+    position: relative;
+    z-index: 1;
+    direction: rtl;
+    font-family: var(--font);
+}
+
+/* Glassmorphic Sidebar & Header */
+.eafd-sidebar {
+    width: 280px;
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.9);
+    border-radius: var(--neo-radius, 18px);
+    padding: 20px 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-direction: column;
+}
+
+/* Neomorphic Cards */
+.eafd-neo-card {
+    background: var(--neo-bg, #f0f4f8);
+    border-radius: var(--neo-radius, 18px);
+    box-shadow: var(--shadow-neo-out, 6px 6px 16px #bdc3c7, -6px -6px 16px #ffffff);
+    padding: 20px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Skeuomorphic & Glossy Place Order Buttons */
+.eafd-btn-skeuo,
+#place_order,
+.woocommerce-checkout #place_order {
+    background: linear-gradient(135deg, var(--turquoise, #1abc9c) 0%, #117864 100%) !important;
+    color: #ffffff !important;
+    border: 1px solid rgba(255, 255, 255, 0.5) !important;
+    border-radius: 30px !important;
+    padding: 16px 28px !important;
+    font-size: 17px !important;
+    font-weight: 800 !important;
+    box-shadow: 0 8px 24px rgba(26, 188, 156, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.6) !important;
+    cursor: pointer !important;
+    transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease !important;
+    display: block !important;
+    width: 100% !important;
+    text-align: center !important;
+    text-decoration: none !important;
+    margin-top: 15px !important;
+    box-sizing: border-box !important;
+}
+
+.eafd-btn-skeuo:hover,
+#place_order:hover,
+.woocommerce-checkout #place_order:hover {
+    background: linear-gradient(135deg, #16a085 0%, #0e6251 100%) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 12px 28px rgba(26, 188, 156, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.8) !important;
+}
+
+.eafd-btn-skeuo:active,
+#place_order:active,
+.woocommerce-checkout #place_order:active {
+    transform: translateY(1px) !important;
+    box-shadow: inset 0 3px 6px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* Checkout Container Integration */
+.checkout-container {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 2rem !important;
+    width: 100% !important;
+    max-width: 1200px !important;
+    margin: 15px auto !important;
+    padding: 1.5rem !important;
+    background: #ffffff !important;
+    border-radius: 20px !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05) !important;
+    direction: rtl !important;
+    font-family: var(--font, 'Vazirmatn', sans-serif) !important;
+    box-sizing: border-box !important;
+}
+
+.woocommerce-checkout {
+    width: 100% !important;
+    max-width: 100% !important;
+}
+
+/* Glassmorphism Card */
+.glass-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+    padding: 1.5rem;
+}
+
+/* Neomorphism Inputs & Elements */
+.neumor-card {
+    background: #f8fafc;
+    border-radius: 16px;
+    box-shadow: inset 0 0 0 1px #e2e8f0;
+    padding: 1.5rem;
+}
+
+/* Form Row Responsive Fixes for WooCommerce */
+.form-row,
+.form-row-first,
+.form-row-last,
+.form-row-wide {
+    width: 100% !important;
+    float: none !important;
+    margin-right: 0 !important;
+    margin-left: 0 !important;
+    box-sizing: border-box !important;
+    clear: both !important;
+}
+
+.woocommerce-billing-fields__field-wrapper,
+.woocommerce-shipping-fields__field-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100% !important;
+    box-sizing: border-box !important;
+}
+
+/* Select2 Dropdown Zero Overflow */
+.select2-container,
+.select2-container--default,
+.select2-container .select2-selection--single {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+}
+
+.select2-selection--single {
+    height: 46px !important;
+    padding: 8px 12px !important;
+    border-radius: 10px !important;
+    border: 1px solid #cbd5e1 !important;
+    display: flex !important;
+    align-items: center !important;
+}
+
+/* Inputs & Textareas Zero Overflow */
+.neumor-input,
+.checkout-container input[type="text"],
+.checkout-container input[type="tel"],
+.checkout-container input[type="email"],
+.checkout-container textarea,
+.checkout-container select {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 12px 15px !important;
+    border: 1px solid #cbd5e1 !important;
+    border-radius: 10px !important;
+    background: #ffffff !important;
+    font-size: 14px !important;
+    font-family: inherit !important;
+    outline: none;
+    color: #1a202c !important;
+    box-sizing: border-box !important;
+}
+
+.checkout-container h1,
+.checkout-container h2,
+.checkout-container h3 {
+    margin-bottom: 1rem;
+    color: #0d1b2a;
+    font-weight: 800;
+    font-size: 18px;
+}
+
+/* Order Review Table Fixes */
+.shop_table {
+    width: 100% !important;
+    max-width: 100% !important;
+    table-layout: fixed !important;
+    border-collapse: collapse !important;
+    word-break: break-word !important;
+    box-sizing: border-box !important;
+}
+
+.shop_table th, .shop_table td {
+    padding: 10px 8px !important;
+    font-size: 13px !important;
+    word-wrap: break-word !important;
+    overflow-wrap: anywhere !important;
+}
+
+/* Cart Page Responsive Overrides */
+.car-card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.cart-quantity-input-box input.qty {
+    width: 40px !important;
+    text-align: center;
+    border: none !important;
+    background: transparent !important;
+    font-weight: 800;
+    color: var(--blue-primary, #0d1b2a);
+    font-size: 14px;
+    padding: 0 !important;
+}
+
+/* Responsive Mobile Breakpoints (320px - 768px) */
+@media (max-width: 768px) {
+    .eafd-wc-container,
+    .eafd-wc-checkout-wrapper,
+    .checkout-container,
+    .cart-container-wrapper,
+    .eafd-dashboard-container {
+        padding-left: 10px !important;
+        padding-right: 10px !important;
+    }
+
+    .checkout-container {
+        grid-template-columns: 1fr !important;
+        padding: 12px !important;
+        gap: 16px !important;
+        border-radius: 16px !important;
+    }
+
+    .glass-card,
+    .neumor-card {
+        padding: 12px !important;
+        border-radius: 16px !important;
+    }
+
+    .cart-grid-layout {
+        grid-template-columns: 1fr !important;
+        gap: 16px !important;
+    }
+
+    .car-card {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        padding: 14px !important;
+        gap: 12px !important;
+    }
+
+    .car-card > div {
+        width: 100% !important;
+    }
+
+    .car-card .car-info h2 {
+        white-space: normal !important;
+        font-size: 14px !important;
+    }
+
+    .car-card > div:last-child {
+        flex-direction: row !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+    }
+
+    .cart-actions-row {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 10px !important;
+    }
+
+    .coupon-form-group {
+        width: 100% !important;
+        flex-direction: column !important;
+    }
+
+    .coupon-form-group input,
+    .coupon-form-group button {
+        width: 100% !important;
+    }
+
+    .eafd-dashboard-container {
+        flex-direction: column !important;
+    }
+
+    .eafd-sidebar {
+        width: 100% !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .cart-header-title,
+    .checkout-container h1,
+    .checkout-container h2 {
+        font-size: 16px !important;
+    }
+
+    .car-price {
+        font-size: 13px !important;
+        padding: 4px 10px !important;
+    }
+
+    .button, .btn-neo, .eafd-btn-skeuo, #place_order {
+        padding: 14px 20px !important;
+        font-size: 15px !important;
+    }
+}

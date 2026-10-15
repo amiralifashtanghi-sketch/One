@@ -1,0 +1,70 @@
+/* ==========================================
+   EAFD Mobile Sidebar Drawer & Floating Toggle
+   ========================================== */
+
+.eafd-mobile-toggle-btn {
+    display: none;
+    position: fixed;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 48px;
+    height: 48px;
+    background: var(--blue-primary);
+    color: #ffffff;
+    border-radius: 12px 0 0 12px;
+    box-shadow: -4px 0 15px rgba(0, 0, 0, 0.15);
+    z-index: 99999;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 20px;
+    transition: all 0.3s ease;
+}
+
+.eafd-mobile-drawer-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+    z-index: 999998;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.eafd-mobile-drawer-overlay.active {
+    display: block;
+    opacity: 1;
+}
+
+.eafd-mobile-drawer {
+    position: fixed;
+    top: 0;
+    right: -300px;
+    width: 280px;
+    height: 100vh;
+    background: var(--glass-bg);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    border-left: 1px solid rgba(255, 255, 255, 0.8);
+    box-shadow: -8px 0 32px rgba(0, 0, 0, 0.15);
+    z-index: 999999;
+    transition: right 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    padding: 24px;
+    overflow-y: auto;
+    direction: rtl;
+}
+
+.eafd-mobile-drawer.open {
+    right: 0;
+}
+
+@media (max-width: 968px) {
+    .eafd-mobile-toggle-btn {
+        display: flex;
+    }
+}
