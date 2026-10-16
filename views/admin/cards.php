@@ -2,7 +2,7 @@
 ob_start();
 ?>
 
-<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
     <h2 style="margin: 0;">مدیریت کارت‌ها و QR کدها</h2>
     <form method="POST" action="/admin/cards/generate" style="display: flex; gap: 0.5rem; align-items: center;">
         <input type="number" name="count" value="10" min="1" max="100" style="width: 80px; text-align: center;">
@@ -11,20 +11,25 @@ ob_start();
 </div>
 
 <div class="card">
-    <table>
+    <div style="margin-bottom: 1rem;">
+        <input type="text" id="cardSearchInput" onkeyup="filterCardsTable()" placeholder="🔍 جست‌وجوی کارت بر اساس کد کارت، آدرس لینک، شماره خریدار یا فروشنده..." style="padding: 0.75rem 1rem; border-radius: 8px; border: 1px solid var(--border); width: 100%;">
+    </div>
+
+    <table id="cardsTable">
         <thead>
             <tr>
                 <th>کد کارت</th>
                 <th>لینک و کیو آر کد</th>
                 <th>وضعیت</th>
                 <th>مالک فعلی</th>
+                <th>فروشنده</th>
                 <th>عملیات و تغییر مالک / رمز</th>
             </tr>
         </thead>
         <tbody>
             <?php if (empty($cards)): ?>
                 <tr>
-                    <td colspan="5" style="text-align: center; color: var(--muted);">کارت یا کیو آر کدی یافت نشد.</td>
+                    <td colspan="6" style="text-align: center; color: var(--muted);">کارت یا کیو آر کدی یافت نشد.</td>
                 </tr>
             <?php else: ?>
                 <?php foreach ($cards as $card): ?>
@@ -59,11 +64,14 @@ ob_start();
                             <?php endif; ?>
                         </td>
                         <td>
+                            <?= htmlspecialchars($card['seller_phone'] ?? '-') ?>
+                        </td>
+                        <td>
                             <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
                                 <form method="POST" action="/admin/cards/reassign" style="display: flex; gap: 0.25rem; flex-direction: column;">
                                     <input type="hidden" name="card_id" value="<?= $card['id'] ?>">
                                     <input type="text" name="new_phone" placeholder="شماره همراه مالک" style="width: 150px; padding: 0.35rem; font-size: 0.8rem;" required>
-                                    <input type="password" name="new_password" placeholder="رمز عبور مالک" style="width: 150px; padding: 0.35rem; font-size: 0.8rem;">
+                                    <input type="password" name="new_password" placeholder="رمز عبور جدید" style="width: 150px; padding: 0.35rem; font-size: 0.8rem;">
                                     <button type="submit" class="btn" style="padding: 0.35rem 0.6rem; font-size: 0.8rem;">ثبت/تغییر مالک و رمز</button>
                                 </form>
 
@@ -82,6 +90,24 @@ ob_start();
         </tbody>
     </table>
 </div>
+
+<script>
+    function filterCardsTable() {
+        const input = document.getElementById('cardSearchInput');
+        const filter = input.value.toLowerCase();
+        const table = document.getElementById('cardsTable');
+        const tr = table.getElementsByTagName('tr');
+
+        for (let i = 1; i < tr.length; i++) {
+            let tdText = tr[i].textContent || tr[i].innerText;
+            if (tdText.toLowerCase().indexOf(filter) > -1) {
+                tr[i].style.display = "";
+            } else {
+                tr[i].style.display = "none";
+            }
+        }
+    }
+</script>
 
 <?php
 $content = ob_get_clean();

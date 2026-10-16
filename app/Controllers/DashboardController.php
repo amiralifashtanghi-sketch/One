@@ -79,7 +79,7 @@ class DashboardController {
         // Check username uniqueness
         $existing = Database::fetch("SELECT id FROM bio_pages WHERE username = ? AND id != ?", [$username, $this->bio['id']]);
         if ($existing) {
-            Session::flash('error', 'این یوزرنیم قبلاً توسط کاربر دیگری ثبت شده است.');
+            Session::flash('error', 'این یوزرنیم قبلاً ثبت شده است.');
             Response::redirect('/dashboard/profile');
         }
 
@@ -118,10 +118,8 @@ class DashboardController {
 
     public function themeSaveProcess(): void {
         $theme = Request::post('theme', 'default');
-        $customCss = Request::post('custom_css', '');
-
-        Database::query("UPDATE bio_pages SET theme = ?, custom_css = ? WHERE id = ?", [$theme, $customCss, $this->bio['id']]);
-        Session::flash('success', 'تم و استایل با موفقیت بروزرسانی شد.');
+        Database::query("UPDATE bio_pages SET theme = ? WHERE id = ?", [$theme, $this->bio['id']]);
+        Session::flash('success', 'تم رنگی با موفقیت بروزرسانی شد.');
         Response::redirect('/dashboard/theme');
     }
 
@@ -138,13 +136,50 @@ class DashboardController {
         ]);
     }
 
+    private function handleImageUpload(string $fileKey): ?string {
+        $file = Request::file($fileKey);
+        if ($file && $file['error'] === UPLOAD_ERR_OK) {
+            $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+            if (in_array($ext, ['jpg', 'jpeg', 'png', 'webp', 'gif'])) {
+                $filename = 'block_' . time() . '_' . rand(1000, 9999) . '.' . $ext;
+                $target = __DIR__ . '/../../uploads/' . $filename;
+                if (move_uploaded_file($file['tmp_name'], $target)) {
+                    return '/uploads/' . $filename;
+                }
+            }
+        }
+        return null;
+    }
+
+    private function normalizeUrl(string $url): string {
+        $url = trim($url);
+        if (!empty($url) && strpos($url, 'http://') !== 0 && strpos($url, 'https://') !== 0 && strpos($url, 'tel:') !== 0 && strpos($url, 'sms:') !== 0 && strpos($url, 'mailto:') !== 0) {
+            return 'https://' . $url;
+        }
+        return $url;
+    }
+
     public function addBlockProcess(): void {
         $type = Request::post('type', 'link');
         $title = trim(Request::post('title', ''));
         $contentData = Request::post('content', []);
 
-        $contentJson = json_encode($contentData, JSON_UNESCAPED_UNICODE);
+        // Normalize URLs
+        if (isset($contentData['url'])) $contentData['url'] = $this->normalizeUrl($contentData['url']);
+        if (isset($contentData['pay_url'])) $contentData['pay_url'] = $this->normalizeUrl($contentData['pay_url']);
+        if (isset($contentData['torob'])) $contentData['torob'] = $this->normalizeUrl($contentData['torob']);
+        if (isset($contentData['basalam'])) $contentData['basalam'] = $this->normalizeUrl($contentData['basalam']);
+        if (isset($contentData['digikala'])) $contentData['digikala'] = $this->normalizeUrl($contentData['digikala']);
+        if (isset($contentData['p1_url'])) $contentData['p1_url'] = $this->normalizeUrl($contentData['p1_url']);
 
+        // Upload single image if present
+        $uploadedImg = $this->handleImageUpload('image_file');
+        if ($uploadedImg) {
+            $contentData['image_url'] = $uploadedImg;
+            $contentData['img1'] = $uploadedImg;
+        }
+
+        $contentJson = json_encode($contentData, JSON_UNESCAPED_UNICODE);
         $maxSort = Database::fetch("SELECT MAX(sort_order) AS max_sort FROM bio_blocks WHERE bio_page_id = ?", [$this->bio['id']])['max_sort'] ?? 0;
 
         Database::query("
@@ -153,6 +188,43 @@ class DashboardController {
         ", [$this->bio['id'], $type, $title, $contentJson, $maxSort + 1]);
 
         Session::flash('success', 'بلوک جدید با موفقیت اضافه شد.');
+        Response::redirect('/dashboard/blocks');
+    }
+
+    public function editBlockProcess(): void {
+        $blockId = (int)Request::post('block_id', 0);
+        $title = trim(Request::post('title', ''));
+        $contentData = Request::post('content', []);
+
+        $block = Database::fetch("SELECT * FROM bio_blocks WHERE id = ? AND bio_page_id = ?", [$blockId, $this->bio['id']]);
+        if (!$block) {
+            Session::flash('error', 'بلوک یافت نشد.');
+            Response::redirect('/dashboard/blocks');
+        }
+
+        $oldContent = json_decode($block['content'] ?? '{}', true) ?: [];
+
+        // Normalize URLs
+        if (isset($contentData['url'])) $contentData['url'] = $this->normalizeUrl($contentData['url']);
+
+        // Keep old image if no new upload
+        $uploadedImg = $this->handleImageUpload('image_file');
+        if ($uploadedImg) {
+            $contentData['image_url'] = $uploadedImg;
+        } else {
+            if (isset($oldContent['image_url'])) $contentData['image_url'] = $oldContent['image_url'];
+        }
+
+        $mergedContent = array_merge($oldContent, $contentData);
+        $contentJson = json_encode($mergedContent, JSON_UNESCAPED_UNICODE);
+
+        Database::query("
+            UPDATE bio_blocks
+            SET title = ?, content = ?
+            WHERE id = ? AND bio_page_id = ?
+        ", [$title, $contentJson, $blockId, $this->bio['id']]);
+
+        Session::flash('success', 'بلوک با موفقیت ویرایش گردید.');
         Response::redirect('/dashboard/blocks');
     }
 

@@ -1,3 +1,13 @@
+<?php
+function formatPublicUrl($url) {
+    $url = trim($url);
+    if (empty($url)) return '#';
+    if (strpos($url, 'http://') === 0 || strpos($url, 'https://') === 0 || strpos($url, 'tel:') === 0 || strpos($url, 'sms:') === 0 || strpos($url, 'mailto:') === 0) {
+        return $url;
+    }
+    return 'https://' . $url;
+}
+?>
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
@@ -5,35 +15,33 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= htmlspecialchars($title) ?></title>
     <meta name="description" content="<?= htmlspecialchars($bio['description'] ?? '') ?>">
+    <link rel="stylesheet" href="/assets/fonts/vazirmatn.css">
     <style>
         :root {
-            --bg: #0f172a;
-            --card-bg: rgba(30, 41, 59, 0.7);
-            --card-border: rgba(255, 255, 255, 0.1);
-            --text: #f8fafc;
-            --muted: #94a3b8;
-            --primary: #3b82f6;
-            --accent: #8b5cf6;
-            --success: #10b981;
-        }
-
-        body.theme-ocean { background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%); }
-        body.theme-sunset { background: linear-gradient(135deg, #31103f 0%, #701a75 50%, #831843 100%); }
-        body.theme-emerald { background: linear-gradient(135deg, #022c22 0%, #064e3b 100%); }
-        body.theme-purple { background: linear-gradient(135deg, #1e1b4b 0%, #4c1d95 100%); }
-        body.theme-minimal_light {
             --bg: #f8fafc;
-            --card-bg: #ffffff;
-            --card-border: #e2e8f0;
+            --card-bg: rgba(255, 255, 255, 0.9);
+            --card-border: rgba(0, 0, 0, 0.1);
             --text: #0f172a;
             --muted: #64748b;
             --primary: #2563eb;
-            background: #f1f5f9;
+            --accent: #7c3aed;
+            --success: #10b981;
+        }
+
+        body.theme-ocean { background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%); }
+        body.theme-sunset { background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); }
+        body.theme-emerald { background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); }
+        body.theme-purple { background: linear-gradient(135deg, #f3e8ff 0%, #e9d5ff 100%); }
+        body.theme-minimal_light {
+            --bg: #ffffff;
+            --card-bg: #f8fafc;
+            --card-border: #e2e8f0;
+            background: #ffffff;
         }
 
         * { box-sizing: border-box; }
         body {
-            font-family: system-ui, -apple-system, sans-serif;
+            font-family: 'Vazirmatn', system-ui, sans-serif;
             background-color: var(--bg);
             color: var(--text);
             margin: 0;
@@ -60,7 +68,7 @@
             border-radius: 50%;
             object-fit: cover;
             border: 3px solid var(--primary);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
             margin-bottom: 1rem;
         }
         .bio-title {
@@ -90,11 +98,11 @@
             transition: transform 0.2s, box-shadow 0.2s;
             text-decoration: none;
             color: inherit;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
         }
         .block-card:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
         }
         .block-btn {
             display: flex;
@@ -136,12 +144,17 @@
         .input-field {
             width: 100%;
             padding: 0.65rem;
-            background: rgba(0,0,0,0.2);
+            background: #ffffff;
             border: 1px solid var(--card-border);
             border-radius: 8px;
             color: var(--text);
             margin-bottom: 0.5rem;
             outline: none;
+        }
+        .copy-box {
+            cursor: pointer;
+            user-select: all;
+            position: relative;
         }
         .footer-brand {
             margin-top: 3rem;
@@ -150,9 +163,6 @@
             text-align: center;
         }
     </style>
-    <?php if (!empty($bio['custom_css'])): ?>
-        <style><?= $bio['custom_css'] ?></style>
-    <?php endif; ?>
 </head>
 <body class="theme-<?= htmlspecialchars($bio['theme'] ?? 'default') ?>">
     <div class="bio-container">
@@ -182,14 +192,14 @@
 
                 <!-- 1. Simple Link & 3. Website -->
                 <?php if ($type === 'link' || $type === 'website'): ?>
-                    <a href="<?= htmlspecialchars($content['url'] ?? '#') ?>" target="_blank" class="block-card block-btn" onclick="trackClick(<?= $block['id'] ?>)">
+                    <a href="<?= htmlspecialchars(formatPublicUrl($content['url'] ?? '#')) ?>" target="_blank" class="block-card block-btn" onclick="trackClick(<?= $block['id'] ?>)">
                         <span>🌐 <?= htmlspecialchars($block['title']) ?></span>
                         <span>&larr;</span>
                     </a>
 
                 <!-- 2. Image Link -->
                 <?php elseif ($type === 'image_link'): ?>
-                    <a href="<?= htmlspecialchars($content['url'] ?? '#') ?>" target="_blank" class="block-card" onclick="trackClick(<?= $block['id'] ?>)" style="display: flex; gap: 1rem; align-items: center;">
+                    <a href="<?= htmlspecialchars(formatPublicUrl($content['url'] ?? '#')) ?>" target="_blank" class="block-card" onclick="trackClick(<?= $block['id'] ?>)" style="display: flex; gap: 1rem; align-items: center;">
                         <?php if (!empty($content['image_url'])): ?>
                             <img src="<?= htmlspecialchars($content['image_url']) ?>" style="width: 50px; height: 50px; border-radius: 8px; object-fit: cover;">
                         <?php endif; ?>
@@ -209,16 +219,16 @@
                 <?php elseif ($type === 'social'): ?>
                     <div class="social-grid">
                         <?php if (!empty($content['instagram'])): ?>
-                            <a href="https://instagram.com/<?= htmlspecialchars($content['instagram']) ?>" target="_blank" class="social-icon">📷 اینستاگرام</a>
+                            <a href="<?= htmlspecialchars(formatPublicUrl('instagram.com/' . $content['instagram'])) ?>" target="_blank" class="social-icon">📷 اینستاگرام</a>
                         <?php endif; ?>
                         <?php if (!empty($content['telegram'])): ?>
-                            <a href="https://t.me/<?= htmlspecialchars($content['telegram']) ?>" target="_blank" class="social-icon">✈️ تلگرام</a>
+                            <a href="<?= htmlspecialchars(formatPublicUrl('t.me/' . $content['telegram'])) ?>" target="_blank" class="social-icon">✈️ تلگرام</a>
                         <?php endif; ?>
                         <?php if (!empty($content['whatsapp'])): ?>
-                            <a href="https://wa.me/<?= htmlspecialchars($content['whatsapp']) ?>" target="_blank" class="social-icon">💬 واتساپ</a>
+                            <a href="<?= htmlspecialchars(formatPublicUrl('wa.me/' . $content['whatsapp'])) ?>" target="_blank" class="social-icon">💬 واتساپ</a>
                         <?php endif; ?>
                         <?php if (!empty($content['eitaa'])): ?>
-                            <a href="<?= htmlspecialchars($content['eitaa']) ?>" target="_blank" class="social-icon">📲 پیام‌رسان</a>
+                            <a href="<?= htmlspecialchars(formatPublicUrl($content['eitaa'])) ?>" target="_blank" class="social-icon">📲 پیام‌رسان</a>
                         <?php endif; ?>
                     </div>
 
@@ -267,19 +277,27 @@
                             <p style="font-size: 0.85rem; color: var(--muted); margin-bottom: 0.5rem;"><?= htmlspecialchars($content['address']) ?></p>
                         <?php endif; ?>
                         <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
-                            <?php if (!empty($content['neshan'])): ?><a href="<?= htmlspecialchars($content['neshan']) ?>" target="_blank" class="social-icon">نشان</a><?php endif; ?>
-                            <?php if (!empty($content['balad'])): ?><a href="<?= htmlspecialchars($content['balad']) ?>" target="_blank" class="social-icon">بلد</a><?php endif; ?>
-                            <?php if (!empty($content['gmaps'])): ?><a href="<?= htmlspecialchars($content['gmaps']) ?>" target="_blank" class="social-icon">گوگل مپ</a><?php endif; ?>
+                            <?php if (!empty($content['neshan'])): ?><a href="<?= htmlspecialchars(formatPublicUrl($content['neshan'])) ?>" target="_blank" class="social-icon">نشان</a><?php endif; ?>
+                            <?php if (!empty($content['balad'])): ?><a href="<?= htmlspecialchars(formatPublicUrl($content['balad'])) ?>" target="_blank" class="social-icon">بلد</a><?php endif; ?>
+                            <?php if (!empty($content['gmaps'])): ?><a href="<?= htmlspecialchars(formatPublicUrl($content['gmaps'])) ?>" target="_blank" class="social-icon">گوگل مپ</a><?php endif; ?>
                         </div>
                     </div>
 
-                <!-- 11. Payment Info -->
+                <!-- 11. Payment Info with Click to Copy -->
                 <?php elseif ($type === 'payment'): ?>
                     <div class="block-card">
                         <div style="font-weight: bold; margin-bottom: 0.5rem;">💳 <?= htmlspecialchars($block['title'] ?: 'اطلاعات پرداخت') ?></div>
                         <?php if (!empty($content['owner'])): ?><div style="font-size: 0.85rem; color: var(--muted);">به نام: <?= htmlspecialchars($content['owner']) ?></div><?php endif; ?>
-                        <?php if (!empty($content['card'])): ?><div style="font-family: monospace; font-size: 1.1rem; letter-spacing: 2px; margin: 0.5rem 0;"><code><?= htmlspecialchars($content['card']) ?></code></div><?php endif; ?>
-                        <?php if (!empty($content['sheba'])): ?><div style="font-size: 0.8rem; color: var(--muted);">شبا: <?= htmlspecialchars($content['sheba']) ?></div><?php endif; ?>
+                        <?php if (!empty($content['card'])): ?>
+                            <div class="copy-box" onclick="copyText('<?= htmlspecialchars($content['card']) ?>')" style="font-family: monospace; font-size: 1.1rem; letter-spacing: 2px; margin: 0.5rem 0; background: #e2e8f0; padding: 0.5rem; border-radius: 8px; text-align: center;">
+                                💳 <code><?= htmlspecialchars($content['card']) ?></code> <span style="font-size: 0.75rem; color: var(--primary);">(کلیک برای کپی)</span>
+                            </div>
+                        <?php endif; ?>
+                        <?php if (!empty($content['sheba'])): ?>
+                            <div class="copy-box" onclick="copyText('<?= htmlspecialchars($content['sheba']) ?>')" style="font-size: 0.85rem; color: var(--muted); margin-top: 0.25rem;">
+                                🏦 شبا: <code><?= htmlspecialchars($content['sheba']) ?></code> (کلیک برای کپی)
+                            </div>
+                        <?php endif; ?>
                     </div>
 
                 <!-- 12. Iran Platforms -->
@@ -287,9 +305,9 @@
                     <div class="block-card">
                         <div style="font-weight: bold; margin-bottom: 0.5rem;">🛍️ <?= htmlspecialchars($block['title'] ?: 'فروشگاه‌های ما') ?></div>
                         <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
-                            <?php if (!empty($content['torob'])): ?><a href="<?= htmlspecialchars($content['torob']) ?>" target="_blank" class="social-icon">ترب</a><?php endif; ?>
-                            <?php if (!empty($content['basalam'])): ?><a href="<?= htmlspecialchars($content['basalam']) ?>" target="_blank" class="social-icon">باسلام</a><?php endif; ?>
-                            <?php if (!empty($content['digikala'])): ?><a href="<?= htmlspecialchars($content['digikala']) ?>" target="_blank" class="social-icon">دیجی‌کالا</a><?php endif; ?>
+                            <?php if (!empty($content['torob'])): ?><a href="<?= htmlspecialchars(formatPublicUrl($content['torob'])) ?>" target="_blank" class="social-icon">ترب</a><?php endif; ?>
+                            <?php if (!empty($content['basalam'])): ?><a href="<?= htmlspecialchars(formatPublicUrl($content['basalam'])) ?>" target="_blank" class="social-icon">باسلام</a><?php endif; ?>
+                            <?php if (!empty($content['digikala'])): ?><a href="<?= htmlspecialchars(formatPublicUrl($content['digikala'])) ?>" target="_blank" class="social-icon">دیجی‌کالا</a><?php endif; ?>
                         </div>
                     </div>
 
@@ -304,7 +322,7 @@
                                     <div style="font-size: 0.85rem; color: var(--success);"><?= htmlspecialchars($content['p1_price'] ?? '') ?> تومان</div>
                                 </div>
                                 <?php if (!empty($content['p1_url'])): ?>
-                                    <a href="<?= htmlspecialchars($content['p1_url']) ?>" target="_blank" class="social-icon" style="background: var(--primary); color: white;">خرید</a>
+                                    <a href="<?= htmlspecialchars(formatPublicUrl($content['p1_url'])) ?>" target="_blank" class="social-icon" style="background: var(--primary); color: white;">خرید</a>
                                 <?php endif; ?>
                             </div>
                         <?php endif; ?>
@@ -329,7 +347,7 @@
                         <form onsubmit="submitBooking(event, <?= $bio['id'] ?>)">
                             <input type="text" name="name" placeholder="نام کامل" class="input-field" required>
                             <input type="text" name="phone" placeholder="شماره همراه" class="input-field" required>
-                            <input type="date" name="date" class="input-field" required>
+                            <input type="text" name="date" placeholder="تاریخ رزرو (شمسی)" class="input-field" required>
                             <input type="text" name="time" placeholder="ساعت پیشنهادی (مثال: ۱۶:۰۰)" class="input-field" required>
                             <button type="submit" class="btn-action">ثبت رزرو نوبت</button>
                         </form>
@@ -382,6 +400,12 @@
     </div>
 
     <script>
+        function copyText(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                alert('کپی شد: ' + text);
+            });
+        }
+
         function trackClick(blockId) {
             fetch('/api/track-click', {
                 method: 'POST',

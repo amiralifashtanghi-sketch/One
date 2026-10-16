@@ -27,6 +27,7 @@
             margin: 0;
             display: flex;
             min-height: 100vh;
+            overflow-x: hidden;
         }
         .sidebar {
             width: 260px;
@@ -36,6 +37,7 @@
             flex-direction: column;
             flex-shrink: 0;
             color: #fff;
+            transition: transform 0.3s ease;
         }
         .brand {
             padding: 1.5rem;
@@ -50,6 +52,7 @@
             padding: 1rem 0;
             margin: 0;
             flex: 1;
+            overflow-y: auto;
         }
         .menu li a {
             display: flex;
@@ -60,6 +63,7 @@
             text-decoration: none;
             font-size: 0.95rem;
             transition: all 0.2s;
+            white-space: nowrap;
         }
         .menu li a:hover, .menu li a.active {
             background: rgba(59, 130, 246, 0.15);
@@ -71,6 +75,7 @@
             display: flex;
             flex-direction: column;
             overflow-x: hidden;
+            width: 100%;
         }
         .header {
             height: 65px;
@@ -79,24 +84,36 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 0 2rem;
+            padding: 0 1.5rem;
             box-shadow: 0 1px 3px rgba(0,0,0,0.05);
         }
+        .hamburger-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text);
+            padding: 0.25rem 0.5rem;
+        }
         .content {
-            padding: 2rem;
+            padding: 1.5rem;
             flex: 1;
+            overflow-x: hidden;
         }
         .card {
             background: var(--card-bg);
             border-radius: 12px;
             border: 1px solid var(--border);
-            padding: 1.5rem;
+            padding: 1.25rem;
             margin-bottom: 1.5rem;
             box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            max-width: 100%;
+            overflow-x: auto;
         }
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 1.25rem;
             margin-bottom: 1.5rem;
         }
@@ -121,6 +138,7 @@
             text-align: right;
             border-bottom: 1px solid var(--border);
             font-size: 0.9rem;
+            white-space: nowrap;
         }
         th { color: var(--muted); font-weight: 600; background: #f1f5f9; }
         .badge {
@@ -169,10 +187,26 @@
         }
         .alert-danger { background: #fee2e2; border: 1px solid #fca5a5; color: #991b1b; }
         .alert-success { background: #d1fae5; border: 1px solid #6ee7b7; color: #065f46; }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                position: fixed;
+                top: 0;
+                right: -260px;
+                height: 100vh;
+                z-index: 9999;
+            }
+            .sidebar.active {
+                right: 0;
+            }
+            .hamburger-btn {
+                display: block;
+            }
+        }
     </style>
 </head>
 <body>
-    <div class="sidebar">
+    <div class="sidebar" id="sidebar">
         <div class="brand">👑 مدیریت کل بیو لینک</div>
         <ul class="menu">
             <li><a href="/admin" class="<?= ($activePage ?? '') === 'dashboard' ? 'active' : '' ?>">📊 داشبورد اصلی</a></li>
@@ -186,9 +220,12 @@
 
     <div class="main-content">
         <div class="header">
-            <div>سلام، <strong><?= htmlspecialchars($_SESSION['user_name'] ?? 'مدیر کل') ?></strong> 👋</div>
+            <div style="display: flex; align-items: center; gap: 0.75rem;">
+                <button class="hamburger-btn" onclick="toggleSidebar()">☰</button>
+                <span>سلام، <strong><?= htmlspecialchars($_SESSION['user_name'] ?? 'مدیر کل') ?></strong> 👋</span>
+            </div>
             <div>
-                <a href="/logout" class="btn btn-danger">خروج از حساب</a>
+                <a href="/logout" class="btn btn-danger">خروج</a>
             </div>
         </div>
 
@@ -204,5 +241,11 @@
             <?= $content ?? '' ?>
         </div>
     </div>
+
+    <script>
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+        }
+    </script>
 </body>
 </html>

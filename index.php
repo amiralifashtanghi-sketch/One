@@ -1,18 +1,5 @@
 <?php
 
-// Check installation
-$lockFile = __DIR__ . '/config/installed.lock';
-$uri = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH);
-
-if (!file_exists($lockFile)) {
-    if (strpos($uri, '/install') === 0) {
-        require __DIR__ . '/install/index.php';
-        exit;
-    }
-    header("Location: /install");
-    exit;
-}
-
 // Autoload
 spl_autoload_register(function ($class) {
     $prefix = 'App\\';
@@ -34,8 +21,22 @@ spl_autoload_register(function ($class) {
 use App\Core\Config;
 use App\Core\Database;
 use App\Core\Request;
+use App\Core\Response;
 use App\Core\Router;
 use App\Core\Session;
+
+// Check installation
+$lockFile = __DIR__ . '/config/installed.lock';
+$uri = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH);
+
+if (!file_exists($lockFile)) {
+    if (strpos($uri, '/install') === 0) {
+        require __DIR__ . '/install/index.php';
+        exit;
+    }
+    header("Location: /install");
+    exit;
+}
 
 // Start session
 Session::start();
@@ -94,6 +95,7 @@ Router::post('/dashboard/theme', [\App\Controllers\DashboardController::class, '
 
 Router::get('/dashboard/blocks', [\App\Controllers\DashboardController::class, 'blocksView']);
 Router::post('/dashboard/blocks/add', [\App\Controllers\DashboardController::class, 'addBlockProcess']);
+Router::post('/dashboard/blocks/edit', [\App\Controllers\DashboardController::class, 'editBlockProcess']);
 Router::post('/dashboard/blocks/delete', [\App\Controllers\DashboardController::class, 'deleteBlockProcess']);
 Router::post('/dashboard/blocks/toggle', [\App\Controllers\DashboardController::class, 'toggleBlockProcess']);
 

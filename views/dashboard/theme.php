@@ -8,7 +8,7 @@ ob_start();
     <form method="POST" action="/dashboard/theme">
         <div class="form-group">
             <label>انتخاب تم آماده:</label>
-            <select name="theme">
+            <select name="theme" style="padding: 0.85rem;">
                 <option value="default" <?= ($bio['theme'] ?? '') === 'default' ? 'selected' : '' ?>>🌙 تاریک مدرن (Dark Tech)</option>
                 <option value="ocean" <?= ($bio['theme'] ?? '') === 'ocean' ? 'selected' : '' ?>>🌊 آبی اقیانوسی (Ocean Gradient)</option>
                 <option value="sunset" <?= ($bio['theme'] ?? '') === 'sunset' ? 'selected' : '' ?>>🌅 غروب طلایی (Sunset Orange/Purple)</option>
@@ -18,15 +18,7 @@ ob_start();
             </select>
         </div>
 
-        <div class="form-group">
-            <label>کد استایل اختصاصی CSS (اختیاری):</label>
-            <textarea name="custom_css" rows="5" placeholder=".bio-card { border-radius: 20px; }"><?= htmlspecialchars($bio['custom_css'] ?? '') ?></textarea>
-            <div style="font-size: 0.8rem; color: var(--muted); margin-top: 0.25rem;">
-                اگر دانش طراحی CSS دارید می‌توانید استایل دلخواه خود را اضافه کنید.
-            </div>
-        </div>
-
-        <button type="submit" class="btn btn-success" style="width: 100%;">ذخیره تم و استایل</button>
+        <button type="submit" class="btn btn-success" style="width: 100%;">ذخیره تم رنگی</button>
     </form>
 </div>
 

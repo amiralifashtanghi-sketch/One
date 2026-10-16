@@ -47,14 +47,14 @@ class Router {
             return;
         }
 
-        // Regex match for parameterized routes e.g. /admin/cards/edit/{id}
+        // Regex match for parameterized routes e.g. /admin/bios/edit/{id}
         foreach (self::$routes[$method] ?? [] as $routePath => $route) {
             $pattern = preg_replace('/\{([a-zA-Z0-9_]+)\}/', '(?P<$1>[^/]+)', $routePath);
             $pattern = '#^' . $pattern . '$#u';
 
             if (preg_match($pattern, $uri, $matches)) {
                 $params = array_filter($matches, 'is_string', ARRAY_FILTER_USE_KEY);
-                self::executeRoute($route, $params);
+                self::executeRoute($route, array_values($params));
                 return;
             }
         }
@@ -86,6 +86,7 @@ class Router {
         }
 
         $handler = $route['handler'];
+        $params = array_values($params); // Always pass positional indexed array to prevent PHP 8 named parameter errors
 
         if (is_callable($handler)) {
             call_user_func_array($handler, $params);

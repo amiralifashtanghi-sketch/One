@@ -15,7 +15,7 @@ class PublicController {
         $card = Database::fetch("SELECT * FROM cards WHERE card_code = ?", [$slug]);
         if ($card) {
             if ($card['status'] === 'assigned' && !empty($card['assigned_user_id'])) {
-                // Find or auto-create buyer's bio page username
+                // Fetch buyer's LATEST bio page username
                 $bio = Database::fetch("SELECT username FROM bio_pages WHERE user_id = ?", [$card['assigned_user_id']]);
 
                 if (!$bio || empty($bio['username'])) {
@@ -28,7 +28,7 @@ class PublicController {
                     $bioUsername = $bio['username'];
                 }
 
-                // Redirect 301 to the buyer's bio username page!
+                // Redirect 301 to the buyer's active bio username!
                 Response::redirect('/' . $bioUsername);
                 return;
             }
