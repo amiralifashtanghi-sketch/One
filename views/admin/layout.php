@@ -210,6 +210,7 @@
         <div class="brand">👑 مدیریت کل بیو لینک</div>
         <ul class="menu">
             <li><a href="/admin" class="<?= ($activePage ?? '') === 'dashboard' ? 'active' : '' ?>">📊 داشبورد اصلی</a></li>
+            <li><a href="/admin/sales" class="<?= ($activePage ?? '') === 'sales' ? 'active' : '' ?>">💰 مدیریت فروش و مالی</a></li>
             <li><a href="/admin/cards" class="<?= ($activePage ?? '') === 'cards' ? 'active' : '' ?>">💳 مدیریت کارت‌ها و QR</a></li>
             <li><a href="/admin/users" class="<?= ($activePage ?? '') === 'users' ? 'active' : '' ?>">👥 کاربران و فروشندگان</a></li>
             <li><a href="/admin/bios" class="<?= ($activePage ?? '') === 'bios' ? 'active' : '' ?>">🌐 مدیریت صفحات بیو</a></li>

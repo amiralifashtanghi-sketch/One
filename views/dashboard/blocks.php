@@ -86,14 +86,14 @@ ob_start();
 
 <!-- Section 2: List & Edit Added Blocks -->
 <div class="card">
-    <h3 style="margin-top:0; color: var(--primary);">۲. مدیریت و ویرایش بلوک‌های فعال شما</h3>
+    <h3 style="margin-top:0; color: var(--primary);">۲. مدیریت و جابه‌جایی اولویت بلوک‌های فعال شما</h3>
     <?php if (empty($blocks)): ?>
         <p style="text-align: center; color: var(--muted); margin: 2rem 0;">هنوز هیچ بلوکی اضافه نکرده‌اید. از شبکه بالای صفحه، بلوک مورد نظر را انتخاب کنید.</p>
     <?php else: ?>
         <table>
             <thead>
                 <tr>
-                    <th>ترتیب</th>
+                    <th>اولیت و جابه‌جایی</th>
                     <th>عنوان بلوک</th>
                     <th>نوع بلوک</th>
                     <th>پیش‌نمایش محتوا / تصویر</th>
@@ -106,7 +106,20 @@ ob_start();
                 <?php foreach ($blocks as $idx => $block): ?>
                     <?php $blockContent = json_decode($block['content'] ?? '{}', true) ?: []; ?>
                     <tr>
-                        <td><?= $idx + 1 ?></td>
+                        <td>
+                            <div style="display: flex; gap: 0.25rem;">
+                                <form method="POST" action="/dashboard/blocks/reorder">
+                                    <input type="hidden" name="block_id" value="<?= $block['id'] ?>">
+                                    <input type="hidden" name="direction" value="up">
+                                    <button type="submit" class="btn" style="padding: 0.25rem 0.5rem; font-size: 0.75rem; background: #64748b;">⬆️ بالاتر</button>
+                                </form>
+                                <form method="POST" action="/dashboard/blocks/reorder">
+                                    <input type="hidden" name="block_id" value="<?= $block['id'] ?>">
+                                    <input type="hidden" name="direction" value="down">
+                                    <button type="submit" class="btn" style="padding: 0.25rem 0.5rem; font-size: 0.75rem; background: #64748b;">⬇️ پایین‌تر</button>
+                                </form>
+                            </div>
+                        </td>
                         <td><strong><?= htmlspecialchars($block['title'] ?: 'بدون عنوان') ?></strong></td>
                         <td><code><?= htmlspecialchars($block['type']) ?></code></td>
                         <td>
@@ -299,7 +312,7 @@ ob_start();
         } else if (type === 'gallery') {
             html = `<div class="form-group"><label>آپلود عکس نمونه‌کار:</label>${content.img1 ? `<div style="margin-bottom:0.5rem;"><img src="${content.img1}" style="width:60px; height:60px; border-radius:8px; object-fit:cover;"></div>` : ''}<input type="file" name="image_file" accept="image/*"></div>`;
         } else if (type === 'countdown') {
-            html = `<div class="form-group"><label>تاریخ و ساعت پایان (مثال: ۱۴۰۵/۱۲/۲۹ ۲۰:۰۰):</label><input type="text" name="content[end_time]" value="${content.end_time || ''}" placeholder="۱۴۰۵/۱۲/۲۹ ۲۰:۰۰"></div>`;
+            html = `<div class="form-group"><label>تاریخ و ساعت پایان (شمسی):</label><input type="text" name="content[end_time]" value="${content.end_time || ''}" placeholder="۱۴۰۵/۱۲/۲۹ ۲۰:۰۰"></div>`;
         }
 
         return html;

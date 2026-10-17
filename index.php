@@ -61,6 +61,7 @@ Router::get('/logout', [\App\Controllers\AuthController::class, 'logout']);
 
 // 2. Admin Panel
 Router::get('/admin', [\App\Controllers\AdminController::class, 'dashboard']);
+Router::get('/admin/sales', [\App\Controllers\AdminController::class, 'sales']);
 Router::get('/admin/cards', [\App\Controllers\AdminController::class, 'cards']);
 Router::post('/admin/cards/generate', [\App\Controllers\AdminController::class, 'generateCardsProcess']);
 Router::post('/admin/cards/update-status', [\App\Controllers\AdminController::class, 'updateCardStatusProcess']);
@@ -84,6 +85,7 @@ Router::get('/admin/guide', [\App\Controllers\AdminController::class, 'guide']);
 Router::get('/seller', [\App\Controllers\SellerController::class, 'dashboard']);
 Router::get('/seller/assign', [\App\Controllers\SellerController::class, 'assignView']);
 Router::post('/seller/assign', [\App\Controllers\SellerController::class, 'assignProcess']);
+Router::post('/seller/correct-phone', [\App\Controllers\SellerController::class, 'correctPhoneProcess']);
 Router::get('/seller/history', [\App\Controllers\SellerController::class, 'history']);
 
 // 4. Bio Owner Dashboard
@@ -96,6 +98,7 @@ Router::post('/dashboard/theme', [\App\Controllers\DashboardController::class, '
 Router::get('/dashboard/blocks', [\App\Controllers\DashboardController::class, 'blocksView']);
 Router::post('/dashboard/blocks/add', [\App\Controllers\DashboardController::class, 'addBlockProcess']);
 Router::post('/dashboard/blocks/edit', [\App\Controllers\DashboardController::class, 'editBlockProcess']);
+Router::post('/dashboard/blocks/reorder', [\App\Controllers\DashboardController::class, 'reorderBlockProcess']);
 Router::post('/dashboard/blocks/delete', [\App\Controllers\DashboardController::class, 'deleteBlockProcess']);
 Router::post('/dashboard/blocks/toggle', [\App\Controllers\DashboardController::class, 'toggleBlockProcess']);
 

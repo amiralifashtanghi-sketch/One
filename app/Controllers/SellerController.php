@@ -106,7 +106,6 @@ class SellerController {
 
             if ($buyer) {
                 $buyerId = $buyer['id'];
-                // Update buyer password
                 Database::query("UPDATE users SET password = ? WHERE id = ?", [$hashedPass, $buyerId]);
             } else {
                 Database::query("INSERT INTO users (phone, password, role) VALUES (?, ?, 'user')", [$normPhone, $hashedPass]);
@@ -130,20 +129,71 @@ class SellerController {
                 WHERE id = ?
             ", [$buyerId, $sellerId, $card['id']]);
 
+            // Log history
+            Database::query("
+                INSERT INTO card_history (card_id, seller_id, assigned_to_phone, notes)
+                VALUES (?, ?, ?, 'فعال‌سازی اولیه توسط فروشنده')
+            ", [$card['id'], $sellerId, $normPhone]);
+
             Database::commit();
 
-            // Try sending welcome SMS
+            // Send SMS
             $smsClient = new SmsClient();
-            $appUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://" . $_SERVER['HTTP_HOST'];
             $smsClient->sendOtp($normPhone, $buyerPass);
 
-            Session::flash('success', "کارت با موفقیت به شماره {$normPhone} تخصیص یافت. لینک بیو: {$appUrl}/{$bioUsername}");
+            Session::flash('success', "کارت با موفقیت به شماره {$normPhone} تخصیص یافت. لینک بیو خریدار آماده است.");
             Response::redirect('/seller/history');
         } catch (\Exception $e) {
             Database::rollBack();
             Session::flash('error', 'خطا در تخصیص کارت: ' . $e->getMessage());
             Response::redirect('/seller/assign');
         }
+    }
+
+    public function correctPhoneProcess(): void {
+        $sellerId = Session::get('user_id');
+        $cardId = (int)Request::post('card_id', 0);
+        $newPhone = trim(Request::post('correct_phone', ''));
+
+        $normPhone = Helper::normalizePhone($newPhone);
+        if (!$normPhone || $cardId <= 0) {
+            Session::flash('error', 'شماره همراه جدید یا کارت انتخاب شده نامعتبر است.');
+            Response::redirect('/seller/history');
+        }
+
+        $card = Database::fetch("
+            SELECT * FROM cards
+            WHERE id = ? AND seller_user_id = ? AND status = 'assigned'
+        ", [$cardId, $sellerId]);
+
+        if (!$card) {
+            Session::flash('error', 'کارت مورد نظر یافت نشد.');
+            Response::redirect('/seller/history');
+        }
+
+        // Ensure user exists or create
+        $user = Database::fetch("SELECT id FROM users WHERE phone = ?", [$normPhone]);
+        if (!$user) {
+            $hash = Helper::hashPassword('123456');
+            Database::query("INSERT INTO users (phone, password, role) VALUES (?, ?, 'user')", [$normPhone, $hash]);
+            $buyerId = Database::lastInsertId();
+
+            $username = 'u' . substr($normPhone, -4) . rand(100, 999);
+            Database::query("INSERT INTO bio_pages (user_id, username, title) VALUES (?, ?, 'صفحه بیو اختصاصی')", [$buyerId, $username]);
+        } else {
+            $buyerId = $user['id'];
+        }
+
+        Database::query("UPDATE cards SET assigned_user_id = ? WHERE id = ?", [$buyerId, $cardId]);
+
+        // Log correction history
+        Database::query("
+            INSERT INTO card_history (card_id, seller_id, assigned_to_phone, notes)
+            VALUES (?, ?, ?, 'اصلاح شماره خریدار توسط فروشنده')
+        ", [$cardId, $sellerId, $normPhone]);
+
+        Session::flash('success', 'شماره خریدار با موفقیت اصلاح گردید.');
+        Response::redirect('/seller/history');
     }
 
     public function history(): void {

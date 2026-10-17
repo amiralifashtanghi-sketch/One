@@ -143,6 +143,13 @@ class AdminController {
         }
 
         Database::query("UPDATE cards SET assigned_user_id = ?, status = 'assigned', assigned_at = NOW() WHERE id = ?", [$userId, $cardId]);
+
+        // Log to card_history
+        Database::query("
+            INSERT INTO card_history (card_id, seller_id, assigned_to_phone, notes)
+            VALUES (?, ?, ?, 'تخصیص / تغییر مالکیت توسط مدیر کل')
+        ", [$cardId, Session::get('user_id'), $normPhone]);
+
         Session::flash('success', 'مالک کارت با موفقیت تخصیص یافت/تغییر کرد و رمز عبور نیز ذخیره شد.');
         Response::redirect('/admin/cards');
     }
@@ -245,8 +252,8 @@ class AdminController {
         ]);
     }
 
-    public function editBio(array $params = []): void {
-        $bioId = (int)($params['id'] ?? 0);
+    public function editBio($id = 0): void {
+        $bioId = (int)(is_array($id) ? ($id['id'] ?? $id[0] ?? 0) : $id);
         $bio = Database::fetch("
             SELECT b.*, u.phone, u.name AS user_name
             FROM bio_pages b
@@ -298,6 +305,36 @@ class AdminController {
 
         Session::flash('success', 'اطلاعات صفحه بیو با موفقیت توسط مدیر بروزرسانی شد.');
         Response::redirect('/admin/bios/edit/' . $bioId);
+    }
+
+    public function sales(): void {
+        $today = date('Y-m-d');
+        $thisMonth = date('Y-m');
+
+        $totalSales = Database::fetch("SELECT COUNT(*) AS cnt FROM cards WHERE status = 'assigned'")['cnt'] ?? 0;
+        $todaySales = Database::fetch("SELECT COUNT(*) AS cnt FROM cards WHERE status = 'assigned' AND DATE(assigned_at) = ?", [$today])['cnt'] ?? 0;
+        $monthSales = Database::fetch("SELECT COUNT(*) AS cnt FROM cards WHERE status = 'assigned' AND DATE_FORMAT(assigned_at, '%Y-%m') = ?", [$thisMonth])['cnt'] ?? 0;
+
+        $historyList = Database::fetchAll("
+            SELECT ch.*, c.card_code, s.name AS seller_name, s.phone AS seller_phone, b.username AS bio_username
+            FROM card_history ch
+            JOIN cards c ON ch.card_id = c.id
+            LEFT JOIN users s ON ch.seller_id = s.id
+            LEFT JOIN users u ON u.phone = ch.assigned_to_phone
+            LEFT JOIN bio_pages b ON u.id = b.user_id
+            ORDER BY ch.id DESC
+        ");
+
+        Response::render('admin.sales', [
+            'title' => 'مدیریت فروش و آمار مالی',
+            'activePage' => 'sales',
+            'totalSales' => $totalSales,
+            'todaySales' => $todaySales,
+            'monthSales' => $monthSales,
+            'historyList' => $historyList,
+            'error' => Session::flash('error'),
+            'success' => Session::flash('success')
+        ]);
     }
 
     public function settings(): void {

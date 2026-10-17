@@ -164,15 +164,9 @@ class DashboardController {
         $title = trim(Request::post('title', ''));
         $contentData = Request::post('content', []);
 
-        // Normalize URLs
         if (isset($contentData['url'])) $contentData['url'] = $this->normalizeUrl($contentData['url']);
         if (isset($contentData['pay_url'])) $contentData['pay_url'] = $this->normalizeUrl($contentData['pay_url']);
-        if (isset($contentData['torob'])) $contentData['torob'] = $this->normalizeUrl($contentData['torob']);
-        if (isset($contentData['basalam'])) $contentData['basalam'] = $this->normalizeUrl($contentData['basalam']);
-        if (isset($contentData['digikala'])) $contentData['digikala'] = $this->normalizeUrl($contentData['digikala']);
-        if (isset($contentData['p1_url'])) $contentData['p1_url'] = $this->normalizeUrl($contentData['p1_url']);
 
-        // Upload single image if present
         $uploadedImg = $this->handleImageUpload('image_file');
         if ($uploadedImg) {
             $contentData['image_url'] = $uploadedImg;
@@ -204,10 +198,8 @@ class DashboardController {
 
         $oldContent = json_decode($block['content'] ?? '{}', true) ?: [];
 
-        // Normalize URLs
         if (isset($contentData['url'])) $contentData['url'] = $this->normalizeUrl($contentData['url']);
 
-        // Keep old image if no new upload
         $uploadedImg = $this->handleImageUpload('image_file');
         if ($uploadedImg) {
             $contentData['image_url'] = $uploadedImg;
@@ -225,6 +217,41 @@ class DashboardController {
         ", [$title, $contentJson, $blockId, $this->bio['id']]);
 
         Session::flash('success', 'بلوک با موفقیت ویرایش گردید.');
+        Response::redirect('/dashboard/blocks');
+    }
+
+    public function reorderBlockProcess(): void {
+        $blockId = (int)Request::post('block_id', 0);
+        $direction = Request::post('direction', 'up');
+
+        $block = Database::fetch("SELECT id, sort_order FROM bio_blocks WHERE id = ? AND bio_page_id = ?", [$blockId, $this->bio['id']]);
+        if ($block) {
+            $currentSort = (int)$block['sort_order'];
+            if ($direction === 'up') {
+                $prevBlock = Database::fetch("
+                    SELECT id, sort_order FROM bio_blocks
+                    WHERE bio_page_id = ? AND sort_order < ?
+                    ORDER BY sort_order DESC LIMIT 1
+                ", [$this->bio['id'], $currentSort]);
+
+                if ($prevBlock) {
+                    Database::query("UPDATE bio_blocks SET sort_order = ? WHERE id = ?", [$prevBlock['sort_order'], $block['id']]);
+                    Database::query("UPDATE bio_blocks SET sort_order = ? WHERE id = ?", [$currentSort, $prevBlock['id']]);
+                }
+            } else {
+                $nextBlock = Database::fetch("
+                    SELECT id, sort_order FROM bio_blocks
+                    WHERE bio_page_id = ? AND sort_order > ?
+                    ORDER BY sort_order ASC LIMIT 1
+                ", [$this->bio['id'], $currentSort]);
+
+                if ($nextBlock) {
+                    Database::query("UPDATE bio_blocks SET sort_order = ? WHERE id = ?", [$nextBlock['sort_order'], $block['id']]);
+                    Database::query("UPDATE bio_blocks SET sort_order = ? WHERE id = ?", [$currentSort, $nextBlock['id']]);
+                }
+            }
+            Session::flash('success', 'اولویت بلوک با موفقیت جابه‌جا شد.');
+        }
         Response::redirect('/dashboard/blocks');
     }
 
